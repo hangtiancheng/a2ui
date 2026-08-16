@@ -3,6 +3,7 @@
     "choicepicker",
     "datetimeinput",
     "oxlint",
-    "snackbaraction"
+    "snackbaraction",
+    "vite"
   ]
 }
