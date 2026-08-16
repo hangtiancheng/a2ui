@@ -11,7 +11,9 @@
     "format:server": "pnpm --filter server format",
     "format": "run-p format:*",
     "postinstall": "curl -sfL https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json -o catalog.json",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lit": "tsx ./start.ts lit",
+    "react": "tsx ./start.ts react"
   },
   "keywords": [
     "a2ui"
