@@ -1,0 +1,14 @@
+{
+  "name": "a2ui",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "git:commit": "git add -A && git commit -m 'Introduce new features'",
+    "git:push": "pnpm git:commit && git push origin main"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
