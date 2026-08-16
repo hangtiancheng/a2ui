@@ -226,20 +226,29 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
   const showForm = !requesting && messages.length === 0;
 
   return (
-    <div className="shell">
-      {isMockMode && <div className="mock-badge">Mock Mode</div>}
+    <div className="relative mx-auto flex min-h-dvh w-full max-w-2xl flex-col items-center px-4 pb-8 text-slate-900 dark:text-slate-100">
+      {isMockMode && (
+        <div className="fixed top-4 left-4 z-10 rounded-full bg-amber-500/90 px-3 py-1 text-sm font-medium text-white shadow-sm">
+          Mock Mode
+        </div>
+      )}
 
-      <button className="theme-toggle" onClick={toggleDarkMode}>
-        <span className="g-icon filled-heavy material-symbols-outlined">
-          {isDarkMode ? "light_mode" : "dark_mode"}
-        </span>
+      <button
+        type="button"
+        className="fixed top-3 right-4 z-10 flex size-12 cursor-pointer items-center justify-center rounded-full bg-white text-indigo-700 shadow-md transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+        onClick={toggleDarkMode}
+      >
+        <span className="material-symbols">{isDarkMode ? "light_mode" : "dark_mode"}</span>
       </button>
 
       {showForm && (
-        <form className="search-form" onSubmit={handleSubmit}>
+        <form
+          className="flex w-full flex-1 animate-fade-in flex-col items-center justify-center gap-6 py-8"
+          onSubmit={handleSubmit}
+        >
           {config.heroImage && (
             <div
-              className="hero-img"
+              className="aspect-video w-full max-w-md bg-contain bg-center bg-no-repeat [background-image:var(--background-image-light)] dark:[background-image:var(--background-image-dark)]"
               style={
                 {
                   "--background-image-light": `url(${config.heroImage})`,
@@ -248,8 +257,10 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
               }
             />
           )}
-          <h1 className="app-title">{config.title}</h1>
-          <div className="input-row">
+          <h1 className="text-4xl font-bold tracking-tight text-indigo-900 dark:text-slate-100">
+            {config.title}
+          </h1>
+          <div className="flex w-full items-center gap-4">
             <input
               required
               defaultValue={config.placeholder}
@@ -258,25 +269,34 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
               name="body"
               type="text"
               disabled={requesting}
+              className="min-w-0 flex-1 rounded-full border border-indigo-300 bg-white px-6 py-4 text-base text-slate-900 placeholder:text-slate-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50 dark:border-indigo-800 dark:bg-slate-900 dark:text-slate-100"
             />
-            <button type="submit" disabled={requesting}>
-              <span className="g-icon filled-heavy">send</span>
+            <button
+              type="submit"
+              disabled={requesting}
+              className="flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-full bg-indigo-600 text-white shadow-md transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <span className="material-symbols">send</span>
             </button>
           </div>
         </form>
       )}
 
       {requesting && (
-        <div className="pending">
-          <div className="spinner" />
-          <div className="loading-text">{loadingText}</div>
+        <div className="flex min-h-52 w-full flex-1 animate-fade-in flex-col items-center justify-center gap-4">
+          <div className="size-12 animate-spin rounded-full border-4 border-indigo-200 border-l-indigo-600 dark:border-slate-700 dark:border-l-indigo-400" />
+          <div className="text-slate-600 dark:text-slate-300">{loadingText}</div>
         </div>
       )}
 
-      {error && <div className="error">{error}</div>}
+      {error && (
+        <div className="mt-6 w-full rounded-lg border border-red-300 bg-red-50 p-4 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+          {error}
+        </div>
+      )}
 
       {hasSurfaces && (
-        <section className="surfaces">
+        <section className="w-full animate-fade-in py-3">
           {surfaces.map((surface) => (
             <A2uiSurface key={surface.id} surface={surface} />
           ))}

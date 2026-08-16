@@ -12,12 +12,16 @@
     "format": "run-p format:*",
     "prepare": "husky"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "a2ui"
+  ],
+  "author": "https://github.com/hangtiancheng",
+  "license": "MIT",
   "type": "module",
   "devDependencies": {
+    "@types/node": "^24.13.3",
     "husky": "^9.1.7",
-    "npm-run-all2": "^9.0.3"
+    "npm-run-all2": "^9.0.3",
+    "tsx": "^4.23.12"
   }
 }

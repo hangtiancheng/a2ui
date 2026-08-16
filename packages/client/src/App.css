@@ -1,12 +1,5 @@
-/* TODO: Migrate to tailwindcss */
-
-/*
- * KNOWN GAP (intentionally not fixed in this iteration):
- * The upstream sample's design-token stylesheet (--n-*, --p-*, --e-*,
- * --bb-grid-size-*, --font-family, --color-scheme) and the Material Symbols /
- * Outfit font links from its index.html were not ported. Any var() lookups
- * against those tokens fall back to browser defaults, and icon ligatures
- * (e.g. "send", "dark_mode") render as plain text.
- */
-
 @import "tailwindcss";
+
+/* Class-based color scheme, toggled on <body> by App.tsx. */
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));

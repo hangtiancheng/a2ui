@@ -4,16 +4,25 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@types/node': ^24.13.3
+
 importers:
 
   .:
     devDependencies:
+      '@types/node':
+        specifier: ^24.13.3
+        version: 24.13.3
       husky:
         specifier: ^9.1.7
         version: 9.1.7
       npm-run-all2:
         specifier: ^9.0.3
         version: 9.0.3
+      tsx:
+        specifier: ^4.23.12
+        version: 4.23.12
 
   packages/client:
     dependencies:
@@ -1693,7 +1702,7 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
-      '@types/node': ^20.19.0 || >=22.12.0
+      '@types/node': ^24.13.3
       '@vitejs/devtools': ^0.4.0
       esbuild: ^0.27.0 || ^0.28.0
       jiti: '>=1.21.0'

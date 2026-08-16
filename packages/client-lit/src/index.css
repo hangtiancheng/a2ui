@@ -1,11 +1,5 @@
-/*
- * KNOWN GAP (intentionally not fixed in this iteration):
- * The upstream Lit shell's design-token stylesheet (--n-*, --p-*, --e-*,
- * --bb-grid-size-*, --font-family, --color-scheme) and the Material Symbols /
- * Outfit font links from its index.html were not ported, so this file is
- * effectively empty. Component styles in app.ts and theme/restaurant-theme.ts
- * reference those undefined tokens and fall back to browser defaults, and
- * icon ligatures (e.g. "send", "close") render as plain text.
- */
-
 @import "tailwindcss";
+
+/* Class-based color scheme, toggled on <body> by app.ts. */
+@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant light (&:where(.light, .light *));

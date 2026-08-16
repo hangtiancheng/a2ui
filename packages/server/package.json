@@ -12,8 +12,8 @@
 		"check": "biome check --write"
 	},
 	"keywords": [],
-	"author": "",
-	"license": "ISC",
+	"author": "https://github.com/hangtiancheng",
+	"license": "MIT",
 	"type": "module",
 	"dependencies": {
 		"cors": "^2.8.6",
