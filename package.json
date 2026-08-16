@@ -5,10 +5,19 @@
   "private": true,
   "scripts": {
     "git:commit": "git add -A && git commit -m 'Introduce new features'",
-    "git:push": "pnpm git:commit && git push origin main"
+    "git:push": "pnpm git:commit && git push origin main",
+    "format:client": "pnpm --filter client format",
+    "format:client-lit": "pnpm --filter client-lit format",
+    "format:server": "pnpm --filter server format",
+    "format": "run-p format:*",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "npm-run-all2": "^9.0.3"
+  }
 }

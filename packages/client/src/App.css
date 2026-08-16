@@ -8,3 +8,5 @@
  * against those tokens fall back to browser defaults, and icon ligatures
  * (e.g. "send", "dark_mode") render as plain text.
  */
+
+@import "tailwindcss";

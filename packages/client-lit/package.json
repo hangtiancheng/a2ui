@@ -15,9 +15,11 @@
     "@a2ui/web_core": "^0.10.6",
     "@lit-labs/signals": "^0.3.0",
     "@lit/context": "^1.1.6",
-    "lit": "^3.3.3"
+    "lit": "^3.3.3",
+    "tailwindcss": "^4.3.3"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
     "oxfmt": "^0.63.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"

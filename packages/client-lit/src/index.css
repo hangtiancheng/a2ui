@@ -7,3 +7,5 @@
  * reference those undefined tokens and fall back to browser defaults, and
  * icon ligatures (e.g. "send", "close") render as plain text.
  */
+
+@import "tailwindcss";

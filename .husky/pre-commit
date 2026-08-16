@@ -1,0 +1,3 @@
+pnpm format
+
+git add -A
