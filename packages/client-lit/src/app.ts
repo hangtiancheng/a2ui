@@ -1,10 +1,12 @@
 import { SignalWatcher } from "@lit-labs/signals";
 import { provide } from "@lit/context";
-import { LitElement, html, css, nothing } from "lit";
+import { LitElement, html, nothing } from "lit";
 import { customElement, state, query } from "lit/decorators.js";
+import { repeat } from "lit/directives/repeat.js";
+import { styleMap } from "lit/directives/style-map.js";
+import { createElement, type IconNode, Moon, SendHorizontal, Sun, X } from "lucide";
 import { type SnackbarMessage, SnackType } from "./types/types.js";
 import { Snackbar } from "./ui/snackbar.js";
-import { repeat } from "lit/directives/repeat.js";
 
 import * as v0_9 from "@a2ui/web_core/v0_9";
 import { basicCatalog, Context } from "@a2ui/lit/v0_9";
@@ -12,7 +14,6 @@ import { renderMarkdown } from "@a2ui/markdown-it";
 
 import { A2UIClient } from "./client.js";
 import { restaurantConfig, localConfig, type AppConfig } from "./configs/configs.js";
-import { styleMap } from "lit/directives/style-map.js";
 
 const configs: Record<string, AppConfig> = {
   restaurant: restaurantConfig,
@@ -20,6 +21,12 @@ const configs: Record<string, AppConfig> = {
 };
 
 type MarkdownRendererFn = (value: string, options?: any) => Promise<string>;
+
+function icon(node: IconNode, classes = "size-6") {
+  const el = createElement(node);
+  el.setAttribute("class", classes);
+  return el;
+}
 
 @customElement("a2ui-shell")
 export class A2UILayoutEditor extends SignalWatcher(LitElement) {
@@ -55,420 +62,8 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
 
   private _toastTimeout: number | undefined;
 
-  static styles = [
-    css`
-      * {
-        box-sizing: border-box;
-      }
-
-      :host {
-        display: block;
-        max-width: 640px;
-        margin: 0 auto;
-        min-height: 100%;
-        color: light-dark(var(--n-10), var(--n-90));
-        font-family: var(--font-family);
-      }
-
-      #hero-img {
-        width: 100%;
-        max-width: 400px;
-        aspect-ratio: 1280/720;
-        height: auto;
-        margin-bottom: var(--bb-grid-size-6);
-        display: block;
-        margin: 0 auto;
-        background: var(--background-image-light) center center / contain no-repeat;
-      }
-
-      #surfaces {
-        width: 100%;
-        max-width: 100svw;
-        padding: var(--bb-grid-size-3);
-        animation: fadeIn 1s cubic-bezier(0, 0, 0.3, 1) 0.3s backwards;
-      }
-
-      form {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        gap: 16px;
-        align-items: center;
-        padding: 16px 0;
-        animation: fadeIn 1s cubic-bezier(0, 0, 0.3, 1) 1s backwards;
-
-        & h1 {
-          color: light-dark(var(--p-40), var(--n-90));
-        }
-
-        & > div {
-          display: flex;
-          flex: 1;
-          gap: 16px;
-          align-items: center;
-          width: 100%;
-
-          & > input {
-            display: block;
-            flex: 1;
-            border-radius: 32px;
-            padding: 16px 24px;
-            border: 1px solid var(--p-60);
-            background: light-dark(var(--n-100), var(--n-10));
-            font-size: 16px;
-          }
-
-          & > button {
-            display: flex;
-            align-items: center;
-            background: var(--p-40);
-            color: var(--n-100);
-            border: none;
-            padding: 8px 16px;
-            border-radius: 32px;
-            opacity: 0.5;
-
-            &:not([disabled]) {
-              cursor: pointer;
-              opacity: 1;
-            }
-          }
-        }
-      }
-
-      .material-symbols {
-        font-family: "Material Symbols Outlined", sans-serif;
-        font-variation-settings: "FILL" 1;
-        font-weight: normal;
-        font-style: normal;
-        font-size: 24px;
-        line-height: 1;
-        letter-spacing: normal;
-        text-transform: none;
-        display: inline-block;
-        white-space: nowrap;
-        word-wrap: normal;
-        direction: ltr;
-      }
-
-      .rotate {
-        animation: rotate 1s linear infinite;
-      }
-
-      .pending {
-        width: 100%;
-        min-height: 200px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        animation: fadeIn 1s cubic-bezier(0, 0, 0.3, 1) 0.3s backwards;
-        gap: 16px;
-      }
-
-      .spinner {
-        width: 48px;
-        height: 48px;
-        border: 4px solid rgba(255, 255, 255, 0.1);
-        border-left-color: var(--p-60);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-
-      .theme-toggle {
-        padding: 0;
-        margin: 0;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: fixed;
-        top: var(--bb-grid-size-3);
-        right: var(--bb-grid-size-4);
-        background: light-dark(var(--n-100), var(--n-0));
-        border-radius: 50%;
-        color: var(--p-30);
-        cursor: pointer;
-        width: 48px;
-        height: 48px;
-        font-size: 32px;
-
-        & .material-symbols {
-          font-family: "Material Symbols Outlined";
-          pointer-events: none;
-
-          &::before {
-            content: "dark_mode";
-          }
-        }
-      }
-
-      @container style(--color-scheme: dark) {
-        .theme-toggle .material-symbols::before {
-          content: "light_mode";
-          color: var(--n-90);
-        }
-
-        #hero-img {
-          background-image: var(--background-image-dark);
-        }
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      @keyframes pulse {
-        0% {
-          opacity: 0.6;
-        }
-        50% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0.6;
-        }
-      }
-
-      .error {
-        color: var(--e-40);
-        background-color: var(--e-95);
-        border: 1px solid var(--e-80);
-        padding: 16px;
-        border-radius: 8px;
-      }
-
-      .local-mode-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: light-dark(var(--p-95), var(--n-20));
-        border: 1px solid light-dark(var(--p-80), var(--n-30));
-        padding: 12px 20px;
-        border-radius: 16px;
-        margin-bottom: 24px;
-        animation: fadeIn 0.5s ease-out;
-      }
-
-      .local-mode-header .file-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-        color: light-dark(var(--p-35), var(--n-85));
-      }
-
-      .local-mode-header .clear-btn {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        color: light-dark(var(--p-30), var(--n-90));
-        display: flex;
-        align-items: center;
-        padding: 4px;
-        border-radius: 50%;
-        transition: background 0.2s;
-
-        &:hover {
-          background: light-dark(var(--p-90), var(--n-30));
-        }
-      }
-
-      .local-header-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        margin-top: 64px;
-        margin-bottom: 32px;
-        animation: fadeIn 0.8s cubic-bezier(0, 0, 0.3, 1);
-      }
-
-      .local-header-section h1 {
-        margin: 0 0 16px 0;
-        font-size: 36px;
-        font-weight: 700;
-        color: light-dark(var(--p-30), var(--n-90));
-        letter-spacing: -0.5px;
-      }
-
-      .local-header-section p {
-        margin: 0 0 12px 0;
-        max-width: 560px;
-        font-size: 16px;
-        color: light-dark(var(--n-20), var(--n-90));
-        line-height: 1.6;
-      }
-
-      .local-header-section .support-info {
-        font-size: 13px;
-        color: light-dark(var(--n-40), var(--n-70));
-        max-width: 560px;
-        line-height: 1.5;
-        margin: 0;
-      }
-
-      .local-upload-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-        padding: 48px;
-        background: light-dark(var(--n-98), var(--n-15));
-        border: 2px dashed light-dark(var(--p-60), var(--n-35));
-        border-radius: 24px;
-        width: 100%;
-        max-width: 560px;
-        margin: 0 auto 64px auto;
-        animation: fadeIn 0.8s cubic-bezier(0, 0, 0.3, 1) 0.2s backwards;
-        gap: 24px;
-      }
-
-      .primary-upload-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--p-40);
-        color: var(--n-100);
-        border: none;
-        padding: 12px 24px;
-        border-radius: 32px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
-        &:hover {
-          background: var(--p-30);
-          transform: translateY(-2px);
-          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-        }
-      }
-
-      .samples-section {
-        margin-top: 24px;
-        width: 100%;
-        border-top: 1px solid light-dark(var(--n-90), var(--n-30));
-        padding-top: 20px;
-      }
-
-      .samples-section h3 {
-        font-size: 13px;
-        font-weight: 500;
-        color: light-dark(var(--n-40), var(--n-70));
-        margin: 0 0 12px 0;
-      }
-
-      .samples-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-        gap: 8px;
-        width: 100%;
-      }
-
-      .sample-btn {
-        background: light-dark(var(--n-95), var(--n-25));
-        color: light-dark(var(--p-30), var(--n-90));
-        border: 1px solid light-dark(var(--n-85), var(--n-35));
-        border-radius: 12px;
-        padding: 8px 12px;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.2s;
-
-        &:hover {
-          background: var(--p-40);
-          color: var(--n-100);
-          border-color: var(--p-40);
-          transform: translateY(-1px);
-        }
-      }
-
-      .custom-toast {
-        position: fixed;
-        bottom: 24px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(30, 32, 35, 0.92);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        padding: 14px 28px;
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
-        z-index: 2000;
-        animation: slideUp 0.4s cubic-bezier(0, 0, 0.3, 1);
-        max-width: 90vw;
-        pointer-events: auto;
-      }
-
-      .custom-toast.error {
-        background: rgba(190, 40, 40, 0.92);
-        border-color: rgba(255, 255, 255, 0.2);
-      }
-
-      .toast-text {
-        color: #ffffff;
-        font-size: 14px;
-        font-weight: 500;
-      }
-
-      .toast-close {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        color: #ffffff;
-        opacity: 0.7;
-        display: flex;
-        align-items: center;
-        padding: 2px;
-        border-radius: 50%;
-        transition:
-          opacity 0.2s,
-          background-color 0.2s;
-
-        &:hover {
-          opacity: 1;
-          background: rgba(255, 255, 255, 0.15);
-        }
-      }
-
-      @keyframes slideUp {
-        from {
-          transform: translate(-50%, 32px);
-          opacity: 0;
-        }
-        to {
-          transform: translate(-50%, 0);
-          opacity: 1;
-        }
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      @keyframes rotate {
-        from {
-          rotate: 0deg;
-        }
-        to {
-          rotate: 360deg;
-        }
-      }
-    `,
-  ];
+  @state()
+  private _isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
   private _processor = new v0_9.MessageProcessor(
     [basicCatalog],
@@ -506,13 +101,29 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
 
   private _error: string | undefined;
 
+  /* Render into light DOM so global Tailwind utilities apply. */
+  createRenderRoot() {
+    return this;
+  }
+
   #maybeRenderError() {
     if (!this._error) return nothing;
-    return html`<div class="error">${this._error}</div>`;
+    return html`<div
+      class="mt-6 w-full rounded-lg border border-red-300 bg-red-50 p-4 text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200"
+    >
+      ${this._error}
+    </div>`;
   }
 
   connectedCallback() {
     super.connectedCallback();
+
+    this.className =
+      "relative mx-auto flex min-h-dvh w-full max-w-2xl flex-col items-center px-4 pb-8 text-slate-900 dark:text-slate-100";
+
+    if (this._isDarkMode) {
+      document.body.classList.add("dark");
+    }
 
     const urlParams = new URLSearchParams(window.location.search);
     const appKey = urlParams.get("app");
@@ -564,36 +175,38 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
   #renderLocalModeHeader() {
     if (!this._isLocalMode) return nothing;
     return html`
-      <div class="local-mode-header">
-        <span class="file-info">
+      <div
+        class="mb-6 flex w-full items-center justify-between rounded-2xl border border-indigo-200 bg-indigo-50 px-5 py-3 dark:border-slate-600 dark:bg-slate-800"
+      >
+        <span class="flex items-center gap-2 text-sm text-indigo-900 dark:text-slate-100">
           Loaded local mockup: <strong>${this._localFileName}</strong>
         </span>
-        <button class="clear-btn" @click=${this.#clearLocalFile} title="Clear local mockup">
-          <span class="material-symbols">close</span>
+        <button
+          type="button"
+          class="flex cursor-pointer items-center rounded-full p-1 text-indigo-800 transition-colors hover:bg-indigo-100 dark:text-slate-100 dark:hover:bg-slate-700"
+          @click=${this.#clearLocalFile}
+          title="Clear local mockup"
+        >
+          ${icon(X, "size-5")}
         </button>
       </div>
     `;
   }
 
+  #toggleDarkMode() {
+    this._isDarkMode = !this._isDarkMode;
+    document.body.classList.toggle("dark", this._isDarkMode);
+    document.body.classList.toggle("light", !this._isDarkMode);
+  }
+
   #renderThemeToggle() {
-    return html`<div>
-      <button
-        @click=${(evt: Event) => {
-          if (!(evt.target instanceof HTMLButtonElement)) return;
-          const { colorScheme } = window.getComputedStyle(evt.target);
-          if (colorScheme === "dark") {
-            document.body.classList.add("light");
-            document.body.classList.remove("dark");
-          } else {
-            document.body.classList.add("dark");
-            document.body.classList.remove("light");
-          }
-        }}
-        class="theme-toggle"
-      >
-        <span class="material-symbols"></span>
-      </button>
-    </div>`;
+    return html`<button
+      type="button"
+      class="fixed top-3 right-4 z-10 flex size-12 cursor-pointer items-center justify-center rounded-full bg-white text-indigo-700 shadow-md transition-colors hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+      @click=${this.#toggleDarkMode}
+    >
+      ${icon(this._isDarkMode ? Sun : Moon)}
+    </button>`;
   }
 
   #maybeRenderForm() {
@@ -603,39 +216,49 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
 
     if (this.config.key === "local") {
       return html`
-        <div class="local-header-section">
-          <h1>${this.config.title}</h1>
-          <p>
+        <div class="mt-16 mb-8 flex flex-col items-center text-center">
+          <h1 class="mb-4 text-4xl font-bold tracking-tight text-indigo-900 dark:text-slate-100">
+            ${this.config.title}
+          </h1>
+          <p class="mb-3 max-w-xl text-base leading-relaxed text-slate-700 dark:text-slate-200">
             Upload an A2UI JSON mockup file to render and test your interactive layouts locally.
           </p>
-          <p class="support-info">
+          <p class="max-w-xl text-sm leading-normal text-slate-500 dark:text-slate-400">
             Supports A2UI Protocol v0.9. Only supports the basic catalog for now.
           </p>
         </div>
-        <div class="local-upload-container">
-          <button type="button" class="primary-upload-btn" @click=${this.#triggerFileUpload}>
+        <div
+          class="mx-auto mb-16 flex w-full max-w-xl flex-col items-center justify-center gap-6 rounded-3xl border-2 border-dashed border-indigo-400 bg-white/60 p-12 text-center dark:border-slate-600 dark:bg-slate-800/60"
+        >
+          <button
+            type="button"
+            class="flex cursor-pointer items-center gap-2 rounded-full bg-indigo-600 px-6 py-3 font-medium text-white shadow-md transition hover:-translate-y-0.5 hover:bg-indigo-500 hover:shadow-lg"
+            @click=${this.#triggerFileUpload}
+          >
             Browse JSON File
           </button>
           <input
             type="file"
             accept=".json"
             id="local-file-input"
-            style="display: none"
+            class="hidden"
             @change=${this.#onLocalFileChange}
           />
-          <div class="samples-section">
-            <h3>Or quick-load a built-in sample:</h3>
-            <div class="samples-grid">
+          <div class="mt-6 w-full border-t border-slate-200 pt-5 dark:border-slate-700">
+            <h3 class="mb-3 text-sm font-medium text-slate-500 dark:text-slate-400">
+              Or quick-load a built-in sample:
+            </h3>
+            <div class="grid w-full grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-2">
               <button
                 type="button"
-                class="sample-btn"
+                class="cursor-pointer rounded-xl border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-indigo-800 transition-colors hover:border-indigo-600 hover:bg-indigo-600 hover:text-white dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
                 @click=${() => this.#loadBuiltinSample("contact_card.json")}
               >
                 Contact Card
               </button>
               <button
                 type="button"
-                class="sample-btn"
+                class="cursor-pointer rounded-xl border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-indigo-800 transition-colors hover:border-indigo-600 hover:bg-indigo-600 hover:text-white dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
                 @click=${() => this.#loadBuiltinSample("workspace_settings.json")}
               >
                 Workspace Setup
@@ -647,6 +270,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
     }
 
     return html`<form
+      class="flex w-full flex-1 flex-col items-center justify-center gap-6 py-8"
       @submit=${async (evt: Event) => {
         evt.preventDefault();
         if (!(evt.target instanceof HTMLFormElement)) return;
@@ -663,12 +287,14 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
                 "--background-image-light": `url(${this.config.heroImage})`,
                 "--background-image-dark": `url(${this.config.heroImageDark ?? this.config.heroImage})`,
               })}
-              id="hero-img"
+              class="aspect-video w-full max-w-md bg-contain bg-center bg-no-repeat [background-image:var(--background-image-light)] dark:[background-image:var(--background-image-dark)]"
             ></div>`
           : nothing
       }
-      <h1 class="app-title">${this.config.title}</h1>
-      <div>
+      <h1 class="text-4xl font-bold tracking-tight text-indigo-900 dark:text-slate-100">
+        ${this.config.title}
+      </h1>
+      <div class="flex w-full items-center gap-4">
         <input
           required
           value="${this.config.placeholder}"
@@ -677,9 +303,14 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
           name="body"
           type="text"
           ?disabled=${this._requesting}
+          class="min-w-0 flex-1 rounded-full border border-indigo-300 bg-white px-6 py-4 text-base text-slate-900 placeholder:text-slate-400 disabled:opacity-50 dark:border-indigo-800 dark:bg-slate-900 dark:text-slate-100"
         />
-        <button type="submit" ?disabled=${this._requesting}>
-          <span class="material-symbols">send</span>
+        <button
+          type="submit"
+          ?disabled=${this._requesting}
+          class="flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-full bg-indigo-600 text-white shadow-md transition-colors hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          ${icon(SendHorizontal)}
         </button>
       </div>
     </form>`;
@@ -725,16 +356,20 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
       const text = this.config.loadingText
         ? this.config.loadingText[this._loadingTextIndex]
         : "Awaiting an answer...";
-      return html`<div class="pending">
-        <div class="spinner"></div>
-        <div class="loading-text">${text}</div>
+      return html`<div
+        class="flex min-h-52 w-full flex-1 flex-col items-center justify-center gap-4"
+      >
+        <div
+          class="size-12 animate-spin rounded-full border-4 border-indigo-200 border-l-indigo-600 dark:border-slate-700 dark:border-l-indigo-400"
+        ></div>
+        <div class="text-slate-600 dark:text-slate-300">${text}</div>
       </div>`;
     }
 
     const surfaces = Array.from(this._processor.model.surfacesMap.entries());
     if (surfaces.length === 0) return nothing;
 
-    return html`<section id="surfaces">
+    return html`<section class="w-full py-3">
       ${repeat(
         surfaces,
         ([surfaceId]) => surfaceId,
@@ -755,7 +390,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
   }
 
   #triggerFileUpload() {
-    const fileInput = this.shadowRoot?.getElementById("local-file-input") as HTMLInputElement;
+    const fileInput = this.renderRoot.querySelector("#local-file-input") as HTMLInputElement;
     if (fileInput) fileInput.click();
   }
 
@@ -820,11 +455,21 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
 
   #renderToast() {
     if (!this._toastMessage) return nothing;
+    const colors =
+      this._toastType === "error"
+        ? "border-white/20 bg-red-800/90"
+        : "border-white/10 bg-slate-900/90";
     return html`
-      <div class="custom-toast ${this._toastType}">
-        <span class="toast-text">${this._toastMessage}</span>
-        <button class="toast-close" @click=${() => (this._toastMessage = "")}>
-          <span class="material-symbols">close</span>
+      <div
+        class="fixed bottom-6 left-1/2 z-50 flex max-w-[90vw] -translate-x-1/2 items-center gap-4 rounded-2xl border px-7 py-3.5 text-white shadow-2xl backdrop-blur-xl ${colors}"
+      >
+        <span class="text-sm font-medium">${this._toastMessage}</span>
+        <button
+          type="button"
+          class="flex cursor-pointer items-center rounded-full p-0.5 opacity-70 transition-opacity hover:bg-white/15 hover:opacity-100"
+          @click=${() => (this._toastMessage = "")}
+        >
+          ${icon(X, "size-5")}
         </button>
       </div>
     `;

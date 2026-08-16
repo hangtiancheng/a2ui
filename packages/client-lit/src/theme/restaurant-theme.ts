@@ -29,12 +29,12 @@ restaurantThemeSheet.replaceSync(`
 :root {
   --background: ${restaurantBackground};
 
-  --a2ui-button-background: linear-gradient(135deg, light-dark(var(--p-70), var(--p-40)) 0%, light-dark(var(--p-60), var(--p-30)) 100%);
+  --a2ui-button-background: linear-gradient(135deg, light-dark(#818cf8, #4f46e5) 0%, light-dark(#6366f1, #4338ca) 100%);
   --a2ui-button-box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
   --a2ui-button-font-weight: 500;
   --a2ui-button-border-radius: 9999px;
 
-  --a2ui-text-a-color: var(--e-40, red);
+  --a2ui-text-a-color: light-dark(#dc2626, #f87171);
   --a2ui-text-a-font-weight: bold;
 
   --a2ui-card-border: none;
@@ -44,16 +44,16 @@ restaurantThemeSheet.replaceSync(`
   --a2ui-image-border-radius: 12px;
 
   --a2ui-checkbox-label-font-size: 0.875rem;
-  --a2ui-checkbox-background: light-dark(var(--n-100), var(--n-20));
-  --a2ui-checkbox-border: 1px solid light-dark(var(--p-60), var(--p-40));
+  --a2ui-checkbox-background: light-dark(#ffffff, #1e293b);
+  --a2ui-checkbox-border: 1px solid light-dark(#818cf8, #6366f1);
 
   --a2ui-choicepicker-gap: 0.5rem;
   --a2ui-choicepicker-padding: 0.5rem;
-  --a2ui-choicepicker-label-color: light-dark(var(--n-20), var(--n-90));
+  --a2ui-choicepicker-label-color: light-dark(#334155, #e2e8f0);
   --a2ui-choicepicker-label-font-size: 0.875rem;
 
-  --a2ui-datetimeinput-background: light-dark(var(--n-100), var(--n-20));
-  --a2ui-datetimeinput-border: 1px solid light-dark(var(--n-80), var(--n-30));
+  --a2ui-datetimeinput-background: light-dark(#ffffff, #1e293b);
+  --a2ui-datetimeinput-border: 1px solid light-dark(#cbd5e1, #334155);
   --a2ui-datetimeinput-padding: 0.5rem;
 
   --a2ui-list-padding: 0.5rem;

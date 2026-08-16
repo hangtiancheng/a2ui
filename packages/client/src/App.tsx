@@ -14,6 +14,7 @@ import {
   SurfaceModel,
 } from "@a2ui/web_core/v0_9";
 import { renderMarkdown } from "@a2ui/markdown-it";
+import { Moon, SendHorizontal, Sun } from "lucide-react";
 import { A2UIClient } from "./client";
 import { type AppConfig, restaurantConfig } from "./configs";
 import {
@@ -238,12 +239,12 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
         className="fixed top-3 right-4 z-10 flex size-12 cursor-pointer items-center justify-center rounded-full bg-white text-indigo-700 shadow-md transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
         onClick={toggleDarkMode}
       >
-        <span className="material-symbols">{isDarkMode ? "light_mode" : "dark_mode"}</span>
+        {isDarkMode ? <Sun className="size-6" /> : <Moon className="size-6" />}
       </button>
 
       {showForm && (
         <form
-          className="flex w-full flex-1 animate-fade-in flex-col items-center justify-center gap-6 py-8"
+          className="flex w-full flex-1 flex-col items-center justify-center gap-6 py-8"
           onSubmit={handleSubmit}
         >
           {config.heroImage && (
@@ -276,14 +277,14 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
               disabled={requesting}
               className="flex size-14 shrink-0 cursor-pointer items-center justify-center rounded-full bg-indigo-600 text-white shadow-md transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
             >
-              <span className="material-symbols">send</span>
+              <SendHorizontal className="size-6" />
             </button>
           </div>
         </form>
       )}
 
       {requesting && (
-        <div className="flex min-h-52 w-full flex-1 animate-fade-in flex-col items-center justify-center gap-4">
+        <div className="flex min-h-52 w-full flex-1 flex-col items-center justify-center gap-4">
           <div className="size-12 animate-spin rounded-full border-4 border-indigo-200 border-l-indigo-600 dark:border-slate-700 dark:border-l-indigo-400" />
           <div className="text-slate-600 dark:text-slate-300">{loadingText}</div>
         </div>
@@ -296,7 +297,7 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
       )}
 
       {hasSurfaces && (
-        <section className="w-full animate-fade-in py-3">
+        <section className="w-full py-3">
           {surfaces.map((surface) => (
             <A2uiSurface key={surface.id} surface={surface} />
           ))}

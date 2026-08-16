@@ -15,6 +15,7 @@
     "@a2ui/markdown-it": "^0.1.1",
     "@a2ui/react": "^0.10.2",
     "@a2ui/web_core": "^0.10.6",
+    "lucide-react": "^1.31.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "tailwindcss": "^4.3.3"
