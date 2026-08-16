@@ -1,15 +1,11 @@
 import type { Request, Response } from "express";
 import { v4 as uuidV4 } from "uuid";
-import {
-	buildBookingFormA2ui,
-	buildConfirmationA2ui,
-	buildRestaurantListA2ui,
-} from "./a2ui-messages.js";
-import { processQuery } from "./llm.js";
+import { type ChatMessage, processQuery } from "./llm.js";
 import { getRestaurants } from "./tools.js";
 
 interface A2AMessage {
 	messageId: string;
+	contextId?: string;
 	role: string;
 	parts: Array<{
 		kind: string;
@@ -25,6 +21,38 @@ interface A2ARequest {
 }
 
 const A2UI_MIME_TYPE = "application/a2ui+json";
+
+// Conversation history per A2A contextId, so follow-up turns (e.g. booking a
+// restaurant from a previous search) keep state, like the upstream sample's
+// per-context sessions. Simple LRU caps memory for this demo server.
+const MAX_SESSIONS = 100;
+const MAX_HISTORY_MESSAGES = 20;
+const sessions = new Map<string, ChatMessage[]>();
+
+function getSession(contextId: string): ChatMessage[] {
+	let history = sessions.get(contextId);
+	if (history) {
+		sessions.delete(contextId);
+	} else {
+		history = [];
+		if (sessions.size >= MAX_SESSIONS) {
+			const oldest = sessions.keys().next().value;
+			if (oldest !== undefined) sessions.delete(oldest);
+		}
+	}
+	sessions.set(contextId, history);
+	return history;
+}
+
+function trimHistory(history: ChatMessage[]): void {
+	// Avoid splitting an assistant tool_calls message from its tool results.
+	while (
+		history.length > MAX_HISTORY_MESSAGES ||
+		(history.length > 0 && history[0].role === "tool")
+	) {
+		history.shift();
+	}
+}
 
 export async function handleA2ARequest(
 	req: Request,
@@ -67,11 +95,15 @@ export async function handleA2ARequest(
 		return;
 	}
 
-	console.log(`[handler] Processing query: "${query}"`);
-	console.log(`[handler] A2UI mode: ${useA2ui}`);
-
+	const contextId =
+		typeof body.message.contextId === "string" && body.message.contextId
+			? body.message.contextId
+			: uuidV4();
 	const taskId = uuidV4();
-	const contextId = uuidV4();
+	const history = getSession(contextId);
+
+	console.log(`[handler] Processing query: "${query}"`);
+	console.log(`[handler] A2UI mode: ${useA2ui}, contextId: ${contextId}`);
 
 	res.setHeader("Content-Type", "text/event-stream");
 	res.setHeader("Cache-Control", "no-cache");
@@ -80,9 +112,9 @@ export async function handleA2ARequest(
 
 	try {
 		if (useA2ui) {
-			await handleA2uiStream(query, uiAction, res, taskId, contextId);
+			await handleA2uiStream(query, uiAction, history, res, taskId, contextId);
 		} else {
-			await handleTextStream(query, res, taskId, contextId);
+			await handleTextStream(query, history, res, taskId, contextId);
 		}
 	} catch (err) {
 		console.error("[handler] Stream error:", err);
@@ -91,73 +123,55 @@ export async function handleA2ARequest(
 			`data: ${JSON.stringify([{ kind: "error", text: errorMsg }])}\n\n`,
 		);
 		res.end();
+	} finally {
+		trimHistory(history);
 	}
 }
 
 async function handleA2uiStream(
 	query: string,
 	uiAction: { name: string; context: Record<string, unknown> } | null,
+	history: ChatMessage[],
 	res: Response,
 	taskId: string,
 	contextId: string,
 ): Promise<void> {
-	let a2uiMessages: unknown[];
+	// The LLM generates the A2UI messages directly (search results, booking
+	// form and confirmation alike); there are no server-side UI templates.
+	const llmResult = await processQuery(query, history, "a2ui", getRestaurants);
 
-	if (uiAction?.name === "book_restaurant") {
-		const ctx = uiAction.context;
-		a2uiMessages = buildBookingFormA2ui(
-			String(ctx.restaurantName || "Restaurant"),
-			String(ctx.imageUrl || ""),
-			String(ctx.address || ""),
+	if (!llmResult.a2uiMessages) {
+		// No valid A2UI even after the retry: surface an honest text apology
+		// instead of falling back to canned data.
+		res.write(
+			`data: ${JSON.stringify([{ kind: "text", text: llmResult.text }])}\n\n`,
 		);
-		sendSseParts(res, a2uiMessages);
 		sendStatusUpdate(res, "input-required", taskId, contextId);
 		res.end();
 		return;
 	}
 
+	// KNOWN GAP (intentionally not fixed in this iteration): the LLM call is
+	// non-streaming, so every A2UI message is flushed in a single SSE event
+	// rather than streamed incrementally like the upstream ADK sample.
+	sendSseParts(res, llmResult.a2uiMessages);
+
 	if (uiAction?.name === "submit_booking") {
-		const ctx = uiAction.context;
-		a2uiMessages = buildConfirmationA2ui(
-			String(ctx.restaurantName || "Restaurant"),
-			String(ctx.partySize || "2"),
-			String(ctx.reservationTime || ""),
-			String(ctx.dietary || ""),
-			String(ctx.imageUrl || ""),
-		);
-		sendSseParts(res, a2uiMessages);
 		sendStatusUpdate(res, "completed", taskId, contextId, true);
-		res.end();
-		return;
-	}
-
-	const llmResult = await processQuery(query, getRestaurants);
-
-	if (llmResult.toolCalls && llmResult.toolCalls.length > 0) {
-		const restaurantData = JSON.parse(llmResult.toolCalls[0].result);
-		const title = llmResult.title || "Found Restaurants";
-		a2uiMessages = buildRestaurantListA2ui(title, restaurantData);
 	} else {
-		const restaurants = getRestaurants("chinese", "new york", 5);
-		const parsed = JSON.parse(restaurants);
-		a2uiMessages = buildRestaurantListA2ui(
-			llmResult.title || "Top Chinese Restaurants in New York",
-			parsed,
-		);
+		sendStatusUpdate(res, "input-required", taskId, contextId);
 	}
-
-	sendSseParts(res, a2uiMessages);
-	sendStatusUpdate(res, "input-required", taskId, contextId);
 	res.end();
 }
 
 async function handleTextStream(
 	query: string,
+	history: ChatMessage[],
 	res: Response,
 	taskId: string,
 	contextId: string,
 ): Promise<void> {
-	const llmResult = await processQuery(query, getRestaurants);
+	const llmResult = await processQuery(query, history, "text", getRestaurants);
 
 	const textResponse = llmResult.text || "I found some restaurants for you.";
 	const parts = [{ kind: "text", text: textResponse }];

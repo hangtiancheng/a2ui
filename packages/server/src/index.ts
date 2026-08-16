@@ -1,12 +1,9 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 import { createAgentCard } from "./agent-card.js";
 import { handleA2ARequest } from "./handler.js";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import { serveImage } from "./image.js";
 
 const app = express();
 const PORT = parseInt(process.env.PORT || "10002", 10);
@@ -14,7 +11,7 @@ const HOST = process.env.HOST || "localhost";
 
 app.use(
 	cors({
-		origin: /http:\/\/localhost:\d+/,
+		origin: /^http:\/\/localhost:\d+$/,
 		credentials: true,
 	}),
 );
@@ -39,8 +36,7 @@ app.post("/a2a", async (req, res) => {
 	}
 });
 
-const imagesDir = path.join(__dirname, "..", "images");
-app.use("/static", express.static(imagesDir));
+app.get("/static/:name", serveImage);
 
 app.listen(PORT, HOST, () => {
 	console.log(

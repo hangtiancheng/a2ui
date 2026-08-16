@@ -10,9 +10,6 @@ importers:
 
   packages/client:
     dependencies:
-      '@a2a-js/sdk':
-        specifier: ^1.0.1
-        version: 1.0.1(express@5.2.1)
       '@a2ui/markdown-it':
         specifier: ^0.1.1
         version: 0.1.1(@a2ui/web_core@0.10.6)
@@ -68,9 +65,6 @@ importers:
 
   packages/client-lit:
     dependencies:
-      '@a2a-js/sdk':
-        specifier: ^1.0.1
-        version: 1.0.1(express@5.2.1)
       '@a2ui/lit':
         specifier: ^0.10.3
         version: 0.10.3(@a2ui/markdown-it@0.1.1(@a2ui/web_core@0.10.6))(signal-polyfill@0.2.2)
@@ -90,6 +84,9 @@ importers:
         specifier: ^3.3.3
         version: 3.3.3
     devDependencies:
+      oxfmt:
+        specifier: ^0.63.0
+        version: 0.63.0
       typescript:
         specifier: ~6.0.2
         version: 6.0.3
@@ -129,21 +126,6 @@ importers:
         version: 4.23.12
 
 packages:
-
-  '@a2a-js/sdk@1.0.1':
-    resolution: {integrity: sha512-CJQdh3Wzwo8qIx5UUkSJ7+7BEI16PB+MXMHHNSmx8JQsQed2HlQgvx1ENOiKUfYA3PlcEvxIwv14dBblhDuPmw==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@bufbuild/protobuf': ^2.10.2
-      '@grpc/grpc-js': ^1.11.0
-      express: ^4.21.2 || ^5.1.0
-    peerDependenciesMeta:
-      '@bufbuild/protobuf':
-        optional: true
-      '@grpc/grpc-js':
-        optional: true
-      express:
-        optional: true
 
   '@a2ui/lit@0.10.3':
     resolution: {integrity: sha512-/kkL0BqJJfC6sn3XNKbo7QDWKE9K06blUVIoLHLU2PZQJalE1KBv/HLTpupBJ94SMhG+NaOUUu8yBUT+ACsm2Q==}
@@ -1070,9 +1052,6 @@ packages:
   is-promise@4.0.0:
     resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
 
-  jose@6.2.8:
-    resolution: {integrity: sha512-Bsdjwm3Qsd/P0jR+BHDe3LytDfY7WBq2HmCCLIwuVRHMuEC9ae7/R474GIUdF1NgCyZjzVo/A9DOiOBtXq8ZoQ==}
-
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -1431,10 +1410,6 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
-  uuid@11.1.1:
-    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
-    hasBin: true
-
   uuid@14.0.1:
     resolution: {integrity: sha512-6ZxzVpzDXDa3bJWaHilVayA+BH/1zmxCJoVgvmqJnid/gPoKHxUrS/aC/T6LGQtNHT+XHG9fXPJB4d+IrU30Ew==}
     hasBin: true
@@ -1501,13 +1476,6 @@ packages:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
 snapshots:
-
-  '@a2a-js/sdk@1.0.1(express@5.2.1)':
-    dependencies:
-      jose: 6.2.8
-      uuid: 11.1.1
-    optionalDependencies:
-      express: 5.2.1
 
   '@a2ui/lit@0.10.3(@a2ui/markdown-it@0.1.1(@a2ui/web_core@0.10.6))(signal-polyfill@0.2.2)':
     dependencies:
@@ -2257,8 +2225,6 @@ snapshots:
 
   is-promise@4.0.0: {}
 
-  jose@6.2.8: {}
-
   js-tokens@4.0.0: {}
 
   jsesc@3.1.0: {}
@@ -2608,8 +2574,6 @@ snapshots:
       browserslist: 4.28.8
       escalade: 3.2.0
       picocolors: 1.1.1
-
-  uuid@11.1.1: {}
 
   uuid@14.0.1: {}
 

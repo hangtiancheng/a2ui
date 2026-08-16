@@ -1,10 +1,6 @@
 import { LitElement, html, css, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import {
-  type SnackbarMessage,
-  type SnackbarUUID,
-  SnackType,
-} from "../types/types.js";
+import { type SnackbarMessage, type SnackbarUUID, SnackType } from "../types/types.js";
 import { repeat } from "lit/directives/repeat.js";
 import { SnackbarActionEvent } from "../events/events.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -137,9 +133,7 @@ export class Snackbar extends LitElement {
   ];
 
   show(message: SnackbarMessage, replaceAll = false) {
-    const existingMessage = this.#messages.findIndex(
-      (msg) => msg.id === message.id,
-    );
+    const existingMessage = this.#messages.findIndex((msg) => msg.id === message.id);
     if (existingMessage === -1) {
       if (replaceAll) this.#messages.length = 0;
       this.#messages.push(message);
@@ -172,8 +166,7 @@ export class Snackbar extends LitElement {
     let rotate = false;
     let icon = "";
     for (let i = this.#messages.length - 1; i >= 0; i--) {
-      if (!this.#messages[i].type || this.#messages[i].type === SnackType.NONE)
-        continue;
+      if (!this.#messages[i].type || this.#messages[i].type === SnackType.NONE) continue;
       icon = this.#messages[i].type;
       if (this.#messages[i].type === SnackType.PENDING) {
         icon = "progress_activity";
@@ -183,11 +176,7 @@ export class Snackbar extends LitElement {
     }
 
     return html`
-      ${icon
-        ? html`<span class=${classMap({ "g-icon": true, rotate })}
-            >${icon}</span
-          >`
-        : nothing}
+      ${icon ? html`<span class=${classMap({ "g-icon": true, rotate })}>${icon}</span>` : nothing}
       <div id="messages">
         ${repeat(
           this.#messages,
@@ -209,11 +198,7 @@ export class Snackbar extends LitElement {
                   @click=${() => {
                     this.hide();
                     this.dispatchEvent(
-                      new SnackbarActionEvent(
-                        action.action,
-                        action.value,
-                        action.callback,
-                      ),
+                      new SnackbarActionEvent(action.action, action.value, action.callback),
                     );
                   }}
                 >

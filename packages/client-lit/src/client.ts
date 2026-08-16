@@ -3,6 +3,7 @@ const SERVER_URL = "http://localhost:10002";
 
 export class A2UIClient {
   #serverUrl: string;
+  #contextId: string | undefined;
 
   constructor(serverUrl: string = "") {
     this.#serverUrl = serverUrl || SERVER_URL;
@@ -34,6 +35,7 @@ export class A2UIClient {
     const payload = {
       message: {
         messageId: crypto.randomUUID(),
+        ...(this.#contextId ? { contextId: this.#contextId } : {}),
         role: "user",
         parts,
         kind: "message",
@@ -77,6 +79,10 @@ export class A2UIClient {
               try {
                 const parts = JSON.parse(dataStr);
                 for (const part of parts) {
+                  if (part.kind === "status-update" && part.contextId) {
+                    this.#contextId = part.contextId;
+                    continue;
+                  }
                   if (part.kind === "data" && part.data) {
                     messages.push(part.data);
                   }
@@ -97,6 +103,10 @@ export class A2UIClient {
     const messages: any[] = [];
     if (Array.isArray(data)) {
       for (const part of data) {
+        if (part.kind === "status-update" && part.contextId) {
+          this.#contextId = part.contextId;
+          continue;
+        }
         if (part.kind === "data" && part.data) {
           messages.push(part.data);
         }

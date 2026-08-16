@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="bowl" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f87171"/>
+      <stop offset="1" stop-color="#991b1b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" rx="48" fill="url(#bg)"/>
+  <g stroke="#e2e8f0" stroke-opacity="0.35" stroke-width="12" stroke-linecap="round" fill="none">
+    <path d="M540 250 c -18 -36 18 -56 0 -96"/>
+    <path d="M640 230 c -20 -40 20 -62 0 -108"/>
+    <path d="M740 250 c -18 -36 18 -56 0 -96"/>
+  </g>
+  <ellipse cx="640" cy="580" rx="340" ry="34" fill="#000000" fill-opacity="0.4"/>
+  <g transform="rotate(-9 780 300)">
+    <rect x="520" y="286" width="540" height="13" rx="6.5" fill="#d97706"/>
+    <rect x="508" y="310" width="540" height="13" rx="6.5" fill="#f59e0b"/>
+  </g>
+  <ellipse cx="640" cy="380" rx="304" ry="42" fill="#450a0a"/>
+  <ellipse cx="640" cy="374" rx="282" ry="35" fill="#fde68a"/>
+  <path d="M392 370 q 62 -24 126 -2 t 126 0 t 126 -2 q 40 -8 66 4" stroke="#d97706" stroke-width="14" fill="none" stroke-linecap="round"/>
+  <path d="M420 384 q 70 -18 140 -4 t 150 0 q 60 -8 150 2" stroke="#f59e0b" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M336 380 a 304 190 0 0 0 608 0 z" fill="url(#bowl)"/>
+  <path d="M420 470 q 220 70 440 0 q -60 46 -220 46 t -220 -46 z" fill="#ffffff" fill-opacity="0.1"/>
+</svg>

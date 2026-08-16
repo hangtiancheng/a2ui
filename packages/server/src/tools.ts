@@ -33,6 +33,14 @@ export function getRestaurants(
 		`[tools] get_restaurants called: cuisine=${cuisine}, location=${location}, count=${count}`,
 	);
 
+	// Mirrors the upstream sample: the mock dataset only covers Chinese
+	// restaurants in New York, so any other location has no data.
+	const loc = (location || "").toLowerCase();
+	if (!loc.includes("new york") && !loc.includes("ny")) {
+		console.log(`[tools] No data for location "${location}", returning []`);
+		return JSON.stringify([]);
+	}
+
 	const allRestaurants = loadRestaurantData();
 
 	const baseUrl = `http://${process.env.HOST || "localhost"}:${process.env.PORT || "10002"}`;

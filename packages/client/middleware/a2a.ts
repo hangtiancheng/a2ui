@@ -69,9 +69,14 @@ export const plugin = (): Plugin => {
               ];
             }
 
+            const contextIdHeader = req.headers["x-a2a-context-id"];
+            const contextId =
+              typeof contextIdHeader === "string" && contextIdHeader ? contextIdHeader : undefined;
+
             const messagePayload = {
               message: {
                 messageId: crypto.randomUUID(),
+                ...(contextId ? { contextId } : {}),
                 role: "user",
                 parts,
                 kind: "message",

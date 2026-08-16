@@ -1,13 +1,6 @@
 /// <reference types="vite/client" />
 
-import {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  useRef,
-  type SyntheticEvent,
-} from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, type SyntheticEvent } from "react";
 import {
   A2uiSurface,
   basicCatalog,

@@ -3,10 +3,8 @@
 # Usage: ./start.sh [react|lit]
 #
 # Prerequisites:
-#   1. cd react/server && npm install
-#   2. cd react/client && npm install   (for react)
-#      cd react/lit-client && npm install (for lit)
-#   3. Copy react/server/.env.example to react/server/.env and set your API key
+#   1. pnpm install   (at the repo root)
+#   2. Copy packages/server/.env.example to packages/server/.env and set your API key
 
 set -e
 

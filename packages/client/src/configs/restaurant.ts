@@ -3,8 +3,8 @@ import type { AppConfig } from "./types";
 export const config: AppConfig = {
   key: "restaurant",
   title: "Restaurant Finder",
-  heroImage: "/hero.png",
-  heroImageDark: "/hero-dark.png",
+  heroImage: "/hero.svg",
+  heroImageDark: "/hero-dark.svg",
   background: `radial-gradient(
     at 0% 0%,
     light-dark(rgba(161, 196, 253, 0.3), rgba(6, 182, 212, 0.15)) 0px,

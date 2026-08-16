@@ -11,11 +11,7 @@ import { basicCatalog, Context } from "@a2ui/lit/v0_9";
 import { renderMarkdown } from "@a2ui/markdown-it";
 
 import { A2UIClient } from "./client.js";
-import {
-  restaurantConfig,
-  localConfig,
-  type AppConfig,
-} from "./configs/configs.js";
+import { restaurantConfig, localConfig, type AppConfig } from "./configs/configs.js";
 import { styleMap } from "lit/directives/style-map.js";
 
 const configs: Record<string, AppConfig> = {
@@ -82,8 +78,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
         margin-bottom: var(--bb-grid-size-6);
         display: block;
         margin: 0 auto;
-        background: var(--background-image-light) center center / contain
-          no-repeat;
+        background: var(--background-image-light) center center / contain no-repeat;
       }
 
       #surfaces {
@@ -538,10 +533,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
       this.config.cssOverrides &&
       !document.adoptedStyleSheets.includes(this.config.cssOverrides)
     ) {
-      document.adoptedStyleSheets = [
-        ...document.adoptedStyleSheets,
-        this.config.cssOverrides,
-      ];
+      document.adoptedStyleSheets = [...document.adoptedStyleSheets, this.config.cssOverrides];
     }
     document.title = this.config.title;
 
@@ -576,11 +568,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
         <span class="file-info">
           Loaded local mockup: <strong>${this._localFileName}</strong>
         </span>
-        <button
-          class="clear-btn"
-          @click=${this.#clearLocalFile}
-          title="Clear local mockup"
-        >
+        <button class="clear-btn" @click=${this.#clearLocalFile} title="Clear local mockup">
           <span class="material-symbols">close</span>
         </button>
       </div>
@@ -618,20 +606,14 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
         <div class="local-header-section">
           <h1>${this.config.title}</h1>
           <p>
-            Upload an A2UI JSON mockup file to render and test your interactive
-            layouts locally.
+            Upload an A2UI JSON mockup file to render and test your interactive layouts locally.
           </p>
           <p class="support-info">
-            Supports A2UI Protocol v0.9. Only supports the basic catalog for
-            now.
+            Supports A2UI Protocol v0.9. Only supports the basic catalog for now.
           </p>
         </div>
         <div class="local-upload-container">
-          <button
-            type="button"
-            class="primary-upload-btn"
-            @click=${this.#triggerFileUpload}
-          >
+          <button type="button" class="primary-upload-btn" @click=${this.#triggerFileUpload}>
             Browse JSON File
           </button>
           <input
@@ -654,8 +636,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
               <button
                 type="button"
                 class="sample-btn"
-                @click=${() =>
-                  this.#loadBuiltinSample("workspace_settings.json")}
+                @click=${() => this.#loadBuiltinSample("workspace_settings.json")}
               >
                 Workspace Setup
               </button>
@@ -675,15 +656,17 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
         await this.#sendAndProcessMessage(body as any);
       }}
     >
-      ${this.config.heroImage
-        ? html`<div
-            style=${styleMap({
-              "--background-image-light": `url(${this.config.heroImage})`,
-              "--background-image-dark": `url(${this.config.heroImageDark ?? this.config.heroImage})`,
-            })}
-            id="hero-img"
-          ></div>`
-        : nothing}
+      ${
+        this.config.heroImage
+          ? html`<div
+              style=${styleMap({
+                "--background-image-light": `url(${this.config.heroImage})`,
+                "--background-image-dark": `url(${this.config.heroImageDark ?? this.config.heroImage})`,
+              })}
+              id="hero-img"
+            ></div>`
+          : nothing
+      }
       <h1 class="app-title">${this.config.title}</h1>
       <div>
         <input
@@ -707,8 +690,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
     if (loadingText && loadingText.length > 1) {
       this._loadingTextIndex = 0;
       this._loadingInterval = window.setInterval(() => {
-        this._loadingTextIndex =
-          (this._loadingTextIndex + 1) % loadingText.length;
+        this._loadingTextIndex = (this._loadingTextIndex + 1) % loadingText.length;
       }, 2000);
     }
   }
@@ -756,8 +738,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
       ${repeat(
         surfaces,
         ([surfaceId]) => surfaceId,
-        ([, surface]) =>
-          html`<a2ui-surface .surface=${surface}></a2ui-surface>`,
+        ([, surface]) => html`<a2ui-surface .surface=${surface}></a2ui-surface>`,
       )}
     </section>`;
   }
@@ -766,9 +747,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
     const messages = await this.#sendMessage(request);
     this._lastMessages = messages;
 
-    for (const surfaceId of Array.from(
-      this._processor.model.surfacesMap.keys(),
-    )) {
+    for (const surfaceId of Array.from(this._processor.model.surfacesMap.keys())) {
       this._processor.model.deleteSurface(surfaceId);
     }
 
@@ -776,9 +755,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
   }
 
   #triggerFileUpload() {
-    const fileInput = this.shadowRoot?.getElementById(
-      "local-file-input",
-    ) as HTMLInputElement;
+    const fileInput = this.shadowRoot?.getElementById("local-file-input") as HTMLInputElement;
     if (fileInput) fileInput.click();
   }
 
@@ -795,9 +772,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
         const parsed = JSON.parse(content);
         const messages = Array.isArray(parsed) ? parsed : [parsed];
         this._isLocalMode = true;
-        for (const surfaceId of Array.from(
-          this._processor.model.surfacesMap.keys(),
-        )) {
+        for (const surfaceId of Array.from(this._processor.model.surfacesMap.keys())) {
           this._processor.model.deleteSurface(surfaceId);
         }
         this._processor.processMessages(messages);
@@ -816,9 +791,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
   #clearLocalFile() {
     this._isLocalMode = false;
     this._localFileName = "";
-    for (const surfaceId of Array.from(
-      this._processor.model.surfacesMap.keys(),
-    )) {
+    for (const surfaceId of Array.from(this._processor.model.surfacesMap.keys())) {
       this._processor.model.deleteSurface(surfaceId);
     }
     this.showToast("Local mockup cleared.", "info");
@@ -828,14 +801,11 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
     try {
       this._localFileName = filename;
       const response = await fetch(`/samples/${filename}`);
-      if (!response.ok)
-        throw new Error(`Failed to fetch sample: ${response.statusText}`);
+      if (!response.ok) throw new Error(`Failed to fetch sample: ${response.statusText}`);
       const parsed = await response.json();
       const messages = Array.isArray(parsed) ? parsed : [parsed];
       this._isLocalMode = true;
-      for (const surfaceId of Array.from(
-        this._processor.model.surfacesMap.keys(),
-      )) {
+      for (const surfaceId of Array.from(this._processor.model.surfacesMap.keys())) {
         this._processor.model.deleteSurface(surfaceId);
       }
       this._processor.processMessages(messages);

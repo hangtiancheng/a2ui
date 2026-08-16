@@ -1,13 +1,16 @@
 import type { A2uiMessage, A2uiClientMessage } from "@a2ui/web_core/v0_9";
 
 interface Part {
-  kind: "data" | "text" | "error";
+  kind: "data" | "text" | "error" | "status-update";
   data?: Record<string, unknown>;
   text?: string;
   mimeType?: string;
+  contextId?: string;
 }
 
 export class A2UIClient {
+  #contextId: string | undefined;
+
   get ready() {
     return Promise.resolve();
   }
@@ -20,6 +23,7 @@ export class A2UIClient {
 
     const response = await fetch("/a2a", {
       method: "POST",
+      headers: this.#contextId ? { "X-A2A-Context-Id": this.#contextId } : undefined,
       body: body,
     });
 
@@ -52,6 +56,10 @@ export class A2UIClient {
                 const parts = JSON.parse(dataStr) as Part[];
                 const chunkMessages: A2uiMessage[] = [];
                 for (const part of parts) {
+                  if (part.kind === "status-update" && part.contextId) {
+                    this.#contextId = part.contextId;
+                    continue;
+                  }
                   if (part.kind === "error") {
                     throw new Error(part.text);
                   }
@@ -84,6 +92,10 @@ export class A2UIClient {
       }
       const parts = data as Part[];
       for (const part of parts) {
+        if (part.kind === "status-update" && part.contextId) {
+          this.#contextId = part.contextId;
+          continue;
+        }
         if (part.kind === "data" && part.data) {
           allMessages.push(part.data as unknown as A2uiMessage);
         }

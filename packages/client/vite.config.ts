@@ -6,7 +6,7 @@ import { plugin as a2aPlugin } from "./middleware/a2a.js";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), babel({ presets: [reactCompilerPreset()] }), a2aPlugin()],
-    server: {
+  server: {
     port: 5003,
     strictPort: true,
   },
