@@ -1,4 +1,4 @@
-/// <reference types="vite/client">
+/// <reference types="vite/client" />
 
 import {
   useState,
@@ -6,24 +6,23 @@ import {
   useCallback,
   useMemo,
   useRef,
-  FormEvent,
-  SyntheticEvent,
+  type SyntheticEvent,
 } from "react";
 import {
   A2uiSurface,
   basicCatalog,
   MarkdownContext,
-  ReactComponentImplementation,
+  type ReactComponentImplementation,
 } from "@a2ui/react/v0_9";
 import {
-  A2uiClientMessage,
-  A2uiMessage,
+  type A2uiClientMessage,
+  type A2uiMessage,
   MessageProcessor,
   SurfaceModel,
 } from "@a2ui/web_core/v0_9";
 import { renderMarkdown } from "@a2ui/markdown-it";
 import { A2UIClient } from "./client";
-import { AppConfig, restaurantConfig } from "./configs";
+import { type AppConfig, restaurantConfig } from "./configs";
 import {
   createRestaurantListMessages,
   createBookingFormMessages,
