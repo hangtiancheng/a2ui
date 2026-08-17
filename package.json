@@ -8,12 +8,14 @@
     "git:push": "pnpm git:commit && git push origin main",
     "format:client": "pnpm --filter client format",
     "format:client-lit": "pnpm --filter client-lit format",
+    "format:client-shadcn": "pnpm --filter client-shadcn format",
     "format:server": "pnpm --filter server format",
     "format": "run-p format:*",
     "postinstall": "curl -sfL https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json -o catalog.json",
     "prepare": "husky",
     "lit": "tsx ./start.ts lit",
-    "react": "tsx ./start.ts react"
+    "react": "tsx ./start.ts react",
+    "shadcn": "tsx ./start.ts shadcn"
   },
   "keywords": [
     "a2ui"

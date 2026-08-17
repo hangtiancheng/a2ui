@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "format": "prettier -w \"**/*.{ts,tsx}\" --experimental-cli",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "shadcn": "shadcn add --all --yes"

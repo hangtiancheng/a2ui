@@ -1,14 +1,14 @@
 #!/usr/bin/env tsx
 /**
  * Start the A2UI Restaurant Finder (server + chosen client).
- * Usage: tsx start.ts [react|lit]
+ * Usage: tsx start.ts [react|lit|shadcn]
  */
 
 import { spawn, type ChildProcess } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-type ClientChoice = 'react' | 'lit';
+type ClientChoice = 'react' | 'lit' | 'shadcn';
 
 interface ClientConfig {
   dir: string;
@@ -19,6 +19,7 @@ interface ClientConfig {
 const CLIENT_CONFIGS: Record<ClientChoice, ClientConfig> = {
   react: { dir: 'client', port: 5003, label: 'React' },
   lit: { dir: 'client-lit', port: 5004, label: 'Lit' },
+  shadcn: { dir: 'client-shadcn', port: 5005, label: 'Shadcn' },
 };
 
 const SERVER_PORT = 10002;
@@ -29,6 +30,7 @@ const packagesDir = resolve(__dirname, 'packages');
 
 function parseClientChoice(arg: string | undefined): ClientChoice {
   if (arg === 'lit') return 'lit';
+  if (arg === 'shadcn') return 'shadcn';
   return 'react';
 }
 
