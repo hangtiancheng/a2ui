@@ -37,6 +37,11 @@ function toIsoDate(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 }
 
+// Official shadcn date-picker time pattern: suppress the native picker
+// indicator so only the styled input remains.
+const TIME_INPUT_CLASSES =
+  "appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+
 export const DateTimeInput = createComponentImplementation(
   DateTimeInputApi,
   ({ props }) => {
@@ -49,6 +54,25 @@ export const DateTimeInput = createComponentImplementation(
 
     const { date, time } = splitValue(props.value)
     const selected = date ? new Date(`${date}T00:00:00`) : undefined
+
+    const min = typeof props.min === "string" ? props.min : undefined
+    const max = typeof props.max === "string" ? props.max : undefined
+    const minParts = splitValue(min)
+    const maxParts = splitValue(max)
+    const disabledDays = [
+      ...(minParts.date
+        ? [{ before: new Date(`${minParts.date}T00:00:00`) }]
+        : []),
+      ...(maxParts.date
+        ? [{ after: new Date(`${maxParts.date}T00:00:00`) }]
+        : []),
+    ]
+
+    // A time bound only applies on the bound's own day (or in time-only mode).
+    const timeBound = (bound: { date: string; time: string }) =>
+      bound.time && (!enableDate || (date && date === bound.date))
+        ? bound.time
+        : undefined
 
     const commit = (nextDate: string, nextTime: string) => {
       if (enableDate && enableTime) {
@@ -84,10 +108,16 @@ export const DateTimeInput = createComponentImplementation(
                 <CalendarIcon data-icon="inline-start" />
                 {selected ? format(selected, "PPP") : "Pick a date"}
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
+              <PopoverContent
+                className="w-auto overflow-hidden p-0"
+                align="start"
+              >
                 <Calendar
                   mode="single"
                   selected={selected}
+                  captionLayout="dropdown"
+                  defaultMonth={selected}
+                  disabled={disabledDays.length ? disabledDays : undefined}
                   onSelect={(next) => {
                     if (next instanceof Date && !Number.isNaN(next.getTime())) {
                       commit(toIsoDate(next), time)
@@ -102,9 +132,11 @@ export const DateTimeInput = createComponentImplementation(
             <Input
               id={id}
               type="time"
-              className={enableDate ? "w-32" : undefined}
               value={time}
+              min={timeBound(minParts)}
+              max={timeBound(maxParts)}
               onChange={(e) => commit(date, e.target.value)}
+              className={cn(TIME_INPUT_CLASSES, enableDate && "w-32")}
             />
           )}
         </div>

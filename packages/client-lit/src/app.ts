@@ -139,15 +139,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
       });
     }
     this.config = (appKey && configs[appKey]) || restaurantConfig;
-
-    if (
-      this.config.cssOverrides &&
-      !document.adoptedStyleSheets.includes(this.config.cssOverrides)
-    ) {
-      document.adoptedStyleSheets = [...document.adoptedStyleSheets, this.config.cssOverrides];
-    }
     document.title = this.config.title;
-
     this._a2uiClient = new A2UIClient(this.config.serverUrl);
   }
 

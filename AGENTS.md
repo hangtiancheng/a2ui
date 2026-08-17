@@ -89,17 +89,17 @@ The `postinstall` script downloads the official basic catalog to `catalog.json` 
   reusing the `*Api` zod schemas + GenericBinder from `@a2ui/web_core/v0_9/basic_catalog` — only the visual layer is swapped.
   Do **not** call `injectBasicCatalogStyles`/`useBasicCatalogStyles`; styling is pure Tailwind + shadcn.
 - Key mappings: Card → `Card`/`CardContent`; Button variants `primary→default`, `borderless→ghost`, default→`outline`,
-  disabled when `isValid === false`; TextField/DateTimeInput → `Field`+`FieldLabel`+`Input`/`Textarea` (+`FieldError`);
+  disabled when `isValid === false`; TextField → `Field`+`FieldLabel`+`Input`/`Textarea` (+`FieldError`);
+  DateTimeInput → `Popover`+`Calendar` (date) + `Input type="time"` with webkit picker indicator hidden (official shadcn pattern), `min`/`max` honored;
   CheckBox → `Checkbox`; ChoicePicker → chips=`ToggleGroup`, exclusive=`RadioGroup`, multi=`Checkbox` rows;
   Slider → shadcn `Slider` (pass `value={[n]}` — a bare number renders two thumbs); Tabs → `Tabs` (index as value);
-  Modal → controlled `Dialog`; Divider → `Separator`; Row/Column/List → flex + `justifyClass`/`alignClass`/`weightStyle` (`utils.ts`);
+  Modal → `Dialog`+`DialogTrigger` (`render={<span/>}` + `nativeButton={false}`); Divider → `Separator`; Row/Column/List → flex + `justifyClass`/`alignClass`/`weightStyle` (`utils.ts`);
   Text → h1–h5/caption typography classes, default variant through the markdown pipeline (`use-markdown.ts` + `MarkdownContext`).
 - Icons: the catalog's 58 icon enum names map to `lucide-react` in `components/icon.tsx` (`ICON_MAP`); unknown names fall back
   to `CircleHelp`; the `svgPath` variant renders path data carried in the protocol message. Unlike `client`/`client-lit`,
   surfaces here have no Material Symbols ligature limitation.
 - Theming: shadcn semantic tokens (`bg-background`, `text-muted-foreground`, ...; no manual `dark:` color overrides).
   `ThemeProvider` (`src/components/theme-provider.tsx`) toggles `.dark`/`.light` on `<html>` (`d` key shortcut included);
-  the page gradient is injected as **`--app-background`** — never reuse `--background`, which is the shadcn color token.
 - **Catalog extension (`src/catalog/shadcn/`)**: 47 additional entries expose *every* remaining `src/components/ui` family
   (display / structure / overlays / navigation / forms / chat / chart groups, registered via `shadcnExtensionComponents`).
   Schema authoring rules (binding is *structural* on the zod shape, `rendering/generic-binder.ts`):

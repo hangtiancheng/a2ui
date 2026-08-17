@@ -1,5 +1,4 @@
 import type { AppConfig } from "./types.js";
-import { restaurantThemeSheet } from "../theme/restaurant-theme.js";
 
 export const restaurantConfig: AppConfig = {
   key: "restaurant",
@@ -14,5 +13,4 @@ export const restaurantConfig: AppConfig = {
     "Almost there...",
   ],
   serverUrl: "http://localhost:10002",
-  cssOverrides: restaurantThemeSheet,
 };

@@ -42,9 +42,6 @@ export function App() {
 
   useEffect(() => {
     document.title = config.title;
-    if (config.background) {
-      document.documentElement.style.setProperty("--background", config.background);
-    }
   }, [config]);
 
   const sendAndProcessRef = useRef<((message: A2uiClientMessage | string) => Promise<void>) | null>(

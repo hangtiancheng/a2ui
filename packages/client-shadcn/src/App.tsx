@@ -61,14 +61,6 @@ export function App() {
 
   useEffect(() => {
     document.title = config.title
-    if (config.background) {
-      // --background is the shadcn semantic color token, so the page gradient
-      // lives in a separate --app-background variable consumed by <body>.
-      document.documentElement.style.setProperty(
-        "--app-background",
-        config.background
-      )
-    }
   }, [config])
 
   const sendAndProcessRef = useRef<

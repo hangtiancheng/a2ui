@@ -7,5 +7,4 @@ export interface AppConfig {
   placeholder: string;
   loadingText?: string[];
   serverUrl?: string;
-  cssOverrides?: CSSStyleSheet;
 }
