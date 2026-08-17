@@ -1,3 +1,4 @@
+import { A2uiMessageSchema } from "@a2ui/web_core/v0_9";
 import type { A2uiMessage, A2uiClientMessage } from "@a2ui/web_core/v0_9";
 
 interface Part {
@@ -64,12 +65,20 @@ export class A2UIClient {
                     throw new Error(part.text);
                   }
                   if (part.kind === "data" && part.data) {
-                    const uiMessage = part.data as unknown as A2uiMessage;
-                    const createSurface = (uiMessage as { createSurface?: { surfaceId: string } })
-                      .createSurface;
-                    if (createSurface) {
-                      if (seenSurfaceIds.has(createSurface.surfaceId)) continue;
-                      seenSurfaceIds.add(createSurface.surfaceId);
+                    const parsed = A2uiMessageSchema.safeParse(part.data);
+                    if (!parsed.success) {
+                      console.error(
+                        "Dropping invalid A2UI message:",
+                        parsed.error.issues,
+                        part.data,
+                      );
+                      continue;
+                    }
+                    const uiMessage: A2uiMessage = parsed.data;
+                    if ("createSurface" in uiMessage) {
+                      const { surfaceId } = uiMessage.createSurface;
+                      if (seenSurfaceIds.has(surfaceId)) continue;
+                      seenSurfaceIds.add(surfaceId);
                     }
                     chunkMessages.push(uiMessage);
                   }
@@ -97,7 +106,12 @@ export class A2UIClient {
           continue;
         }
         if (part.kind === "data" && part.data) {
-          allMessages.push(part.data as unknown as A2uiMessage);
+          const parsed = A2uiMessageSchema.safeParse(part.data);
+          if (!parsed.success) {
+            console.error("Dropping invalid A2UI message:", parsed.error.issues, part.data);
+            continue;
+          }
+          allMessages.push(parsed.data);
         }
       }
     }
