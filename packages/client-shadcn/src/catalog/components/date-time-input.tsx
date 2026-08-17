@@ -1,58 +1,113 @@
-import { useId } from "react"
+import { useId, useState } from "react"
 
 import { createComponentImplementation } from "@a2ui/react/v0_9"
 import { DateTimeInputApi } from "@a2ui/web_core/v0_9/basic_catalog"
+import { format } from "date-fns"
+import { CalendarIcon } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
 import { Field, FieldLabel } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
 
-function normalizeDateTimeValue(
-  value: string | null | undefined,
-  type: string
-): string {
-  if (!value) return ""
+function splitValue(value: string | null | undefined): {
+  date: string
+  time: string
+} {
+  if (!value) return { date: "", time: "" }
 
   const hasT = value.includes("T")
   const split = value.split("T")
+  const rawDate = (hasT ? split[0] : value) ?? ""
+  const rawTime = (hasT ? split[1] : value) ?? ""
 
-  const datePart = (hasT ? split[0] : value)?.substring(0, 10) ?? ""
-  const timePart = (hasT ? split[1] : value)?.substring(0, 5) ?? ""
-
-  switch (type) {
-    case "date":
-      return datePart
-    case "time":
-      return timePart
-    case "datetime-local":
-      return `${datePart}T${timePart}`
+  return {
+    date: /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.substring(0, 10) : "",
+    time: /^\d{2}:\d{2}/.test(rawTime) ? rawTime.substring(0, 5) : "",
   }
-  return ""
+}
+
+function toIsoDate(date: Date): string {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
 }
 
 export const DateTimeInput = createComponentImplementation(
   DateTimeInputApi,
   ({ props }) => {
     const id = useId()
+    const [open, setOpen] = useState(false)
 
-    if (!(props.enableDate || props.enableTime)) return null
+    const enableDate = !!props.enableDate
+    const enableTime = !!props.enableTime
+    if (!(enableDate || enableTime)) return null
 
-    let type = "datetime-local"
-    if (props.enableDate && !props.enableTime) type = "date"
-    if (!props.enableDate && props.enableTime) type = "time"
+    const { date, time } = splitValue(props.value)
+    const selected = date ? new Date(`${date}T00:00:00`) : undefined
 
-    const value = normalizeDateTimeValue(props.value, type)
+    const commit = (nextDate: string, nextTime: string) => {
+      if (enableDate && enableTime) {
+        props.setValue(
+          nextDate || nextTime ? `${nextDate}T${nextTime || "00:00"}` : ""
+        )
+        return
+      }
+      props.setValue(enableDate ? nextDate : nextTime)
+    }
 
     return (
       <Field>
-        {props.label && <FieldLabel htmlFor={id}>{props.label}</FieldLabel>}
-        <Input
-          id={id}
-          type={type}
-          value={value}
-          onChange={(e) => props.setValue(e.target.value)}
-          min={typeof props.min === "string" ? props.min : undefined}
-          max={typeof props.max === "string" ? props.max : undefined}
-        />
+        {props.label && (
+          <FieldLabel htmlFor={enableTime ? id : undefined}>
+            {props.label}
+          </FieldLabel>
+        )}
+        <div className="flex items-center gap-2">
+          {enableDate && (
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "flex-1 justify-start font-normal",
+                      !date && "text-muted-foreground"
+                    )}
+                  />
+                }
+              >
+                <CalendarIcon data-icon="inline-start" />
+                {selected ? format(selected, "PPP") : "Pick a date"}
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <Calendar
+                  mode="single"
+                  selected={selected}
+                  onSelect={(next) => {
+                    if (next instanceof Date && !Number.isNaN(next.getTime())) {
+                      commit(toIsoDate(next), time)
+                      setOpen(false)
+                    }
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+          )}
+          {enableTime && (
+            <Input
+              id={id}
+              type="time"
+              className={enableDate ? "w-32" : undefined}
+              value={time}
+              onChange={(e) => commit(date, e.target.value)}
+            />
+          )}
+        </div>
       </Field>
     )
   }
