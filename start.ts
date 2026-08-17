@@ -17,9 +17,9 @@ interface ClientConfig {
 }
 
 const CLIENT_CONFIGS: Record<ClientChoice, ClientConfig> = {
-  react: { dir: "client", port: 5003, label: "React" },
-  lit: { dir: "client-lit", port: 5004, label: "Lit" },
-  shadcn: { dir: "client-shadcn", port: 5005, label: "Shadcn" },
+  react: { dir: "react", port: 5003, label: "react" },
+  lit: { dir: "lit", port: 5004, label: "lit" },
+  shadcn: { dir: "shadcn", port: 5005, label: "shadcn" },
 };
 
 const SERVER_PORT = 10002;
@@ -29,9 +29,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const packagesDir = resolve(__dirname, "packages");
 
 function parseClientChoice(arg: string | undefined): ClientChoice {
-  if (arg === "lit") return "lit";
-  if (arg === "shadcn") return "shadcn";
-  return "react";
+  if (arg === "react" || arg === "lit" || arg === "shadcn") return arg;
+  return "lit";
 }
 
 function startProcess(

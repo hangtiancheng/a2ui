@@ -24,7 +24,47 @@ importers:
         specifier: ^4.23.12
         version: 4.23.12
 
-  packages/client:
+  packages/lit:
+    dependencies:
+      '@a2ui/lit':
+        specifier: ^0.10.3
+        version: 0.10.3(@a2ui/markdown-it@0.1.1(@a2ui/web_core@0.10.6))(signal-polyfill@0.2.2)
+      '@a2ui/markdown-it':
+        specifier: ^0.1.1
+        version: 0.1.1(@a2ui/web_core@0.10.6)
+      '@a2ui/web_core':
+        specifier: ^0.10.6
+        version: 0.10.6
+      '@lit-labs/signals':
+        specifier: ^0.3.0
+        version: 0.3.0
+      '@lit/context':
+        specifier: ^1.1.6
+        version: 1.1.6
+      lit:
+        specifier: ^3.3.3
+        version: 3.3.3
+      lucide:
+        specifier: ^1.31.0
+        version: 1.31.0
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
+    devDependencies:
+      '@tailwindcss/vite':
+        specifier: ^4.3.3
+        version: 4.3.3(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12))
+      oxfmt:
+        specifier: ^0.63.0
+        version: 0.63.0
+      typescript:
+        specifier: ~6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.2.0
+        version: 8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)
+
+  packages/react:
     dependencies:
       '@a2ui/markdown-it':
         specifier: ^0.1.1
@@ -88,47 +128,41 @@ importers:
         specifier: ^8.2.0
         version: 8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)
 
-  packages/client-lit:
+  packages/server:
     dependencies:
-      '@a2ui/lit':
-        specifier: ^0.10.3
-        version: 0.10.3(@a2ui/markdown-it@0.1.1(@a2ui/web_core@0.10.6))(signal-polyfill@0.2.2)
-      '@a2ui/markdown-it':
-        specifier: ^0.1.1
-        version: 0.1.1(@a2ui/web_core@0.10.6)
       '@a2ui/web_core':
         specifier: ^0.10.6
         version: 0.10.6
-      '@lit-labs/signals':
-        specifier: ^0.3.0
-        version: 0.3.0
-      '@lit/context':
-        specifier: ^1.1.6
-        version: 1.1.6
-      lit:
-        specifier: ^3.3.3
-        version: 3.3.3
-      lucide:
-        specifier: ^1.31.0
-        version: 1.31.0
-      tailwindcss:
-        specifier: ^4.3.3
-        version: 4.3.3
+      cors:
+        specifier: ^2.8.6
+        version: 2.8.6
+      dotenv:
+        specifier: ^17.4.2
+        version: 17.4.2
+      express:
+        specifier: ^5.2.1
+        version: 5.2.1
+      openai:
+        specifier: ^7.4.0
+        version: 7.4.0(zod@4.4.3)
+      uuid:
+        specifier: ^14.0.1
+        version: 14.0.1
     devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.3.3
-        version: 4.3.3(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12))
-      oxfmt:
-        specifier: ^0.63.0
-        version: 0.63.0
-      typescript:
-        specifier: ~6.0.2
-        version: 6.0.3
-      vite:
-        specifier: ^8.2.0
-        version: 8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)
+      '@types/cors':
+        specifier: ^2.8.19
+        version: 2.8.19
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+      '@types/node':
+        specifier: ^24.13.3
+        version: 24.13.3
+      tsx:
+        specifier: ^4.23.12
+        version: 4.23.12
 
-  packages/client-shadcn:
+  packages/shadcn:
     dependencies:
       '@a2ui/markdown-it':
         specifier: ^0.1.1
@@ -242,40 +276,6 @@ importers:
       vite:
         specifier: ^8
         version: 8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12)
-
-  packages/server:
-    dependencies:
-      '@a2ui/web_core':
-        specifier: ^0.10.6
-        version: 0.10.6
-      cors:
-        specifier: ^2.8.6
-        version: 2.8.6
-      dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
-      express:
-        specifier: ^5.2.1
-        version: 5.2.1
-      openai:
-        specifier: ^7.4.0
-        version: 7.4.0(zod@3.25.76)
-      uuid:
-        specifier: ^14.0.1
-        version: 14.0.1
-    devDependencies:
-      '@types/cors':
-        specifier: ^2.8.19
-        version: 2.8.19
-      '@types/express':
-        specifier: ^5.0.6
-        version: 5.0.6
-      '@types/node':
-        specifier: ^24.13.3
-        version: 24.13.3
-      tsx:
-        specifier: ^4.23.12
-        version: 4.23.12
 
 packages:
 
@@ -4306,7 +4306,7 @@ snapshots:
       immer: 11.1.16
       redux: 5.0.1
       redux-thunk: 3.1.0(redux@5.0.1)
-      reselect: 5.1.1
+      reselect: 5.2.0
     optionalDependencies:
       react: 19.2.8
       react-redux: 9.3.0(@types/react@19.2.18)(react@19.2.8)(redux@5.0.1)
@@ -5740,9 +5740,9 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openai@7.4.0(zod@3.25.76):
+  openai@7.4.0(zod@4.4.3):
     optionalDependencies:
-      zod: 3.25.76
+      zod: 4.4.3
 
   optionator@0.9.4:
     dependencies:

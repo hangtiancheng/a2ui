@@ -6,9 +6,9 @@
   "scripts": {
     "git:commit": "git add -A && git commit -m 'Introduce new features'",
     "git:push": "pnpm git:commit && git push origin main",
-    "format:client": "pnpm --filter client format",
-    "format:client-lit": "pnpm --filter client-lit format",
-    "format:client-shadcn": "pnpm --filter client-shadcn format",
+    "format:lit": "pnpm --filter @swifty.js/lit format",
+    "format:react": "pnpm --filter @swifty.js/react format",
+    "format:shadcn": "pnpm --filter @swifty.js/shadcn format",
     "format:server": "pnpm --filter server format",
     "format": "run-p format:*",
     "postinstall": "curl -fsSL https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json -o catalog.json",
