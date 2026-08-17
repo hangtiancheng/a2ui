@@ -64,7 +64,7 @@ import {
 import { createComponentImplementation } from "@a2ui/react/v0_9"
 import { IconApi } from "@a2ui/web_core/v0_9/basic_catalog"
 
-const ICON_MAP: Record<string, LucideIcon> = {
+export const ICON_MAP: Record<string, LucideIcon> = {
   accountCircle: CircleUserRound,
   add: Plus,
   arrowBack: ArrowLeft,
@@ -141,3 +141,16 @@ export const Icon = createComponentImplementation(IconApi, ({ props }) => {
   const LucideGlyph = (typeof name === "string" && ICON_MAP[name]) || CircleHelp
   return <LucideGlyph className="size-6 shrink-0" />
 })
+
+export function CatalogIcon({
+  name,
+  className,
+}: {
+  name?: string
+  className?: string
+}) {
+  if (!name) return null
+  const LucideGlyph = ICON_MAP[name]
+  if (!LucideGlyph) return null
+  return <LucideGlyph className={className} />
+}

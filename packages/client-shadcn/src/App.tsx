@@ -34,15 +34,17 @@ import {
 import { Spinner } from "@/components/ui/spinner"
 import { shadcnCatalog } from "./catalog"
 import { A2UIClient } from "./client"
-import { type AppConfig, restaurantConfig } from "./configs"
+import { type AppConfig, galleryConfig, restaurantConfig } from "./configs"
 import {
   createBookingFormMessages,
   createConfirmationMessages,
+  createGalleryMessages,
   createRestaurantListMessages,
 } from "./mock"
 
 const configs: Record<string, AppConfig> = {
   restaurant: restaurantConfig,
+  gallery: galleryConfig,
 }
 
 const urlParams = new URLSearchParams(window.location.search)
@@ -72,7 +74,9 @@ export function App() {
     ((message: A2uiClientMessage | string) => Promise<void>) | null
   >(null)
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const processor = useMemo(() => {
+    // eslint-disable-next-line react-hooks/refs
     return new MessageProcessor([shadcnCatalog], (action) => {
       console.log("User action:", action)
       if (sendAndProcessRef.current) {
@@ -150,6 +154,10 @@ function ShellContent({
 
   const getMockResponse = useCallback(
     (message: A2uiClientMessage | string): A2uiMessage[] => {
+      if (config.key === "gallery") {
+        return createGalleryMessages()
+      }
+
       if (typeof message === "object" && "action" in message) {
         const action = message.action
         const context = action.context || {}
@@ -175,7 +183,7 @@ function ShellContent({
 
       return createRestaurantListMessages()
     },
-    []
+    [config.key]
   )
 
   const sendAndProcess = useCallback(

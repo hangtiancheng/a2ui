@@ -20,6 +20,7 @@ import { Tabs } from "./components/tabs"
 import { Text } from "./components/text"
 import { TextField } from "./components/text-field"
 import { Video } from "./components/video"
+import { shadcnExtensionComponents } from "./shadcn"
 
 export const BASIC_CATALOG_ID =
   "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json"
@@ -43,10 +44,12 @@ const components: ReactComponentImplementation[] = [
   ChoicePicker,
   Slider,
   DateTimeInput,
+  ...shadcnExtensionComponents,
 ]
 
-// Manually maintained shadcn/ui implementation of the official basic catalog:
-// same catalogId and component contract, different visual layer.
+// Manually maintained shadcn/ui implementation of the official basic catalog
+// (same catalogId and contract), extended with catalog entries for every
+// remaining shadcn/ui component family from src/components/ui.
 export const shadcnCatalog = new Catalog<ReactComponentImplementation>(
   BASIC_CATALOG_ID,
   components,

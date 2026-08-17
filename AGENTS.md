@@ -100,11 +100,26 @@ The `postinstall` script downloads the official basic catalog to `catalog.json` 
 - Theming: shadcn semantic tokens (`bg-background`, `text-muted-foreground`, ...; no manual `dark:` color overrides).
   `ThemeProvider` (`src/components/theme-provider.tsx`) toggles `.dark`/`.light` on `<html>` (`d` key shortcut included);
   the page gradient is injected as **`--app-background`** — never reuse `--background`, which is the shadcn color token.
+- **Catalog extension (`src/catalog/shadcn/`)**: 47 additional entries expose *every* remaining `src/components/ui` family
+  (display / structure / overlays / navigation / forms / chat / chart groups, registered via `shadcnExtensionComponents`).
+  Schema authoring rules (binding is *structural* on the zod shape, `rendering/generic-binder.ts`):
+  use `DynamicString/Number/Boolean/ValueSchema` for resolvable+two-way props (auto-generates `setX` writing back to `{path}` bindings,
+  also inside array-item objects), `ActionSchema` for callables — the wire shape is `{event: {name, context?}}` — and
+  `ComponentIdSchema`/`ChildListSchema` for children; `z.any()` stays STATIC (an action typed `z.any()` will NOT become callable).
+  `MessageProcessor` validates payloads against these schemas (`.strict()`), so unknown props are rejected at runtime.
+  Not exposed: families covered by basic entries (button/card/tabs/slider/checkbox/radio-group/toggle-group/separator/input/textarea/dialog)
+  and non-declarative ones (sidebar = app chrome, toast = imperative, direction = provider re-export).
+  Gotchas: base-ui Trigger + arbitrary child uses `render={<span className="inline-block" />}` (add `nativeButton={false}` only where the
+  prop exists: AlertDialog/Drawer/Sheet/Popover/DropdownMenu triggers); react-resizable-panels v4 uses `orientation` + string percent
+  `defaultSize`; neutral theme `--chart-1` is near-white, so the chart palette starts at `--chart-2`; base-ui ScrollArea needs a fixed
+  height (max-height alone lets siblings overlap).
 
 ## Verification
 
 - Backend-free UI smoke test: React `http://localhost:5003/?mock=true`; Shadcn `http://localhost:5005/?mock=true`;
   Lit `http://localhost:5004/?app=local` (built-in sample buttons load from `public/samples`).
+  Shadcn extension gallery (renders all 47 extension components from `src/mock/gallery-messages.ts`):
+  `http://localhost:5005/?app=gallery&mock=true` — submit the prefilled form once to render the surface.
 - Full pipeline: after starting the server, curl `POST /a2a` (with `X-A2A-Extensions: https://a2ui.org/a2a-extension/a2ui/v0.9`),
   then verify the sequence: listing → `book_restaurant` → `submit_booking` (reusing the contextId from status-update).
   Non-New-York locations should return a "no results" message rather than fabricated data. Each request is a real billable LLM call — mind the usage count.
