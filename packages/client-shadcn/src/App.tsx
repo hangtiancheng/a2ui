@@ -10,6 +10,7 @@ import {
 import { renderMarkdown } from "@a2ui/markdown-it"
 import {
   A2uiSurface,
+  // basicCatalog,
   MarkdownContext,
   type ReactComponentImplementation,
 } from "@a2ui/react/v0_9"

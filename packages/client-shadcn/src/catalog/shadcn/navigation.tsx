@@ -13,6 +13,7 @@ import {
 import {
   Menubar as UIMenubar,
   MenubarContent,
+  MenubarGroup,
   MenubarItem,
   MenubarMenu,
   MenubarTrigger,
@@ -45,7 +46,12 @@ import {
   z,
 } from "./common"
 
-type MenuEntryDef = { label?: unknown; action?: unknown; disabled?: unknown }
+type MenuEntryDef = {
+  label?: unknown
+  action?: unknown
+  variant?: unknown
+  disabled?: unknown
+}
 
 export const BreadcrumbApi = {
   name: "Breadcrumb",
@@ -139,19 +145,24 @@ export const Menubar = createComponentImplementation(
           <MenubarMenu key={i}>
             <MenubarTrigger>{String(menu.label ?? "")}</MenubarTrigger>
             <MenubarContent>
-              {((menu.items ?? []) as MenuEntryDef[]).map((item, j) => (
-                <MenubarItem
-                  key={j}
-                  disabled={!!item.disabled}
-                  onClick={
-                    typeof item.action === "function"
-                      ? (item.action as () => void)
-                      : undefined
-                  }
-                >
-                  {String(item.label ?? "")}
-                </MenubarItem>
-              ))}
+              <MenubarGroup>
+                {((menu.items ?? []) as MenuEntryDef[]).map((item, j) => (
+                  <MenubarItem
+                    key={j}
+                    variant={
+                      item.variant === "destructive" ? "destructive" : "default"
+                    }
+                    disabled={!!item.disabled}
+                    onClick={
+                      typeof item.action === "function"
+                        ? (item.action as () => void)
+                        : undefined
+                    }
+                  >
+                    {String(item.label ?? "")}
+                  </MenubarItem>
+                ))}
+              </MenubarGroup>
             </MenubarContent>
           </MenubarMenu>
         ))}
