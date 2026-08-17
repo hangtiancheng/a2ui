@@ -7,7 +7,7 @@ const eventInit = {
 };
 
 export class SnackbarActionEvent extends Event {
-  static eventName = "snackbaraction";
+  static eventName = "snackbar-action";
 
   constructor(
     public readonly action: string,
