@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
 import { v4 as uuidV4 } from "uuid";
-import { type ChatMessage, processQuery } from "./llm.js";
+import { processQuery } from "./llm.js";
 import { getRestaurants } from "./tools.js";
+import type { OpenAI } from "openai";
 
 interface A2AMessage {
 	messageId: string;
@@ -27,9 +28,9 @@ const A2UI_MIME_TYPE = "application/a2ui+json";
 // per-context sessions. Simple LRU caps memory for this demo server.
 const MAX_SESSIONS = 100;
 const MAX_HISTORY_MESSAGES = 20;
-const sessions = new Map<string, ChatMessage[]>();
+const sessions = new Map<string, OpenAI.ChatCompletionMessageParam[]>();
 
-function getSession(contextId: string): ChatMessage[] {
+function getSession(contextId: string): OpenAI.ChatCompletionMessageParam[] {
 	let history = sessions.get(contextId);
 	if (history) {
 		sessions.delete(contextId);
@@ -44,7 +45,7 @@ function getSession(contextId: string): ChatMessage[] {
 	return history;
 }
 
-function trimHistory(history: ChatMessage[]): void {
+function trimHistory(history: OpenAI.ChatCompletionMessageParam[]): void {
 	// Avoid splitting an assistant tool_calls message from its tool results.
 	while (
 		history.length > MAX_HISTORY_MESSAGES ||
@@ -131,7 +132,7 @@ export async function handleA2ARequest(
 async function handleA2uiStream(
 	query: string,
 	uiAction: { name: string; context: Record<string, unknown> } | null,
-	history: ChatMessage[],
+	history: OpenAI.ChatCompletionMessageParam[],
 	res: Response,
 	taskId: string,
 	contextId: string,
@@ -166,7 +167,7 @@ async function handleA2uiStream(
 
 async function handleTextStream(
 	query: string,
-	history: ChatMessage[],
+	history: OpenAI.ChatCompletionMessageParam[],
 	res: Response,
 	taskId: string,
 	contextId: string,

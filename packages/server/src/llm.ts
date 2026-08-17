@@ -4,6 +4,7 @@ import {
 	buildConfirmationA2ui,
 	buildRestaurantListA2ui,
 } from "./a2ui-messages.js";
+import { A2uiMessageListSchema } from "@a2ui/web_core/v0_9";
 
 const client = new OpenAI({
 	apiKey: process.env.OPENAI_API_KEY || "",
@@ -137,13 +138,6 @@ const TOOLS: OpenAI.ChatCompletionTool[] = [
 	},
 ];
 
-const MESSAGE_KEYS = [
-	"createSurface",
-	"updateComponents",
-	"updateDataModel",
-	"deleteSurface",
-] as const;
-
 function extractA2uiJson(text: string): {
 	messages?: unknown[];
 	error?: string;
@@ -171,63 +165,17 @@ function extractA2uiJson(text: string): {
 }
 
 function validateA2uiMessages(messages: unknown[]): string | null {
-	if (messages.length === 0) return "the A2UI message array is empty";
-
-	let hasCreateSurface = false;
-	for (const [i, msg] of messages.entries()) {
-		if (typeof msg !== "object" || msg === null) {
-			return `message ${i} is not an object`;
-		}
-		const m = msg as Record<string, unknown>;
-		if (m.version !== "v0.9") {
-			return `message ${i} is missing version: "v0.9"`;
-		}
-		const keys = MESSAGE_KEYS.filter((k) => m[k] !== undefined);
-		if (keys.length !== 1) {
-			return `message ${i} must contain exactly one of ${MESSAGE_KEYS.join(", ")}`;
-		}
-		const payload = m[keys[0]] as Record<string, unknown>;
-		if (typeof payload !== "object" || payload === null) {
-			return `message ${i} ${keys[0]} payload is not an object`;
-		}
-		if (typeof payload.surfaceId !== "string" || !payload.surfaceId) {
-			return `message ${i} ${keys[0]} is missing surfaceId`;
-		}
-		if (keys[0] === "createSurface") {
-			hasCreateSurface = true;
-			if (typeof payload.catalogId !== "string") {
-				return `message ${i} createSurface is missing catalogId`;
-			}
-		}
-		if (keys[0] === "updateComponents") {
-			const components = payload.components;
-			if (!Array.isArray(components) || components.length === 0) {
-				return `message ${i} updateComponents.components must be a non-empty array`;
-			}
-			for (const c of components) {
-				if (
-					typeof c !== "object" ||
-					c === null ||
-					typeof (c as Record<string, unknown>).id !== "string" ||
-					typeof (c as Record<string, unknown>).component !== "string"
-				) {
-					return `message ${i} has a component without string id/component fields`;
-				}
-			}
-		}
-		if (keys[0] === "updateDataModel" && typeof payload.path !== "string") {
-			return `message ${i} updateDataModel is missing path`;
-		}
-	}
-
-	if (!hasCreateSurface) {
-		return "the response must contain a createSurface message";
+	const result = A2uiMessageListSchema.safeParse(messages);
+	if (!result.success) {
+		return result.error.issues
+			.map((i) => `${i.path.join(".")}: ${i.message}`)
+			.join("; ");
 	}
 	return null;
 }
 
 async function complete(
-	messages: ChatMessage[],
+	messages: OpenAI.ChatCompletionMessageParam[],
 ): Promise<OpenAI.ChatCompletion.Choice | undefined> {
 	const response = await client.chat.completions.create({
 		model: MODEL,
@@ -245,7 +193,7 @@ async function complete(
  */
 export async function processQuery(
 	query: string,
-	history: ChatMessage[],
+	history: OpenAI.ChatCompletionMessageParam[],
 	mode: "a2ui" | "text",
 	getRestaurantsFn: (
 		cuisine: string,
@@ -255,7 +203,7 @@ export async function processQuery(
 ): Promise<LlmResult> {
 	const systemPrompt =
 		mode === "a2ui" ? A2UI_SYSTEM_PROMPT : TEXT_SYSTEM_PROMPT;
-	const messages: ChatMessage[] = [
+	const messages: OpenAI.ChatCompletionMessageParam[] = [
 		{ role: "system", content: systemPrompt },
 		...history,
 		{ role: "user", content: query },

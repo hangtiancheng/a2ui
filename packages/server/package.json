@@ -16,6 +16,7 @@
 	"license": "MIT",
 	"type": "module",
 	"dependencies": {
+		"@a2ui/web_core": "^0.10.6",
 		"cors": "^2.8.6",
 		"dotenv": "^17.4.2",
 		"express": "^5.2.1",
