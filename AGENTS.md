@@ -1,4 +1,4 @@
-# AGENTS.md — @swifty.js/a2ui Project Memory
+# AGENTS.md
 
 This repository is a full-stack TypeScript port of the restaurant-finder sample
 from the official A2UI monorepo (local path `$HOME/Documents/a2ui`):
@@ -77,6 +77,34 @@ The `postinstall` script downloads the official basic catalog to `catalog.json` 
   then verify the sequence: listing → `book_restaurant` → `submit_booking` (reusing the contextId from status-update).
   Non-New-York locations should return a "no results" message rather than fabricated data. Each request is a real billable LLM call — mind the usage count.
 - UI verification uses playwright-cli screenshots to compare light and dark modes.
+
+## Basic Catalog: Contract vs. Component Code
+
+`catalog.json` (id `https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json`) is only the component **contract** (JSON Schema).
+The implementations live in three layers.
+
+Official monorepo (`$HOME/Documents/a2ui`):
+
+- Headless core `@a2ui/web_core`: `renderers/web_core/src/v0_9/basic_catalog/` —
+  `components/basic_components.ts` (Zod schemas + Binders for every component; data binding only, no UI),
+  plus `functions/` (formatString etc.), `expressions/`, and `styles/`.
+- React visuals `@a2ui/react`: `renderers/react/src/v0_9/catalog/basic/components/` —
+  18 components (`Button.tsx`, `Card.tsx`, `Text.tsx`, `List.tsx`, `Image.tsx`, `TextField.tsx`, `DateTimeInput.tsx`, ...)
+  with CSS Modules; assembled into the exported `basicCatalog` by `catalog/basic/index.ts`;
+  mounting/reactive binding via `A2uiSurface.tsx` + `adapter.tsx`.
+- Lit visuals `@a2ui/lit`: `renderers/lit/src/v0_9/catalogs/basic/components/` —
+  the same 18 components as Lit custom elements; `catalogs/basic/index.ts` builds
+  `new Catalog(catalogId, [components], BASIC_FUNCTIONS)`.
+
+npm packages inside this repository's `node_modules`:
+
+- `@a2ui/lit@0.10.3` ships readable sources: `node_modules/@a2ui/lit/src/v0_9/catalogs/basic/components/*.ts`.
+- `@a2ui/react@0.10.2` ships bundled chunks only (`v0_9/index.js` + sourcemaps) — read the official monorepo sources instead.
+- `@a2ui/web_core@0.10.6`: `node_modules/@a2ui/web_core/src/v0_9/basic_catalog/`.
+
+Resolution chain: `createSurface.catalogId` must match the catalog id registered via `MessageProcessor([basicCatalog])`;
+each `updateComponents` entry (e.g. `component: "Button"`) then resolves to the framework implementation.
+web_core Binders validate against the catalog.json schemas and drive reactive data binding; the react/lit components are visual-only.
 
 ## Other Conventions
 
