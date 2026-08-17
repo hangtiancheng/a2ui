@@ -100,9 +100,9 @@ The `postinstall` script downloads the official basic catalog to `catalog.json` 
   surfaces here have no Material Symbols ligature limitation.
 - Theming: shadcn semantic tokens (`bg-background`, `text-muted-foreground`, ...; no manual `dark:` color overrides).
   `ThemeProvider` (`src/components/theme-provider.tsx`) toggles `.dark`/`.light` on `<html>` (`d` key shortcut included);
-- **Catalog extension (`src/catalog/shadcn/`)**: 47 additional entries expose *every* remaining `src/components/ui` family
+- **Catalog extension (`src/catalog/shadcn/`)**: 47 additional entries expose _every_ remaining `src/components/ui` family
   (display / structure / overlays / navigation / forms / chat / chart groups, registered via `shadcnExtensionComponents`).
-  Schema authoring rules (binding is *structural* on the zod shape, `rendering/generic-binder.ts`):
+  Schema authoring rules (binding is _structural_ on the zod shape, `rendering/generic-binder.ts`):
   use `DynamicString/Number/Boolean/ValueSchema` for resolvable+two-way props (auto-generates `setX` writing back to `{path}` bindings,
   also inside array-item objects), `ActionSchema` for callables — the wire shape is `{event: {name, context?}}` — and
   `ComponentIdSchema`/`ChildListSchema` for children; `z.any()` stays STATIC (an action typed `z.any()` will NOT become callable).

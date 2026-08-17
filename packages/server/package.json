@@ -8,8 +8,8 @@
 		"start": "tsx src/index.ts",
 		"build": "tsc",
 		"serve": "node dist/index.js",
-		"format": "biome format --write",
-		"check": "biome check --write"
+		"format": "biome format --write .",
+		"check": "biome check --write ."
 	},
 	"keywords": [],
 	"author": "https://github.com/hangtiancheng",
