@@ -56,8 +56,8 @@ import {
   DynamicStringSchema,
   OPTION,
   WEIGHT,
-  z,
 } from "./common"
+import { z } from "zod/v3"
 
 type OptionDef = { label?: unknown; value?: unknown }
 

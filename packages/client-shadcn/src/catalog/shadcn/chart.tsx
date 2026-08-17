@@ -23,7 +23,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { weightStyle } from "../utils"
-import { DynamicValueSchema, WEIGHT, z } from "./common"
+import { DynamicValueSchema, WEIGHT } from "./common"
+import { z } from "zod/v3"
 
 export const ChartApi = {
   name: "Chart",

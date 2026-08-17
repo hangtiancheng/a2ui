@@ -62,8 +62,8 @@ import {
   DynamicStringSchema,
   MENU_ENTRY,
   WEIGHT,
-  z,
 } from "./common"
+import { z } from "zod/v3"
 
 type MenuEntryDef = {
   label?: unknown

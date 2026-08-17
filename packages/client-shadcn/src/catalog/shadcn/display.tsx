@@ -47,8 +47,8 @@ import {
   DynamicStringSchema,
   ICON_NAME,
   WEIGHT,
-  z,
 } from "./common"
+import { z } from "zod/v3"
 
 export const AlertApi = {
   name: "Alert",
