@@ -2,24 +2,11 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
   type SyntheticEvent,
 } from "react"
 
-import { renderMarkdown } from "@a2ui/markdown-it"
-import {
-  A2uiSurface,
-  // basicCatalog,
-  MarkdownContext,
-  type ReactComponentImplementation,
-} from "@a2ui/react/v0_9"
-import {
-  type A2uiClientMessage,
-  type A2uiMessage,
-  MessageProcessor,
-  type SurfaceModel,
-} from "@a2ui/web_core/v0_9"
+import type { A2uiClientAction, A2uiMessage } from "@a2ui/web_core/v0_9"
 import { CircleAlert, Moon, SendHorizontal, Sun } from "lucide-react"
 
 import { useTheme } from "@/components/theme-provider"
@@ -33,7 +20,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group"
 import { Spinner } from "@/components/ui/spinner"
-import { shadcnCatalog } from "./catalog"
+import { A2uiView } from "./a2ui-view"
 import { A2UIClient } from "./client"
 import { type AppConfig, galleryConfig, restaurantConfig } from "./configs"
 import {
@@ -63,75 +50,26 @@ export function App() {
     document.title = config.title
   }, [config])
 
-  const sendAndProcessRef = useRef<
-    ((message: A2uiClientMessage | string) => Promise<void>) | null
-  >(null)
-
-  // eslint-disable-next-line react-hooks/preserve-manual-memoization
-  const processor = useMemo(() => {
-    // eslint-disable-next-line react-hooks/refs
-    return new MessageProcessor([shadcnCatalog], (action) => {
-      console.log("User action:", action)
-      if (sendAndProcessRef.current) {
-        sendAndProcessRef.current({ version: "v0.9", action })
-      }
-    })
-  }, [])
-
-  return (
-    <MarkdownContext.Provider value={renderMarkdown}>
-      <ShellContent
-        config={config}
-        client={client}
-        sendAndProcessRef={sendAndProcessRef}
-        processor={processor}
-      />
-    </MarkdownContext.Provider>
-  )
+  return <ShellContent config={config} client={client} />
 }
 
 interface ShellContentProps {
   config: AppConfig
   client: A2UIClient
-  sendAndProcessRef: React.RefObject<
-    ((message: A2uiClientMessage | string) => Promise<void>) | null
-  >
-  processor: MessageProcessor<ReactComponentImplementation>
 }
 
-function ShellContent({
-  config,
-  client,
-  sendAndProcessRef,
-  processor,
-}: ShellContentProps) {
+function ShellContent({ config, client }: ShellContentProps) {
   const [requesting, setRequesting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [messages, setMessages] = useState<A2uiMessage[]>([])
   const [loadingTextIndex, setLoadingTextIndex] = useState(0)
+  const [requestCount, setRequestCount] = useState(0)
   const { theme, setTheme } = useTheme()
 
   const isDark =
     theme === "dark" ||
     (theme === "system" &&
       window.matchMedia("(prefers-color-scheme: dark)").matches)
-
-  const [surfaces, setSurfaces] = useState<
-    SurfaceModel<ReactComponentImplementation>[]
-  >(() => Array.from(processor.model.surfacesMap.values()))
-
-  useEffect(() => {
-    const sub1 = processor.onSurfaceCreated((surface) => {
-      setSurfaces((prev) => [...prev, surface])
-    })
-    const sub2 = processor.onSurfaceDeleted((id) => {
-      setSurfaces((prev) => prev.filter((s) => s.id !== id))
-    })
-    return () => {
-      sub1.unsubscribe()
-      sub2.unsubscribe()
-    }
-  }, [processor])
 
   useEffect(() => {
     if (!requesting) return
@@ -146,12 +84,12 @@ function ShellContent({
   }, [requesting, config.loadingText])
 
   const getMockResponse = useCallback(
-    (message: A2uiClientMessage | string): A2uiMessage[] => {
+    (message: { action?: A2uiClientAction } | string): A2uiMessage[] => {
       if (config.key === "gallery") {
         return createGalleryMessages()
       }
 
-      if (typeof message === "object" && "action" in message) {
+      if (typeof message === "object" && "action" in message && message.action) {
         const action = message.action
         const context = action.context || {}
 
@@ -180,28 +118,20 @@ function ShellContent({
   )
 
   const sendAndProcess = useCallback(
-    async (message: A2uiClientMessage | string) => {
+    async (message: { version: "v0.9"; action: A2uiClientAction } | string) => {
       try {
         setRequesting(true)
         setError(null)
         setLoadingTextIndex(0)
-
-        Array.from(processor.model.surfacesMap.keys()).forEach((id) => {
-          processor.model.deleteSurface(id)
-        })
-
-        let response: A2uiMessage[]
+        setMessages([])
+        setRequestCount((c) => c + 1)
 
         if (isMockMode) {
           await new Promise((resolve) => setTimeout(resolve, 800))
-          response = getMockResponse(message)
-          processor.processMessages(response)
+          const response = getMockResponse(message)
           setMessages(response)
         } else {
-          setMessages([])
-
-          response = await client.send(message, (chunkMessages) => {
-            processor.processMessages(chunkMessages)
+          const response = await client.send(message, (chunkMessages) => {
             setMessages((prev) => [...prev, ...chunkMessages])
           })
           setMessages(response)
@@ -213,12 +143,8 @@ function ShellContent({
         setRequesting(false)
       }
     },
-    [client, processor, getMockResponse]
+    [client, getMockResponse]
   )
-
-  useEffect(() => {
-    sendAndProcessRef.current = sendAndProcess
-  }, [sendAndProcess, sendAndProcessRef])
 
   const handleSubmit = useCallback(
     (e: SyntheticEvent<HTMLFormElement>) => {
@@ -239,7 +165,7 @@ function ShellContent({
     return config.loadingText
   }, [config.loadingText, loadingTextIndex])
 
-  const hasSurfaces = surfaces.length > 0
+  const hasSurfaces = messages.length > 0
   const showForm = !requesting && messages.length === 0
 
   return (
@@ -321,9 +247,13 @@ function ShellContent({
 
       {hasSurfaces && (
         <section className="w-full py-3">
-          {surfaces.map((surface) => (
-            <A2uiSurface key={surface.id} surface={surface} />
-          ))}
+          <A2uiView
+            key={requestCount}
+            messages={messages}
+            onRawAction={(action) =>
+              sendAndProcess({ version: "v0.9", action })
+            }
+          />
         </section>
       )}
     </div>
