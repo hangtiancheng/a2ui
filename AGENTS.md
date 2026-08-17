@@ -6,15 +6,17 @@ from the official A2UI monorepo (local path `$HOME/Documents/a2ui`):
 - Upstream React frontend: `samples/client/react/shell` → `packages/client`
 - Upstream Lit frontend: `samples/client/lit/shell` → `packages/client-lit`
 - Upstream Python ADK backend: `samples/agent/adk/restaurant_finder` → `packages/server`
+- No upstream equivalent: `packages/client-shadcn` — the React client re-skinned with shadcn/ui,
+  rendering through a manually maintained catalog (see "client-shadcn" section below).
 
 The protocol version is pinned to **A2UI v0.9** (catalogId `https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json`).
 The `postinstall` script downloads the official basic catalog to `catalog.json` at the repository root for reference.
 
 ## Structure & Runtime
 
-- pnpm workspace: `packages/{client,client-lit,server}`; root scripts `pnpm react` / `pnpm lit`
+- pnpm workspace: `packages/{client,client-lit,client-shadcn,server}`; root scripts `pnpm react` / `pnpm lit` / `pnpm shadcn`
   (`tsx start.ts` — starts the server first, then the client).
-- Ports: server `10002`; React dev `5003` (strictPort); Lit dev `5004` (strictPort).
+- Ports: server `10002`; React dev `5003` (strictPort); Lit dev `5004` (strictPort); Shadcn dev `5005` (strictPort).
 - The server requires `packages/server/.env` (`OPENAI_API_KEY` / `OPENAI_BASE_URL` / `OPENAI_MODEL`);
   see `.env.example` for reference. It currently points to an OpenAI-compatible endpoint with a real LLM — do not replace with mocks.
 
@@ -31,7 +33,14 @@ The `postinstall` script downloads the official basic catalog to `catalog.json` 
   header, written into the envelope by the Vite middleware; Lit writes it directly into the envelope).
 - The React client browser sends only bare text / bare action JSON to the relative path `/a2a`;
   `packages/client/middleware/a2a.ts` (registered in `vite.config.ts`) wraps the envelope, attaches extension headers, and proxies to port 10002.
-  The Lit client wraps the envelope itself and connects directly to port 10002 (relies on server CORS; the origin regex must remain anchored: `/^http:\/\/localhost:\d+$/`).
+  `packages/client-shadcn` carries its own copy of the same middleware. The Lit client wraps the envelope itself and connects
+  directly to port 10002 (relies on server CORS; the origin regex must remain anchored: `/^http:\/\/localhost:\d+$/`).
+- Incoming `kind:"data"` parts are runtime-validated in `src/client.ts` (both `client` and `client-shadcn`) with
+  `A2uiMessageSchema.safeParse` from `@a2ui/web_core/v0_9` (the zod union of `CreateSurfaceMessageSchema` /
+  `UpdateComponentsMessageSchema` / `UpdateDataModelMessageSchema` / `DeleteSurfaceMessageSchema`).
+  Invalid messages are dropped with a console error — never reintroduce `as unknown as A2uiMessage` casts.
+  The schemas expect the flat wire format `{id, component: "Card", ...props}` (`AnyComponentSchema` is `.passthrough()`);
+  the nested `{component: {Card: {...}}}` shape fails validation.
 
 ## LLM-Direct A2UI Output (`llm.ts`, core design)
 
@@ -69,10 +78,33 @@ The `postinstall` script downloads the official basic catalog to `catalog.json` 
 - Accessibility (aria / sr-only / role / motion-reduce) is **not required** — do not add it proactively.
 - Avoid `transition-all`; use `transition` or specific property variants instead.
 
+## client-shadcn: shadcn/ui + Manual Catalog
+
+- Scaffold: Vite + Tailwind v4 + shadcn (style `base-nova`, **Base UI primitives**, not Radix — use the `render` prop
+  instead of `asChild`; e.g. ToggleGroup's multi-select prop is `multiple`). UI components live in `src/components/ui/`
+  (generated; keep edits minimal), `cn()` in `src/lib/utils.ts`, aliases `@/*`.
+- **Manual catalog** at `src/catalog/`: registers under the _same_ basic catalog URI —
+  `new Catalog(BASIC_CATALOG_ID, components, BASIC_FUNCTIONS)` in `index.ts`, passed to `MessageProcessor([shadcnCatalog])` in `App.tsx`.
+  Each of the 18 components is `createComponentImplementation(XxxApi, renderFn)` (`@a2ui/react/v0_9` adapter),
+  reusing the `*Api` zod schemas + GenericBinder from `@a2ui/web_core/v0_9/basic_catalog` — only the visual layer is swapped.
+  Do **not** call `injectBasicCatalogStyles`/`useBasicCatalogStyles`; styling is pure Tailwind + shadcn.
+- Key mappings: Card → `Card`/`CardContent`; Button variants `primary→default`, `borderless→ghost`, default→`outline`,
+  disabled when `isValid === false`; TextField/DateTimeInput → `Field`+`FieldLabel`+`Input`/`Textarea` (+`FieldError`);
+  CheckBox → `Checkbox`; ChoicePicker → chips=`ToggleGroup`, exclusive=`RadioGroup`, multi=`Checkbox` rows;
+  Slider → shadcn `Slider` (pass `value={[n]}` — a bare number renders two thumbs); Tabs → `Tabs` (index as value);
+  Modal → controlled `Dialog`; Divider → `Separator`; Row/Column/List → flex + `justifyClass`/`alignClass`/`weightStyle` (`utils.ts`);
+  Text → h1–h5/caption typography classes, default variant through the markdown pipeline (`use-markdown.ts` + `MarkdownContext`).
+- Icons: the catalog's 58 icon enum names map to `lucide-react` in `components/icon.tsx` (`ICON_MAP`); unknown names fall back
+  to `CircleHelp`; the `svgPath` variant renders path data carried in the protocol message. Unlike `client`/`client-lit`,
+  surfaces here have no Material Symbols ligature limitation.
+- Theming: shadcn semantic tokens (`bg-background`, `text-muted-foreground`, ...; no manual `dark:` color overrides).
+  `ThemeProvider` (`src/components/theme-provider.tsx`) toggles `.dark`/`.light` on `<html>` (`d` key shortcut included);
+  the page gradient is injected as **`--app-background`** — never reuse `--background`, which is the shadcn color token.
+
 ## Verification
 
-- Backend-free UI smoke test: React `http://localhost:5003/?mock=true`; Lit `http://localhost:5004/?app=local`
-  (built-in sample buttons load from `public/samples`).
+- Backend-free UI smoke test: React `http://localhost:5003/?mock=true`; Shadcn `http://localhost:5005/?mock=true`;
+  Lit `http://localhost:5004/?app=local` (built-in sample buttons load from `public/samples`).
 - Full pipeline: after starting the server, curl `POST /a2a` (with `X-A2A-Extensions: https://a2ui.org/a2a-extension/a2ui/v0.9`),
   then verify the sequence: listing → `book_restaurant` → `submit_booking` (reusing the contextId from status-update).
   Non-New-York locations should return a "no results" message rather than fabricated data. Each request is a real billable LLM call — mind the usage count.
