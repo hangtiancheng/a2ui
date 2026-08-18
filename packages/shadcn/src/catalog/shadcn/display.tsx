@@ -58,7 +58,7 @@ export const AlertApi = {
       description: DynamicStringSchema.describe(
         "The alert description.",
       ).optional(),
-      variant: z.enum(["default", "destructive"]).default("default").optional(),
+      variant: z.enum(["default", "destructive"]).default("default"),
       icon: ICON_NAME.optional(),
     })
     .strict(),
@@ -85,8 +85,7 @@ export const AspectRatioApi = {
       ratio: z
         .number()
         .describe("The width / height ratio, e.g. 1.777 for 16:9.")
-        .default(1.777)
-        .optional(),
+        .default(1.777),
       child: ComponentIdSchema.describe("The ID of the child component."),
     })
     .strict(),
@@ -114,7 +113,7 @@ export const AvatarApi = {
       fallback: DynamicStringSchema.describe(
         "Short fallback text (e.g. initials) shown when the image fails.",
       ),
-      size: z.enum(["sm", "default", "lg"]).default("default").optional(),
+      size: z.enum(["sm", "default", "lg"]).default("default"),
     })
     .strict(),
 };
@@ -133,9 +132,16 @@ export const BadgeApi = {
       ...WEIGHT,
       text: DynamicStringSchema.describe("The badge text."),
       variant: z
-        .enum(["default", "secondary", "destructive", "outline", "ghost"])
+        .enum([
+          "default",
+          "secondary",
+          "destructive",
+          "outline",
+          "ghost",
+          "link",
+        ])
         .default("default")
-        .optional(),
+        .describe("The badge style; 'link' renders as underlined link text."),
       icon: ICON_NAME.optional(),
     })
     .strict(),
@@ -201,10 +207,11 @@ export const ItemApi = {
       child: ComponentIdSchema.describe(
         "Optional ID of a child component rendered as trailing actions.",
       ).optional(),
-      variant: z
-        .enum(["default", "outline", "muted"])
+      variant: z.enum(["default", "outline", "muted"]).default("default"),
+      size: z
+        .enum(["default", "sm", "xs"])
         .default("default")
-        .optional(),
+        .describe("The item density."),
     })
     .strict(),
 };
@@ -214,6 +221,7 @@ export const Item = createComponentImplementation(
   ({ props, buildChild }) => (
     <UIItem
       variant={props.variant ?? "default"}
+      size={props.size ?? "default"}
       style={weightStyle(props.weight)}
     >
       {props.icon && (
@@ -307,10 +315,12 @@ export const ScrollAreaApi = {
       child: ComponentIdSchema.describe(
         "The ID of the scrollable child component.",
       ),
-      maxHeight: z
+      height: z
         .number()
-        .describe("The maximum height in pixels before scrolling.")
-        .optional(),
+        .describe(
+          "The fixed viewport height in pixels; content taller than this scrolls.",
+        )
+        .default(320),
     })
     .strict(),
 };
@@ -320,7 +330,7 @@ export const ScrollArea = createComponentImplementation(
   ({ props, buildChild }) => (
     <UIScrollArea
       className="w-full"
-      style={{ ...weightStyle(props.weight), height: props.maxHeight ?? 320 }}
+      style={{ ...weightStyle(props.weight), height: props.height ?? 320 }}
     >
       {props.child ? buildChild(props.child) : null}
     </UIScrollArea>
@@ -337,10 +347,7 @@ export const SkeletonApi = {
         .describe("Width in pixels; omit for full width.")
         .optional(),
       height: z.number().describe("Height in pixels.").optional(),
-      shape: z
-        .enum(["rectangle", "circle", "text"])
-        .default("rectangle")
-        .optional(),
+      shape: z.enum(["rectangle", "circle", "text"]).default("rectangle"),
     })
     .strict(),
 };

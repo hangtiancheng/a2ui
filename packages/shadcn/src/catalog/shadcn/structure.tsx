@@ -36,6 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { ChildList } from "../components/child-list";
 import { weightStyle } from "../utils";
 import { WEIGHT } from "./common";
@@ -99,10 +100,7 @@ export const ButtonGroupApi = {
       children: ChildListSchema.describe(
         "The IDs of the grouped Button components.",
       ),
-      orientation: z
-        .enum(["horizontal", "vertical"])
-        .default("horizontal")
-        .optional(),
+      orientation: z.enum(["horizontal", "vertical"]).default("horizontal"),
     })
     .strict(),
 };
@@ -125,6 +123,12 @@ export const CarouselApi = {
     .object({
       ...WEIGHT,
       children: ChildListSchema.describe("The IDs of the slide components."),
+      orientation: z
+        .enum(["horizontal", "vertical"])
+        .default("horizontal")
+        .describe(
+          "'vertical' stacks slides and pages up/down inside a fixed-height viewport.",
+        ),
     })
     .strict(),
 };
@@ -137,10 +141,15 @@ export const Carousel = createComponentImplementation(
     const children = (
       Array.isArray(props.children) ? props.children : []
     ) as ChildRef[];
+    const vertical = props.orientation === "vertical";
 
     return (
-      <UICarousel className="w-full px-10" style={weightStyle(props.weight)}>
-        <CarouselContent>
+      <UICarousel
+        orientation={vertical ? "vertical" : "horizontal"}
+        className={cn("w-full", vertical ? "py-10" : "px-10")}
+        style={weightStyle(props.weight)}
+      >
+        <CarouselContent className={vertical ? "h-64" : undefined}>
           {children.map((ref, i) => (
             <CarouselItem key={i}>
               {typeof ref === "string"
@@ -194,10 +203,7 @@ export const ResizableApi = {
   schema: z
     .object({
       ...WEIGHT,
-      direction: z
-        .enum(["horizontal", "vertical"])
-        .default("horizontal")
-        .optional(),
+      direction: z.enum(["horizontal", "vertical"]).default("horizontal"),
       panels: z
         .array(
           z.object({

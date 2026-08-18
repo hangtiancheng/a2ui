@@ -27,11 +27,15 @@ import {
   Questionnaire as UIQuestionnaire,
   QuestionnaireActions,
   QuestionnaireChoice,
+  QuestionnaireChoiceDescription,
   QuestionnaireChoices,
   QuestionnaireDescription,
+  QuestionnaireInput,
   QuestionnaireItem,
   QuestionnaireNext,
   QuestionnairePrevious,
+  QuestionnaireSkip,
+  QuestionnaireSubmit,
   QuestionnaireTitle,
 } from "@/components/ui/questionnaire";
 import { CatalogIcon } from "../components/icon";
@@ -39,9 +43,13 @@ import { weightStyle } from "../utils";
 import { ICON_NAME, WEIGHT } from "./common";
 import { z } from "zod/v3";
 import {
+  ActionSchema,
   ChildListSchema,
   ComponentIdSchema,
+  DataBindingSchema,
   DynamicStringSchema,
+  DynamicValueSchema,
+  FunctionCallSchema,
 } from "@a2ui/web_core/v0_9";
 
 export const AttachmentApi = {
@@ -57,6 +65,14 @@ export const AttachmentApi = {
         "Optional thumbnail image URL.",
       ).optional(),
       icon: ICON_NAME.optional(),
+      size: z
+        .enum(["default", "sm", "xs"])
+        .default("default")
+        .describe("The attachment density."),
+      orientation: z
+        .enum(["horizontal", "vertical"])
+        .default("horizontal")
+        .describe("'vertical' stacks the media above the text as a tile."),
     })
     .strict(),
 };
@@ -64,7 +80,11 @@ export const AttachmentApi = {
 export const Attachment = createComponentImplementation(
   AttachmentApi,
   ({ props }) => (
-    <UIAttachment style={weightStyle(props.weight)}>
+    <UIAttachment
+      size={props.size ?? "default"}
+      orientation={props.orientation ?? "horizontal"}
+      style={weightStyle(props.weight)}
+    >
       <AttachmentMedia variant={props.imageUrl ? "image" : "icon"}>
         {props.imageUrl ? (
           <img src={props.imageUrl} alt="" />
@@ -95,8 +115,23 @@ export const BubbleApi = {
       align: z
         .enum(["start", "end"])
         .default("start")
-        .describe("'end' renders as a sent message, 'start' as a received one.")
-        .optional(),
+        .describe(
+          "'end' renders as a sent message, 'start' as a received one.",
+        ),
+      variant: z
+        .enum([
+          "default",
+          "secondary",
+          "muted",
+          "tinted",
+          "outline",
+          "ghost",
+          "destructive",
+        ])
+        .default("default")
+        .describe(
+          "The bubble color treatment: 'default' uses the primary color (own messages), 'secondary'/'muted'/'tinted'/'outline' suit received messages, 'ghost' removes the background, 'destructive' signals errors.",
+        ),
     })
     .strict(),
 };
@@ -106,6 +141,7 @@ export const Bubble = createComponentImplementation(
   ({ props, buildChild }) => (
     <UIBubble
       align={props.align === "end" ? "end" : "start"}
+      variant={props.variant ?? "default"}
       style={weightStyle(props.weight)}
     >
       <BubbleContent>
@@ -124,10 +160,7 @@ export const MarkerApi = {
         "The marker text, e.g. a date or system note.",
       ),
       icon: ICON_NAME.optional(),
-      variant: z
-        .enum(["default", "separator", "border"])
-        .default("default")
-        .optional(),
+      variant: z.enum(["default", "separator", "border"]).default("default"),
     })
     .strict(),
 };
@@ -157,8 +190,7 @@ export const MessageApi = {
       align: z
         .enum(["start", "end"])
         .default("start")
-        .describe("'end' aligns the message to the right (own messages).")
-        .optional(),
+        .describe("'end' aligns the message to the right (own messages)."),
     })
     .strict(),
 };
@@ -188,8 +220,7 @@ export const MessageScrollerApi = {
       height: z
         .number()
         .describe("The viewport height in pixels.")
-        .default(320)
-        .optional(),
+        .default(320),
     })
     .strict(),
 };
@@ -246,16 +277,39 @@ export const QuestionnaireApi = {
               .boolean()
               .describe("Whether several choices may be selected.")
               .optional(),
-            choices: z
-              .array(z.object({ label: z.string(), value: z.string() }))
-              .min(1),
-            value: DynamicStringSchema.describe(
-              "The selected value(s) as a comma-separated string; bind to the data model for two-way sync.",
+            optional: z
+              .boolean()
+              .describe(
+                "If true, the question can be skipped via a Skip button.",
+              )
+              .optional(),
+            input: z
+              .boolean()
+              .describe(
+                "If true, renders a free-text input instead of choices.",
+              )
+              .optional(),
+            choices: DynamicValueSchema.describe(
+              "The choices: an array of {label, value, description?} string objects, or a data model binding to such an array. Omit for free-text questions.",
             ).optional(),
+            value: z
+              .union([
+                z.string(),
+                z.array(z.string()),
+                DataBindingSchema,
+                FunctionCallSchema,
+              ])
+              .describe(
+                "The answer: a string array of selected values for choice questions, or a string for free-text questions; bind to the data model for two-way sync.",
+              )
+              .optional(),
           }),
         )
         .min(1)
         .describe("The questions."),
+      submitAction: ActionSchema.describe(
+        "The action dispatched when the questionnaire is submitted on the last question.",
+      ).optional(),
     })
     .strict(),
 };
@@ -265,11 +319,16 @@ type QuestionDef = {
   title?: unknown;
   description?: unknown;
   multiple?: unknown;
+  optional?: unknown;
+  input?: unknown;
   choices?: unknown;
   value?: unknown;
-  setValue?: (value: string) => void;
+  setValue?: (value: string | string[]) => void;
 };
-type ChoiceDef = { label?: unknown; value?: unknown };
+type ChoiceDef = { label?: unknown; value?: unknown; description?: unknown };
+
+const toChoices = (raw: unknown): ChoiceDef[] =>
+  Array.isArray(raw) ? (raw as ChoiceDef[]) : [];
 
 export const Questionnaire = createComponentImplementation(
   QuestionnaireApi,
@@ -281,18 +340,27 @@ export const Questionnaire = createComponentImplementation(
     return (
       <UIQuestionnaire
         style={weightStyle(props.weight)}
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (typeof props.submitAction === "function") props.submitAction();
+        }}
         items={items.map((item, i) => ({
           name: String(item.name ?? `question-${i}`),
-          choices: ((item.choices ?? []) as ChoiceDef[]).map((c) => ({
-            value: String(c.value ?? ""),
-          })),
+          required: !item.optional,
+          ...(item.input
+            ? {}
+            : {
+                choices: toChoices(item.choices).map((c) => ({
+                  value: String(c.value ?? ""),
+                })),
+              }),
         }))}
       >
         {items.map((item, i) => {
           const name = String(item.name ?? `question-${i}`);
-          const selected = String(item.value ?? "")
-            .split(",")
-            .filter(Boolean);
+          const selected = Array.isArray(item.value)
+            ? (item.value as unknown[]).map(String)
+            : [];
           const toggle = (value: string, checked: boolean) => {
             const next = item.multiple
               ? checked
@@ -301,11 +369,16 @@ export const Questionnaire = createComponentImplementation(
               : checked
                 ? [value]
                 : [];
-            item.setValue?.(next.join(","));
+            item.setValue?.(next);
           };
 
           return (
-            <QuestionnaireItem key={i} name={name} multiple={!!item.multiple}>
+            <QuestionnaireItem
+              key={i}
+              name={name}
+              multiple={!!item.multiple}
+              required={!item.optional}
+            >
               <QuestionnaireTitle>
                 {String(item.title ?? "")}
               </QuestionnaireTitle>
@@ -314,27 +387,41 @@ export const Questionnaire = createComponentImplementation(
                   {String(item.description)}
                 </QuestionnaireDescription>
               ) : null}
-              <QuestionnaireChoices>
-                {((item.choices ?? []) as ChoiceDef[]).map((choice, j) => {
-                  const value = String(choice.value ?? "");
-                  return (
-                    <QuestionnaireChoice
-                      key={j}
-                      value={value}
-                      checked={selected.includes(value)}
-                      onChange={(e) => toggle(value, e.target.checked)}
-                    >
-                      {String(choice.label ?? value)}
-                    </QuestionnaireChoice>
-                  );
-                })}
-              </QuestionnaireChoices>
+              {item.input ? (
+                <QuestionnaireInput
+                  value={typeof item.value === "string" ? item.value : ""}
+                  onChange={(e) => item.setValue?.(e.target.value)}
+                />
+              ) : (
+                <QuestionnaireChoices>
+                  {toChoices(item.choices).map((choice, j) => {
+                    const value = String(choice.value ?? "");
+                    return (
+                      <QuestionnaireChoice
+                        key={j}
+                        value={value}
+                        checked={selected.includes(value)}
+                        onChange={(e) => toggle(value, e.target.checked)}
+                      >
+                        {String(choice.label ?? value)}
+                        {choice.description ? (
+                          <QuestionnaireChoiceDescription>
+                            {String(choice.description)}
+                          </QuestionnaireChoiceDescription>
+                        ) : null}
+                      </QuestionnaireChoice>
+                    );
+                  })}
+                </QuestionnaireChoices>
+              )}
             </QuestionnaireItem>
           );
         })}
         <QuestionnaireActions>
           <QuestionnairePrevious />
+          <QuestionnaireSkip />
           <QuestionnaireNext />
+          <QuestionnaireSubmit />
         </QuestionnaireActions>
       </UIQuestionnaire>
     );

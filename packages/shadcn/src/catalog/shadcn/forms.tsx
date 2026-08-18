@@ -49,16 +49,21 @@ import {
 import { Switch as UISwitch } from "@/components/ui/switch";
 import { Toggle as UIToggle } from "@/components/ui/toggle";
 import { weightStyle } from "../utils";
-import { OPTION, WEIGHT } from "./common";
+import { WEIGHT } from "./common";
 import {
   ActionSchema,
   ComponentIdSchema,
   DynamicBooleanSchema,
   DynamicStringSchema,
+  DynamicValueSchema,
 } from "@a2ui/web_core/v0_9";
 import { z } from "zod/v3";
 
 type OptionDef = { label?: unknown; value?: unknown };
+
+const OPTIONS = DynamicValueSchema.describe(
+  "The selectable options: an array of {label, value} string-pair objects, or a data model binding to such an array.",
+);
 
 const toOptions = (raw: unknown): { label: string; value: string }[] =>
   (Array.isArray(raw) ? (raw as OptionDef[]) : []).map((o) => ({
@@ -110,7 +115,7 @@ export const ComboboxApi = {
       ...WEIGHT,
       label: DynamicStringSchema.describe("The field label.").optional(),
       placeholder: z.string().describe("The input placeholder.").optional(),
-      options: z.array(OPTION).min(1).describe("The selectable options."),
+      options: OPTIONS,
       value: DynamicStringSchema.describe(
         "The selected option value; bind to the data model for two-way sync.",
       ).optional(),
@@ -122,29 +127,26 @@ export const Combobox = createComponentImplementation(
   ComboboxApi,
   ({ props }) => {
     const options = toOptions(props.options);
-    const labelByValue = new Map(options.map((o) => [o.value, o.label]));
-    const valueByLabel = new Map(options.map((o) => [o.label, o.value]));
+    const selected =
+      options.find((o) => o.value === String(props.value ?? "")) ?? null;
 
     return (
       <UIField style={weightStyle(props.weight)}>
         {props.label && <FieldLabel>{props.label}</FieldLabel>}
         <UICombobox
-          items={options.map((o) => o.label)}
-          value={
-            props.value ? (labelByValue.get(String(props.value)) ?? null) : null
-          }
-          onValueChange={(label) => {
-            if (typeof label === "string")
-              props.setValue(valueByLabel.get(label) ?? label);
+          items={options}
+          value={selected}
+          onValueChange={(item) => {
+            if (item) props.setValue(item.value);
           }}
         >
           <ComboboxInput placeholder={props.placeholder} />
           <ComboboxContent>
             <ComboboxEmpty>No results found.</ComboboxEmpty>
             <ComboboxList>
-              {(label: string) => (
-                <ComboboxItem key={label} value={label}>
-                  {label}
+              {(item: { label: string; value: string }) => (
+                <ComboboxItem key={item.value} value={item}>
+                  {item.label}
                 </ComboboxItem>
               )}
             </ComboboxList>
@@ -334,8 +336,7 @@ export const InputOtpApi = {
         .min(1)
         .max(12)
         .describe("The number of digits.")
-        .default(6)
-        .optional(),
+        .default(6),
       value: DynamicStringSchema.describe(
         "The entered code; bind to the data model for two-way sync.",
       ).optional(),
@@ -374,7 +375,7 @@ export const NativeSelectApi = {
     .object({
       ...WEIGHT,
       label: DynamicStringSchema.describe("The field label.").optional(),
-      options: z.array(OPTION).min(1).describe("The selectable options."),
+      options: OPTIONS,
       value: DynamicStringSchema.describe(
         "The selected option value; bind to the data model for two-way sync.",
       ).optional(),
@@ -414,7 +415,7 @@ export const SelectApi = {
         .string()
         .describe("The placeholder shown when nothing is selected.")
         .optional(),
-      options: z.array(OPTION).min(1).describe("The selectable options."),
+      options: OPTIONS,
       value: DynamicStringSchema.describe(
         "The selected option value; bind to the data model for two-way sync.",
       ).optional(),
@@ -484,7 +485,11 @@ export const ToggleApi = {
       value: DynamicBooleanSchema.describe(
         "Whether the toggle is pressed; bind to the data model for two-way sync.",
       ).optional(),
-      variant: z.enum(["default", "outline"]).default("default").optional(),
+      variant: z.enum(["default", "outline"]).default("default"),
+      size: z
+        .enum(["default", "sm", "lg"])
+        .default("default")
+        .describe("The toggle size."),
     })
     .strict(),
 };
@@ -492,6 +497,7 @@ export const ToggleApi = {
 export const Toggle = createComponentImplementation(ToggleApi, ({ props }) => (
   <UIToggle
     variant={props.variant === "outline" ? "outline" : "default"}
+    size={props.size ?? "default"}
     pressed={!!props.value}
     onPressedChange={(pressed) => props.setValue(pressed === true)}
     style={weightStyle(props.weight)}

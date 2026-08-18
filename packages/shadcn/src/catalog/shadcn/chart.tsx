@@ -45,7 +45,11 @@ export const ChartApi = {
       series: z
         .array(
           z.object({
-            key: z.string().describe("The row key of this series' value."),
+            key: z
+              .string()
+              .describe(
+                "The row key of this series' value. Use a simple alphanumeric key (it becomes a CSS variable name); put display text in 'label'.",
+              ),
             label: z
               .string()
               .describe("The display label of the series.")
@@ -56,11 +60,7 @@ export const ChartApi = {
         .describe(
           "The value series to plot. Pie charts use only the first series.",
         ),
-      height: z
-        .number()
-        .describe("The chart height in pixels.")
-        .default(240)
-        .optional(),
+      height: z.number().describe("The chart height in pixels.").default(240),
     })
     .strict(),
 };

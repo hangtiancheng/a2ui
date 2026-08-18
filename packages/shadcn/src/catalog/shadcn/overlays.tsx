@@ -324,10 +324,7 @@ export const SheetApi = {
       child: ComponentIdSchema.describe(
         "The ID of the sheet content component.",
       ).optional(),
-      side: z
-        .enum(["top", "right", "bottom", "left"])
-        .default("right")
-        .optional(),
+      side: z.enum(["top", "right", "bottom", "left"]).default("right"),
     })
     .strict(),
 };
