@@ -22,8 +22,8 @@ import { TextField } from "./components/text-field";
 import { Video } from "./components/video";
 import { shadcnExtensionComponents } from "./shadcn";
 
-export const BASIC_CATALOG_ID =
-  "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
+export const SHADCN_CATALOG_ID =
+  "https://raw.githubusercontent.com/hangtiancheng/a2ui/main/packages/shadcn/src/catalog/index.ts";
 
 const components: ReactComponentImplementation[] = [
   Text,
@@ -51,7 +51,7 @@ const components: ReactComponentImplementation[] = [
 // (same catalogId and contract), extended with catalog entries for every
 // remaining shadcn/ui component family from src/components/ui.
 export const shadcnCatalog = new Catalog<ReactComponentImplementation>(
-  BASIC_CATALOG_ID,
+  SHADCN_CATALOG_ID,
   components,
   BASIC_FUNCTIONS,
 );

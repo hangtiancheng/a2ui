@@ -8,6 +8,7 @@ interface RestaurantItem {
 }
 
 const CATALOG_ID =
+  process.env.CATALOG_ID ||
   "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
 
 export function buildRestaurantListA2ui(

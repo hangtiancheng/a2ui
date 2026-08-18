@@ -1,4 +1,4 @@
-export { BASIC_CATALOG_ID, shadcnCatalog } from "./catalog";
+export { SHADCN_CATALOG_ID, shadcnCatalog } from "./catalog";
 export {
   A2uiView,
   buildQueryFromAction,
