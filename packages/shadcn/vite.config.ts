@@ -3,9 +3,9 @@ import tailwindcss from "@tailwindcss/vite"
 import react from "@vitejs/plugin-react"
 import {
   defineConfig,
-  type PluginOption,
   type UserConfig,
 } from "vite"
+import dts from "vite-plugin-dts"
 
 import pkg from "./package.json" with { type: "json" }
 import { plugin as a2aPlugin } from "./middleware/a2a.js"
@@ -75,7 +75,13 @@ function libConfig(): UserConfig {
       minify: false,
       sourcemap: false,
     },
-    plugins: [react() as PluginOption],
+    plugins: [
+      react(),
+      dts({
+        tsconfigPath: resolve(PKG_DIR, "tsconfig.app.json"),
+        include: ["src"],
+      }),
+    ],
   }
 }
 
