@@ -290,7 +290,7 @@ export const QuestionnaireApi = {
               )
               .optional(),
             choices: DynamicValueSchema.describe(
-              "The choices: an array of {label, value, description?} string objects, or a data model binding to such an array. Omit for free-text questions.",
+              "The choices: an array of {label, value, description?} string objects, or a data model binding to such an array. Falls back to a free-text input when omitted or empty.",
             ).optional(),
             value: z
               .union([
@@ -347,7 +347,7 @@ export const Questionnaire = createComponentImplementation(
         items={items.map((item, i) => ({
           name: String(item.name ?? `question-${i}`),
           required: !item.optional,
-          ...(item.input
+          ...(item.input || toChoices(item.choices).length === 0
             ? {}
             : {
                 choices: toChoices(item.choices).map((c) => ({
@@ -358,9 +358,13 @@ export const Questionnaire = createComponentImplementation(
       >
         {items.map((item, i) => {
           const name = String(item.name ?? `question-${i}`);
-          const selected = Array.isArray(item.value)
-            ? (item.value as unknown[]).map(String)
-            : [];
+          const raw = item.value;
+          const selected = Array.isArray(raw)
+            ? (raw as unknown[]).map(String)
+            : typeof raw === "string" && raw
+              ? [raw]
+              : [];
+          const useInput = !!item.input || toChoices(item.choices).length === 0;
           const toggle = (value: string, checked: boolean) => {
             const next = item.multiple
               ? checked
@@ -387,7 +391,7 @@ export const Questionnaire = createComponentImplementation(
                   {String(item.description)}
                 </QuestionnaireDescription>
               ) : null}
-              {item.input ? (
+              {useInput ? (
                 <QuestionnaireInput
                   value={typeof item.value === "string" ? item.value : ""}
                   onChange={(e) => item.setValue?.(e.target.value)}

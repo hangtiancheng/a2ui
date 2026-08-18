@@ -58,7 +58,10 @@ export const AlertApi = {
       description: DynamicStringSchema.describe(
         "The alert description.",
       ).optional(),
-      variant: z.enum(["default", "destructive"]).default("default"),
+      variant: z
+        .enum(["default", "destructive"])
+        .default("default")
+        .describe("'destructive' renders the alert in an error style."),
       icon: ICON_NAME.optional(),
     })
     .strict(),
@@ -113,7 +116,10 @@ export const AvatarApi = {
       fallback: DynamicStringSchema.describe(
         "Short fallback text (e.g. initials) shown when the image fails.",
       ),
-      size: z.enum(["sm", "default", "lg"]).default("default"),
+      size: z
+        .enum(["sm", "default", "lg"])
+        .default("default")
+        .describe("The avatar size."),
     })
     .strict(),
 };
@@ -207,7 +213,10 @@ export const ItemApi = {
       child: ComponentIdSchema.describe(
         "Optional ID of a child component rendered as trailing actions.",
       ).optional(),
-      variant: z.enum(["default", "outline", "muted"]).default("default"),
+      variant: z
+        .enum(["default", "outline", "muted"])
+        .default("default")
+        .describe("'outline' adds a border; 'muted' tints the background."),
       size: z
         .enum(["default", "sm", "xs"])
         .default("default")
@@ -347,29 +356,39 @@ export const SkeletonApi = {
         .describe("Width in pixels; omit for full width.")
         .optional(),
       height: z.number().describe("Height in pixels.").optional(),
-      shape: z.enum(["rectangle", "circle", "text"]).default("rectangle"),
+      shape: z
+        .enum(["rectangle", "circle", "text"])
+        .default("rectangle")
+        .describe(
+          "'text' renders a text-line height; 'circle' defaults to 16px when width is omitted.",
+        ),
     })
     .strict(),
 };
 
 export const Skeleton = createComponentImplementation(
   SkeletonApi,
-  ({ props }) => (
-    <UISkeleton
-      className={cn(
-        props.shape === "circle" && "rounded-full",
-        props.shape === "text" && "h-4",
-      )}
-      style={{
-        ...weightStyle(props.weight),
-        width: props.width,
-        height:
-          props.shape === "text"
-            ? undefined
-            : (props.height ?? (props.shape === "circle" ? props.width : 16)),
-      }}
-    />
-  ),
+  ({ props }) => {
+    const circle = props.shape === "circle";
+    const width = circle ? (props.width ?? 16) : props.width;
+
+    return (
+      <UISkeleton
+        className={cn(
+          props.shape === "circle" && "rounded-full",
+          props.shape === "text" && "h-4",
+        )}
+        style={{
+          ...weightStyle(props.weight),
+          width,
+          height:
+            props.shape === "text"
+              ? undefined
+              : (props.height ?? (circle ? width : 16)),
+        }}
+      />
+    );
+  },
 );
 
 export const SpinnerApi = {

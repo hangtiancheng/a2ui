@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 
 import {
@@ -99,27 +101,40 @@ export const AlertDialogApi = {
 
 export const AlertDialog = createComponentImplementation(
   AlertDialogApi,
-  ({ props, buildChild }) => (
-    <UIAlertDialog>
-      <AlertDialogTrigger render={TRIGGER} nativeButton={false}>
-        {props.trigger ? buildChild(props.trigger) : null}
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{props.title}</AlertDialogTitle>
-          {props.description && (
-            <AlertDialogDescription>{props.description}</AlertDialogDescription>
-          )}
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{props.cancelLabel || "Cancel"}</AlertDialogCancel>
-          <AlertDialogAction onClick={props.action}>
-            {props.actionLabel || "Continue"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </UIAlertDialog>
-  ),
+  ({ props, buildChild }) => {
+    const [open, setOpen] = useState(false);
+
+    return (
+      <UIAlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialogTrigger render={TRIGGER} nativeButton={false}>
+          {props.trigger ? buildChild(props.trigger) : null}
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{props.title}</AlertDialogTitle>
+            {props.description && (
+              <AlertDialogDescription>
+                {props.description}
+              </AlertDialogDescription>
+            )}
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              {props.cancelLabel || "Cancel"}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (typeof props.action === "function") props.action();
+                setOpen(false);
+              }}
+            >
+              {props.actionLabel || "Continue"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </UIAlertDialog>
+    );
+  },
 );
 
 export const ContextMenuApi = {

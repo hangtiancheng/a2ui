@@ -95,7 +95,7 @@ The `postinstall` script downloads the official basic catalog to `catalog.json` 
   Slider → shadcn `Slider` (pass `value={[n]}` — a bare number renders two thumbs); Tabs → `Tabs` (index as value);
   Modal → `Dialog`+`DialogTrigger` (`render={<span/>}` + `nativeButton={false}`); Divider → `Separator`; Row/Column/List → flex + `justifyClass`/`alignClass`/`weightStyle` (`utils.ts`);
   Text → h1–h5/caption typography classes, default variant through the markdown pipeline (`use-markdown.ts` + `MarkdownContext`).
-- Icons: the catalog's 58 icon enum names map to `lucide-react` in `components/icon.tsx` (`ICON_MAP`); unknown names fall back
+- Icons: the catalog's 59 icon enum names map to `lucide-react` in `components/icon.tsx` (`ICON_MAP`); unknown names fall back
   to `CircleHelp`; the `svgPath` variant renders path data carried in the protocol message. Unlike `client`/`client-lit`,
   surfaces here have no Material Symbols ligature limitation.
 - Theming: shadcn semantic tokens (`bg-background`, `text-muted-foreground`, ...; no manual `dark:` color overrides).

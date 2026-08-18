@@ -35,6 +35,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
 import { weightStyle } from "../utils";
 import { MENU_ENTRY, COMMON } from "./common";
 import { z } from "zod/v3";
@@ -65,7 +66,9 @@ export const BreadcrumbApi = {
           }),
         )
         .min(1)
-        .describe("The breadcrumb trail; the last item is the current page."),
+        .describe(
+          "The breadcrumb trail; the last item renders as the current page and its action is ignored.",
+        ),
     })
     .strict(),
 };
@@ -271,14 +274,20 @@ export const Pagination = createComponentImplementation(
     );
     const go = (next: number) =>
       props.setPage(Math.min(Math.max(next, 1), total));
+    const atFirst = page <= 1;
+    const atLast = page >= total;
 
     return (
       <UIPagination style={weightStyle(props.weight)}>
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              className="cursor-pointer"
-              onClick={() => go(page - 1)}
+              className={cn(
+                "cursor-pointer",
+                atFirst && "pointer-events-none opacity-50",
+              )}
+              aria-disabled={atFirst || undefined}
+              onClick={() => !atFirst && go(page - 1)}
             />
           </PaginationItem>
           {pageWindow(page, total).map((entry, i) => (
@@ -298,8 +307,12 @@ export const Pagination = createComponentImplementation(
           ))}
           <PaginationItem>
             <PaginationNext
-              className="cursor-pointer"
-              onClick={() => go(page + 1)}
+              className={cn(
+                "cursor-pointer",
+                atLast && "pointer-events-none opacity-50",
+              )}
+              aria-disabled={atLast || undefined}
+              onClick={() => !atLast && go(page + 1)}
             />
           </PaginationItem>
         </PaginationContent>

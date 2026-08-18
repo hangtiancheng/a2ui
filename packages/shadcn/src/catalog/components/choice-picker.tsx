@@ -61,9 +61,12 @@ export const ChoicePicker = createComponentImplementation(
             variant="outline"
             multiple={!exclusive}
             value={values}
-            onValueChange={(groupValue) =>
-              props.setValue(groupValue as string[])
-            }
+            onValueChange={(groupValue) => {
+              const next = groupValue as string[];
+              // Exclusive chips must keep exactly one selection, matching the
+              // radio branch; base-ui would otherwise report [] on deselect.
+              if (!exclusive || next.length > 0) props.setValue(next);
+            }}
             className="flex-wrap"
           >
             {options.map((opt, i) => (

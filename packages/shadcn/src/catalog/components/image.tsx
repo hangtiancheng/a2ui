@@ -14,7 +14,7 @@ const FIT_CLASSES: Record<string, string> = {
 
 const VARIANT_CLASSES: Record<string, string> = {
   icon: "size-6 rounded-md",
-  avatar: "size-10 rounded-full object-cover",
+  avatar: "size-10 rounded-full",
   smallFeature: "max-w-24 rounded-lg",
   largeFeature: "max-h-96 rounded-lg",
   header: "h-48 w-full rounded-lg object-cover",

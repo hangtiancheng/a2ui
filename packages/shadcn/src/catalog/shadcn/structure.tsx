@@ -100,7 +100,10 @@ export const ButtonGroupApi = {
       children: ChildListSchema.describe(
         "The IDs of the grouped Button components.",
       ),
-      orientation: z.enum(["horizontal", "vertical"]).default("horizontal"),
+      orientation: z
+        .enum(["horizontal", "vertical"])
+        .default("horizontal")
+        .describe("'vertical' stacks the buttons top to bottom."),
     })
     .strict(),
 };
@@ -146,7 +149,7 @@ export const Carousel = createComponentImplementation(
     return (
       <UICarousel
         orientation={vertical ? "vertical" : "horizontal"}
-        className={cn("w-full", vertical ? "py-10" : "px-10")}
+        className={cn("w-full", vertical ? "my-12" : "mx-12")}
         style={weightStyle(props.weight)}
       >
         <CarouselContent className={vertical ? "h-64" : undefined}>
@@ -174,7 +177,10 @@ export const CollapsibleApi = {
       child: ComponentIdSchema.describe(
         "The ID of the collapsible content component.",
       ),
-      defaultOpen: z.boolean().optional(),
+      defaultOpen: z
+        .boolean()
+        .describe("Whether the section starts expanded.")
+        .optional(),
     })
     .strict(),
 };
@@ -203,7 +209,10 @@ export const ResizableApi = {
   schema: z
     .object({
       ...COMMON,
-      direction: z.enum(["horizontal", "vertical"]).default("horizontal"),
+      direction: z
+        .enum(["horizontal", "vertical"])
+        .default("horizontal")
+        .describe("'vertical' stacks the panels top to bottom."),
       panels: z
         .array(
           z.object({
@@ -309,11 +318,16 @@ export const Table = createComponentImplementation(TableApi, ({ props }) => {
         <TableBody>
           {rows.map((row, ri) => (
             <TableRow key={ri}>
-              {columns.map((col, ci) => (
-                <TableCell key={ci}>
-                  {String(row?.[String(col.key)] ?? "")}
-                </TableCell>
-              ))}
+              {columns.map((col, ci) => {
+                const cell = row?.[String(col.key)];
+                return (
+                  <TableCell key={ci}>
+                    {typeof cell === "object" && cell !== null
+                      ? JSON.stringify(cell)
+                      : String(cell ?? "")}
+                  </TableCell>
+                );
+              })}
             </TableRow>
           ))}
         </TableBody>

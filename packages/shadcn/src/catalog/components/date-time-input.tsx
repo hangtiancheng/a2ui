@@ -78,9 +78,11 @@ export const DateTimeInput = createComponentImplementation(
 
     const commit = (nextDate: string, nextTime: string) => {
       if (enableDate && enableTime) {
-        props.setValue(
-          nextDate || nextTime ? `${nextDate}T${nextTime || "00:00"}` : "",
-        );
+        if (!nextDate) {
+          props.setValue(nextTime);
+          return;
+        }
+        props.setValue(nextTime ? `${nextDate}T${nextTime}` : nextDate);
         return;
       }
       props.setValue(enableDate ? nextDate : nextTime);

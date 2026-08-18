@@ -65,11 +65,19 @@ const OPTIONS = DynamicValueSchema.describe(
   "The selectable options: an array of {label, value} string-pair objects, or a data model binding to such an array.",
 );
 
-const toOptions = (raw: unknown): { label: string; value: string }[] =>
-  (Array.isArray(raw) ? (raw as OptionDef[]) : []).map((o) => ({
-    label: String(o.label ?? ""),
-    value: String(o.value ?? ""),
-  }));
+const toOptions = (raw: unknown): { label: string; value: string }[] => {
+  const seen = new Set<string>();
+  const result: { label: string; value: string }[] = [];
+  for (const o of Array.isArray(raw) ? (raw as OptionDef[]) : []) {
+    const value = String(o.value ?? "");
+    // value is the option identity; duplicates would collide as React keys
+    // and confuse the controlled selection.
+    if (seen.has(value)) continue;
+    seen.add(value);
+    result.push({ label: String(o.label ?? ""), value });
+  }
+  return result;
+};
 
 export const CalendarApi = {
   name: "Calendar",
@@ -86,9 +94,11 @@ export const CalendarApi = {
 export const Calendar = createComponentImplementation(
   CalendarApi,
   ({ props }) => {
-    const selected = props.value
+    const parsed = props.value
       ? new Date(`${String(props.value).slice(0, 10)}T00:00:00`)
       : undefined;
+    const selected =
+      parsed && !Number.isNaN(parsed.getTime()) ? parsed : undefined;
 
     return (
       <div style={weightStyle(props.weight)}>
@@ -244,8 +254,11 @@ export const FieldApi = {
         "The ID of the field control component.",
       ),
       orientation: z
-        .enum(["vertical", "horizontal"])
+        .enum(["vertical", "horizontal", "responsive"])
         .default("vertical")
+        .describe(
+          "'responsive' is horizontal on wide screens, vertical otherwise.",
+        )
         .optional(),
     })
     .strict(),
@@ -256,7 +269,9 @@ export const Field = createComponentImplementation(
   ({ props, buildChild }) => (
     <UIField
       orientation={
-        props.orientation === "horizontal" ? "horizontal" : "vertical"
+        props.orientation === "horizontal" || props.orientation === "responsive"
+          ? props.orientation
+          : "vertical"
       }
       style={weightStyle(props.weight)}
     >
@@ -431,7 +446,9 @@ export const Select = createComponentImplementation(SelectApi, ({ props }) => {
       {props.label && <FieldLabel>{props.label}</FieldLabel>}
       <UISelect
         items={options}
-        value={props.value || null}
+        value={
+          props.value != null && props.value !== "" ? String(props.value) : null
+        }
         onValueChange={(value) => {
           if (typeof value === "string") props.setValue(value);
         }}
