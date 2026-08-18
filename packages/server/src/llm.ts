@@ -1,10 +1,11 @@
 import OpenAI from "openai";
-import {
-  buildBookingFormA2ui,
-  buildConfirmationA2ui,
-  buildRestaurantListA2ui,
-} from "./a2ui-messages.js";
 import { A2uiMessageListSchema } from "@a2ui/web_core/v0_9";
+import {
+  A2UI_CLOSE_TAG,
+  A2UI_OPEN_TAG,
+  A2UI_SYSTEM_PROMPT,
+  TEXT_SYSTEM_PROMPT,
+} from "./prompt.js";
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || "",
@@ -25,97 +26,6 @@ export interface LlmResult {
   a2uiMessages?: unknown[];
   toolCalls: ToolCallResult[];
 }
-
-const A2UI_OPEN_TAG = "<a2ui-json>";
-const A2UI_CLOSE_TAG = "</a2ui-json>";
-
-const EXAMPLE_RESTAURANTS = [
-  {
-    name: "Golden Dragon",
-    detail: "Hand-pulled noodles and dumplings.",
-    imageUrl: "http://localhost:10002/static/noodles.jpeg",
-    rating: "★★★★☆",
-    infoLink: "[More Info](https://example.com/golden-dragon)",
-    address: "12 Mott St, New York, NY 10013",
-  },
-  {
-    name: "Jade Garden",
-    detail: "Classic Cantonese dim sum.",
-    imageUrl: "http://localhost:10002/static/dimsum.jpeg",
-    rating: "★★★★★",
-    infoLink: "[More Info](https://example.com/jade-garden)",
-    address: "88 Canal St, New York, NY 10002",
-  },
-];
-
-function renderExample(name: string, messages: unknown[]): string {
-  return `---BEGIN ${name}---\n${A2UI_OPEN_TAG}\n${JSON.stringify(messages)}\n${A2UI_CLOSE_TAG}\n---END ${name}---`;
-}
-
-const CATALOG_ID =
-  process.env.A2UI_MODE === "shadcn"
-    ? "https://raw.githubusercontent.com/hangtiancheng/a2ui/main/packages/shadcn/src/catalog/index.ts"
-    : "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
-
-const A2UI_SYSTEM_PROMPT = `You are a helpful restaurant finding assistant. Your final output MUST be an A2UI UI definition.
-
-## Workflow
-
-1. For a restaurant search query, first call the get_restaurants tool with the cuisine, location and count extracted from the query.
-2. Then reply with ONLY a JSON array of A2UI v0.9 messages wrapped between ${A2UI_OPEN_TAG} and ${A2UI_CLOSE_TAG}. No prose outside the tags.
-3. Order the messages top-down for streaming: createSurface first, then updateComponents with the "root" component first, then updateDataModel.
-4. Copy tool results verbatim into the data model — never invent restaurants. If the tool returns an empty array, render a surface with a single Text component apologizing that no restaurants were found for that location.
-
-## UI rules
-
-- Restaurant search results: follow RESTAURANT_LIST_EXAMPLE (surfaceId "default"); each card's button fires the "book_restaurant" action.
-- Query starting with "USER_WANTS_TO_BOOK": follow BOOKING_FORM_EXAMPLE (surfaceId "booking-form"); the submit button fires the "submit_booking" action.
-- Query starting with "User submitted a booking": follow CONFIRMATION_EXAMPLE (surfaceId "confirmation").
-- Always use catalogId ${CATALOG_ID}.
-
-### Examples:
-
-${renderExample(
-  "RESTAURANT_LIST_EXAMPLE",
-  buildRestaurantListA2ui(
-    "Top 2 Chinese Restaurants in New York",
-    EXAMPLE_RESTAURANTS,
-  ),
-)}
-${renderExample(
-  "BOOKING_FORM_EXAMPLE",
-  buildBookingFormA2ui(
-    "Golden Dragon",
-    "http://localhost:10002/static/noodles.jpeg",
-    "12 Mott St, New York, NY 10013",
-  ),
-)}
-${renderExample(
-  "CONFIRMATION_EXAMPLE",
-  buildConfirmationA2ui(
-    "Golden Dragon",
-    "4",
-    "2026-08-20T19:00",
-    "Vegetarian",
-    "http://localhost:10002/static/noodles.jpeg",
-  ),
-)}`;
-
-const TEXT_SYSTEM_PROMPT = `You are a helpful restaurant finding assistant. You help users find restaurants based on their criteria (cuisine, location, count).
-
-When the user asks for restaurants:
-
-1. Extract the cuisine type, location, and number of restaurants they want.
-2. Call the get_restaurants tool with those parameters.
-3. After getting results, summarize them briefly.
-
-When the user wants to book a restaurant (query starts with "USER_WANTS_TO_BOOK"):
-
-- Respond acknowledging the booking request.
-
-When the user submits a booking (query starts with "User submitted a booking"):
-
-- Respond with a confirmation message.`;
 
 const TOOLS: OpenAI.ChatCompletionTool[] = [
   {

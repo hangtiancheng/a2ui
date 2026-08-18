@@ -1,3 +1,5 @@
+import { CATALOG_ID } from "./catalog.js";
+
 interface RestaurantItem {
   name: string;
   detail: string;
@@ -7,10 +9,6 @@ interface RestaurantItem {
   address: string;
 }
 
-const CATALOG_ID =
-  process.env.A2UI_MODE === "shadcn"
-    ? "https://raw.githubusercontent.com/hangtiancheng/a2ui/main/packages/shadcn/src/catalog/index.ts"
-    : "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
 export function buildRestaurantListA2ui(
   title: string,
   items: RestaurantItem[],
