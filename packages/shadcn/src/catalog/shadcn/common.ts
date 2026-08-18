@@ -2,23 +2,8 @@ import { z } from "zod/v3"
 
 import {
   ActionSchema,
-  ChildListSchema,
-  ComponentIdSchema,
-  DynamicBooleanSchema,
-  DynamicNumberSchema,
   DynamicStringSchema,
-  DynamicValueSchema,
 } from "@a2ui/web_core/v0_9"
-
-export {
-  ActionSchema,
-  ChildListSchema,
-  ComponentIdSchema,
-  DynamicBooleanSchema,
-  DynamicNumberSchema,
-  DynamicStringSchema,
-  DynamicValueSchema,
-}
 
 // Shared `weight` prop, mirroring the basic catalog's CommonProps.
 export const WEIGHT = {

@@ -37,13 +37,15 @@ import {
 import { CatalogIcon } from "../components/icon"
 import { weightStyle } from "../utils"
 import {
-  ChildListSchema,
-  ComponentIdSchema,
-  DynamicStringSchema,
   ICON_NAME,
   WEIGHT,
 } from "./common"
 import { z } from "zod/v3"
+import {
+  ChildListSchema,
+  ComponentIdSchema,
+  DynamicStringSchema,
+} from "@a2ui/web_core/v0_9"
 
 export const AttachmentApi = {
   name: "Attachment",

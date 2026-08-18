@@ -57,14 +57,15 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import {
-  ActionSchema,
-  ComponentIdSchema,
-  DynamicStringSchema,
   MENU_ENTRY,
   WEIGHT,
 } from "./common"
 import { z } from "zod/v3"
-
+import {
+  ActionSchema,
+  ComponentIdSchema,
+  DynamicStringSchema,
+} from "@a2ui/web_core/v0_9"
 type MenuEntryDef = {
   label?: unknown
   action?: unknown

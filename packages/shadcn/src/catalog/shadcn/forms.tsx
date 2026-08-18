@@ -50,13 +50,15 @@ import { Switch as UISwitch } from "@/components/ui/switch"
 import { Toggle as UIToggle } from "@/components/ui/toggle"
 import { weightStyle } from "../utils"
 import {
+  OPTION,
+  WEIGHT,
+} from "./common"
+import {
   ActionSchema,
   ComponentIdSchema,
   DynamicBooleanSchema,
   DynamicStringSchema,
-  OPTION,
-  WEIGHT,
-} from "./common"
+} from "@a2ui/web_core/v0_9"
 import { z } from "zod/v3"
 
 type OptionDef = { label?: unknown; value?: unknown }

@@ -39,13 +39,15 @@ import {
 import { ChildList } from "../components/child-list"
 import { weightStyle } from "../utils"
 import {
+  WEIGHT,
+} from "./common"
+import { z } from "zod/v3"
+import {
   ChildListSchema,
   ComponentIdSchema,
   DynamicStringSchema,
   DynamicValueSchema,
-  WEIGHT,
-} from "./common"
-import { z } from "zod/v3"
+} from "@a2ui/web_core/v0_9"
 
 export const AccordionApi = {
   name: "Accordion",

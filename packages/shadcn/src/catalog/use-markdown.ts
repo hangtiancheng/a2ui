@@ -8,6 +8,7 @@ export function useMarkdown(text: string) {
 
   useEffect(() => {
     if (!renderer) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHtml(null)
       return
     }

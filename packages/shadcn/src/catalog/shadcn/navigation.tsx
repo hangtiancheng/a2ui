@@ -37,14 +37,17 @@ import {
 } from "@/components/ui/pagination"
 import { weightStyle } from "../utils"
 import {
-  ActionSchema,
-  ComponentIdSchema,
-  DynamicNumberSchema,
-  DynamicStringSchema,
   MENU_ENTRY,
   WEIGHT,
 } from "./common"
 import { z } from "zod/v3"
+import {
+  ActionSchema,
+  ComponentIdSchema,
+  DynamicNumberSchema,
+  DynamicStringSchema,
+} from "@a2ui/web_core/v0_9"
+
 type MenuEntryDef = {
   label?: unknown
   action?: unknown
