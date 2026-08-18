@@ -7,7 +7,7 @@ import { CalendarIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
   Popover,
@@ -52,6 +52,8 @@ export const DateTimeInput = createComponentImplementation(
     const enableTime = !!props.enableTime;
     if (!(enableDate || enableTime)) return null;
 
+    const errors = props.validationErrors;
+    const hasError = !!errors && errors.length > 0;
     const { date, time } = splitValue(props.value);
     const selected = date ? new Date(`${date}T00:00:00`) : undefined;
 
@@ -85,7 +87,7 @@ export const DateTimeInput = createComponentImplementation(
     };
 
     return (
-      <Field>
+      <Field data-invalid={hasError || undefined}>
         {props.label && (
           <FieldLabel htmlFor={enableTime ? id : undefined}>
             {props.label}
@@ -136,10 +138,12 @@ export const DateTimeInput = createComponentImplementation(
               min={timeBound(minParts)}
               max={timeBound(maxParts)}
               onChange={(e) => commit(date, e.target.value)}
+              aria-invalid={hasError || undefined}
               className={cn(TIME_INPUT_CLASSES, enableDate && "w-32")}
             />
           )}
         </div>
+        {hasError && <FieldError>{errors[0]}</FieldError>}
       </Field>
     );
   },

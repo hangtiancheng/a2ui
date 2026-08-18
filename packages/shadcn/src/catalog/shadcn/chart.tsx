@@ -23,7 +23,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { weightStyle } from "../utils";
-import { WEIGHT } from "./common";
+import { COMMON } from "./common";
 import { DynamicValueSchema } from "@a2ui/web_core/v0_9";
 
 import { z } from "zod/v3";
@@ -32,7 +32,7 @@ export const ChartApi = {
   name: "Chart",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       variant: z
         .enum(["bar", "line", "area", "pie"])
         .describe("The chart type."),

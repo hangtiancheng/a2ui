@@ -4,7 +4,7 @@ import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { ChoicePickerApi } from "@a2ui/web_core/v0_9/basic_catalog";
 
 import { Checkbox } from "@/components/ui/checkbox";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -19,6 +19,8 @@ export const ChoicePicker = createComponentImplementation(
   ({ props }) => {
     const id = useId();
     const [filter, setFilter] = useState("");
+    const errors = props.validationErrors;
+    const hasError = !!errors && errors.length > 0;
 
     const values: string[] = Array.isArray(props.value)
       ? (props.value as string[])
@@ -45,7 +47,7 @@ export const ChoicePicker = createComponentImplementation(
     );
 
     return (
-      <Field>
+      <Field data-invalid={hasError || undefined}>
         {props.label && <FieldLabel>{props.label}</FieldLabel>}
         {props.filterable && (
           <Input
@@ -96,6 +98,7 @@ export const ChoicePicker = createComponentImplementation(
             ))}
           </div>
         )}
+        {hasError && <FieldError>{errors[0]}</FieldError>}
       </Field>
     );
   },

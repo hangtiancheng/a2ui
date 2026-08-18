@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/questionnaire";
 import { CatalogIcon } from "../components/icon";
 import { weightStyle } from "../utils";
-import { ICON_NAME, WEIGHT } from "./common";
+import { ICON_NAME, COMMON } from "./common";
 import { z } from "zod/v3";
 import {
   ActionSchema,
@@ -56,7 +56,7 @@ export const AttachmentApi = {
   name: "Attachment",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       title: DynamicStringSchema.describe("The attachment file name or title."),
       description: DynamicStringSchema.describe(
         "Secondary text such as size or type.",
@@ -108,7 +108,7 @@ export const BubbleApi = {
   name: "Bubble",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       child: ComponentIdSchema.describe(
         "The ID of the bubble content component.",
       ),
@@ -155,7 +155,7 @@ export const MarkerApi = {
   name: "Marker",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       text: DynamicStringSchema.describe(
         "The marker text, e.g. a date or system note.",
       ),
@@ -183,7 +183,7 @@ export const MessageApi = {
   name: "Message",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       child: ComponentIdSchema.describe(
         "The ID of the message content component.",
       ),
@@ -213,7 +213,7 @@ export const MessageScrollerApi = {
   name: "MessageScroller",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       children: ChildListSchema.describe(
         "The IDs of the message components, oldest first.",
       ),
@@ -264,7 +264,7 @@ export const QuestionnaireApi = {
   name: "Questionnaire",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       items: z
         .array(
           z.object({

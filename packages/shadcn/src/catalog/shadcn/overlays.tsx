@@ -56,7 +56,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { MENU_ENTRY, WEIGHT } from "./common";
+import { MENU_ENTRY, COMMON } from "./common";
 import { z } from "zod/v3";
 import {
   ActionSchema,
@@ -76,7 +76,7 @@ export const AlertDialogApi = {
   name: "AlertDialog",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       trigger: ComponentIdSchema.describe(
         "The ID of the component that opens the dialog.",
       ),
@@ -126,7 +126,7 @@ export const ContextMenuApi = {
   name: "ContextMenu",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       child: ComponentIdSchema.describe(
         "The ID of the component that acts as the right-click area.",
       ),
@@ -170,7 +170,7 @@ export const DrawerApi = {
   name: "Drawer",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       trigger: ComponentIdSchema.describe(
         "The ID of the component that opens the drawer.",
       ),
@@ -211,7 +211,7 @@ export const DropdownMenuApi = {
   name: "DropdownMenu",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       trigger: ComponentIdSchema.describe(
         "The ID of the component that opens the menu.",
       ),
@@ -255,7 +255,7 @@ export const HoverCardApi = {
   name: "HoverCard",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       trigger: ComponentIdSchema.describe(
         "The ID of the component that reveals the card on hover.",
       ),
@@ -284,7 +284,7 @@ export const PopoverApi = {
   name: "Popover",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       trigger: ComponentIdSchema.describe(
         "The ID of the component that opens the popover.",
       ),
@@ -313,7 +313,7 @@ export const SheetApi = {
   name: "Sheet",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       trigger: ComponentIdSchema.describe(
         "The ID of the component that opens the sheet.",
       ),
@@ -355,7 +355,7 @@ export const TooltipApi = {
   name: "Tooltip",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       trigger: ComponentIdSchema.describe(
         "The ID of the component the tooltip is attached to.",
       ),

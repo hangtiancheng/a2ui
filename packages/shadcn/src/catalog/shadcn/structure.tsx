@@ -39,7 +39,7 @@ import {
 import { cn } from "@/lib/utils";
 import { ChildList } from "../components/child-list";
 import { weightStyle } from "../utils";
-import { WEIGHT } from "./common";
+import { COMMON } from "./common";
 import { z } from "zod/v3";
 import {
   ChildListSchema,
@@ -52,7 +52,7 @@ export const AccordionApi = {
   name: "Accordion",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       items: z
         .array(
           z.object({
@@ -96,7 +96,7 @@ export const ButtonGroupApi = {
   name: "ButtonGroup",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       children: ChildListSchema.describe(
         "The IDs of the grouped Button components.",
       ),
@@ -121,7 +121,7 @@ export const CarouselApi = {
   name: "Carousel",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       children: ChildListSchema.describe("The IDs of the slide components."),
       orientation: z
         .enum(["horizontal", "vertical"])
@@ -169,7 +169,7 @@ export const CollapsibleApi = {
   name: "Collapsible",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       label: DynamicStringSchema.describe("The trigger label."),
       child: ComponentIdSchema.describe(
         "The ID of the collapsible content component.",
@@ -202,7 +202,7 @@ export const ResizableApi = {
   name: "Resizable",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       direction: z.enum(["horizontal", "vertical"]).default("horizontal"),
       panels: z
         .array(
@@ -264,7 +264,7 @@ export const TableApi = {
   name: "Table",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       caption: DynamicStringSchema.describe(
         "Optional table caption.",
       ).optional(),

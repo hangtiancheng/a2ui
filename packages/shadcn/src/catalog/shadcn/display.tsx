@@ -41,7 +41,7 @@ import { Spinner as UISpinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 import { CatalogIcon } from "../components/icon";
 import { weightStyle } from "../utils";
-import { ICON_NAME, WEIGHT } from "./common";
+import { ICON_NAME, COMMON } from "./common";
 import { z } from "zod/v3";
 import {
   ComponentIdSchema,
@@ -53,7 +53,7 @@ export const AlertApi = {
   name: "Alert",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       title: DynamicStringSchema.describe("The alert title."),
       description: DynamicStringSchema.describe(
         "The alert description.",
@@ -81,7 +81,7 @@ export const AspectRatioApi = {
   name: "AspectRatio",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       ratio: z
         .number()
         .describe("The width / height ratio, e.g. 1.777 for 16:9.")
@@ -106,7 +106,7 @@ export const AvatarApi = {
   name: "Avatar",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       src: DynamicStringSchema.describe(
         "The image URL of the avatar.",
       ).optional(),
@@ -129,7 +129,7 @@ export const BadgeApi = {
   name: "Badge",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       text: DynamicStringSchema.describe("The badge text."),
       variant: z
         .enum([
@@ -161,7 +161,7 @@ export const EmptyApi = {
   name: "Empty",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       title: DynamicStringSchema.describe("The empty state title."),
       description: DynamicStringSchema.describe(
         "The empty state description.",
@@ -198,7 +198,7 @@ export const ItemApi = {
   name: "Item",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       title: DynamicStringSchema.describe("The item title."),
       description: DynamicStringSchema.describe(
         "The item description.",
@@ -244,7 +244,7 @@ export const KbdApi = {
   name: "Kbd",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       keys: z
         .array(z.string())
         .min(1)
@@ -265,7 +265,7 @@ export const LabelApi = {
   name: "Label",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       text: DynamicStringSchema.describe("The label text."),
     })
     .strict(),
@@ -279,7 +279,7 @@ export const ProgressApi = {
   name: "Progress",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       value: DynamicNumberSchema.describe(
         "The progress value between 0 and 100.",
       ),
@@ -311,7 +311,7 @@ export const ScrollAreaApi = {
   name: "ScrollArea",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       child: ComponentIdSchema.describe(
         "The ID of the scrollable child component.",
       ),
@@ -341,7 +341,7 @@ export const SkeletonApi = {
   name: "Skeleton",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       width: z
         .number()
         .describe("Width in pixels; omit for full width.")
@@ -376,7 +376,7 @@ export const SpinnerApi = {
   name: "Spinner",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       size: z.number().describe("The size in pixels.").optional(),
     })
     .strict(),

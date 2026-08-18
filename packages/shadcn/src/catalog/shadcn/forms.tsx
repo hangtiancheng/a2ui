@@ -49,7 +49,7 @@ import {
 import { Switch as UISwitch } from "@/components/ui/switch";
 import { Toggle as UIToggle } from "@/components/ui/toggle";
 import { weightStyle } from "../utils";
-import { WEIGHT } from "./common";
+import { COMMON } from "./common";
 import {
   ActionSchema,
   ComponentIdSchema,
@@ -75,7 +75,7 @@ export const CalendarApi = {
   name: "Calendar",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       value: DynamicStringSchema.describe(
         "The selected date as YYYY-MM-DD; bind to the data model for two-way sync.",
       ).optional(),
@@ -112,7 +112,7 @@ export const ComboboxApi = {
   name: "Combobox",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       label: DynamicStringSchema.describe("The field label.").optional(),
       placeholder: z.string().describe("The input placeholder.").optional(),
       options: OPTIONS,
@@ -161,7 +161,7 @@ export const CommandApi = {
   name: "Command",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       placeholder: z
         .string()
         .describe("The search input placeholder.")
@@ -235,7 +235,7 @@ export const FieldApi = {
   name: "Field",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       label: DynamicStringSchema.describe("The field label."),
       description: DynamicStringSchema.describe(
         "The field description.",
@@ -273,7 +273,7 @@ export const InputGroupApi = {
   name: "InputGroup",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       value: DynamicStringSchema.describe(
         "The input value; bind to the data model for two-way sync.",
       ).optional(),
@@ -330,7 +330,7 @@ export const InputOtpApi = {
   name: "InputOtp",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       length: z
         .number()
         .min(1)
@@ -373,7 +373,7 @@ export const NativeSelectApi = {
   name: "NativeSelect",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       label: DynamicStringSchema.describe("The field label.").optional(),
       options: OPTIONS,
       value: DynamicStringSchema.describe(
@@ -409,7 +409,7 @@ export const SelectApi = {
   name: "Select",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       label: DynamicStringSchema.describe("The field label.").optional(),
       placeholder: z
         .string()
@@ -457,7 +457,7 @@ export const SwitchApi = {
   name: "Switch",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       label: DynamicStringSchema.describe("The switch label.").optional(),
       value: DynamicBooleanSchema.describe(
         "Whether the switch is on; bind to the data model for two-way sync.",
@@ -480,7 +480,7 @@ export const ToggleApi = {
   name: "Toggle",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       text: DynamicStringSchema.describe("The toggle label."),
       value: DynamicBooleanSchema.describe(
         "Whether the toggle is pressed; bind to the data model for two-way sync.",

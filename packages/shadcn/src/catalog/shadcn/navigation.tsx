@@ -36,7 +36,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { weightStyle } from "../utils";
-import { MENU_ENTRY, WEIGHT } from "./common";
+import { MENU_ENTRY, COMMON } from "./common";
 import { z } from "zod/v3";
 import {
   ActionSchema,
@@ -56,7 +56,7 @@ export const BreadcrumbApi = {
   name: "Breadcrumb",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       items: z
         .array(
           z.object({
@@ -114,7 +114,7 @@ export const MenubarApi = {
   name: "Menubar",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       menus: z
         .array(
           z.object({
@@ -174,7 +174,7 @@ export const NavigationMenuApi = {
   name: "NavigationMenu",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       items: z
         .array(
           z.object({
@@ -238,7 +238,7 @@ export const PaginationApi = {
   name: "Pagination",
   schema: z
     .object({
-      ...WEIGHT,
+      ...COMMON,
       page: DynamicNumberSchema.describe(
         "The current page (1-based); bind to the data model for two-way sync.",
       ),
