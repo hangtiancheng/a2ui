@@ -1,32 +1,32 @@
 {
-	"name": "server",
-	"version": "0.0.0",
-	"description": "",
-	"private": true,
-	"scripts": {
-		"dev": "tsx watch src/index.ts",
-		"start": "tsx src/index.ts",
-		"build": "tsc",
-		"serve": "node dist/index.js",
-		"format": "biome format --write .",
-		"check": "biome check --write ."
-	},
-	"keywords": [],
-	"author": "https://github.com/hangtiancheng",
-	"license": "MIT",
-	"type": "module",
-	"dependencies": {
-		"@a2ui/web_core": "^0.10.6",
-		"cors": "^2.8.6",
-		"dotenv": "^17.4.2",
-		"express": "^5.2.1",
-		"openai": "^7.4.0",
-		"uuid": "^14.0.1"
-	},
-	"devDependencies": {
-		"@types/cors": "^2.8.19",
-		"@types/express": "^5.0.6",
-		"@types/node": "^24.13.3",
-		"tsx": "^4.23.12"
-	}
+  "name": "server",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "serve": "node dist/index.js",
+    "format": "biome format --write .",
+    "check": "biome check --write ."
+  },
+  "keywords": [],
+  "author": "https://github.com/hangtiancheng",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@a2ui/web_core": "^0.10.6",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "openai": "^7.4.0",
+    "uuid": "^14.0.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.13.3",
+    "tsx": "^4.23.12"
+  }
 }

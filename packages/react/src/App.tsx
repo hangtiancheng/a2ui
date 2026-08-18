@@ -1,6 +1,13 @@
 /// <reference types="vite/client" />
 
-import { useState, useEffect, useCallback, useMemo, useRef, type SyntheticEvent } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  type SyntheticEvent,
+} from "react";
 import {
   A2uiSurface,
   basicCatalog,
@@ -44,9 +51,9 @@ export function App() {
     document.title = config.title;
   }, [config]);
 
-  const sendAndProcessRef = useRef<((message: A2uiClientMessage | string) => Promise<void>) | null>(
-    null,
-  );
+  const sendAndProcessRef = useRef<
+    ((message: A2uiClientMessage | string) => Promise<void>) | null
+  >(null);
 
   const processor = useMemo(() => {
     return new MessageProcessor([basicCatalog], (action) => {
@@ -78,22 +85,29 @@ interface ShellContentProps {
   processor: MessageProcessor<ReactComponentImplementation>;
 }
 
-function ShellContent({ config, client, sendAndProcessRef, processor }: ShellContentProps) {
+function ShellContent({
+  config,
+  client,
+  sendAndProcessRef,
+  processor,
+}: ShellContentProps) {
   const [requesting, setRequesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<A2uiMessage[]>([]);
   const [loadingTextIndex, setLoadingTextIndex] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     if (prefersDark) {
       document.body.classList.add("dark");
     }
     return prefersDark;
   });
 
-  const [surfaces, setSurfaces] = useState<SurfaceModel<ReactComponentImplementation>[]>(() =>
-    Array.from(processor.model.surfacesMap.values()),
-  );
+  const [surfaces, setSurfaces] = useState<
+    SurfaceModel<ReactComponentImplementation>[]
+  >(() => Array.from(processor.model.surfacesMap.values()));
 
   useEffect(() => {
     const sub1 = processor.onSurfaceCreated((surface) => {
@@ -110,7 +124,8 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
 
   useEffect(() => {
     if (!requesting) return;
-    if (!Array.isArray(config.loadingText) || config.loadingText.length <= 1) return;
+    if (!Array.isArray(config.loadingText) || config.loadingText.length <= 1)
+      return;
 
     const interval = setInterval(() => {
       setLoadingTextIndex((prev) => (prev + 1) % config.loadingText!.length);
@@ -119,32 +134,35 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
     return () => clearInterval(interval);
   }, [requesting, config.loadingText]);
 
-  const getMockResponse = useCallback((message: A2uiClientMessage | string): A2uiMessage[] => {
-    if (typeof message === "object" && "action" in message) {
-      const action = message.action;
-      const context = action.context || {};
+  const getMockResponse = useCallback(
+    (message: A2uiClientMessage | string): A2uiMessage[] => {
+      if (typeof message === "object" && "action" in message) {
+        const action = message.action;
+        const context = action.context || {};
 
-      if (action.name === "book_restaurant") {
-        return createBookingFormMessages(
-          String(context.restaurantName || "Restaurant"),
-          String(context.imageUrl || ""),
-          String(context.address || ""),
-        );
+        if (action.name === "book_restaurant") {
+          return createBookingFormMessages(
+            String(context.restaurantName || "Restaurant"),
+            String(context.imageUrl || ""),
+            String(context.address || ""),
+          );
+        }
+
+        if (action.name === "submit_booking") {
+          return createConfirmationMessages(
+            String(context.restaurantName || "Restaurant"),
+            String(context.partySize || "2"),
+            String(context.reservationTime || ""),
+            String(context.dietary || ""),
+            String(context.imageUrl || ""),
+          );
+        }
       }
 
-      if (action.name === "submit_booking") {
-        return createConfirmationMessages(
-          String(context.restaurantName || "Restaurant"),
-          String(context.partySize || "2"),
-          String(context.reservationTime || ""),
-          String(context.dietary || ""),
-          String(context.imageUrl || ""),
-        );
-      }
-    }
-
-    return createRestaurantListMessages();
-  }, []);
+      return createRestaurantListMessages();
+    },
+    [],
+  );
 
   const sendAndProcess = useCallback(
     async (message: A2uiClientMessage | string) => {
@@ -246,7 +264,7 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
         >
           {config.heroImage && (
             <div
-              className="aspect-video w-full max-w-md bg-contain bg-center bg-no-repeat [background-image:var(--background-image-light)] dark:[background-image:var(--background-image-dark)]"
+              className="aspect-video w-full max-w-md [background-image:var(--background-image-light)] bg-contain bg-center bg-no-repeat dark:[background-image:var(--background-image-dark)]"
               style={
                 {
                   "--background-image-light": `url(${config.heroImage})`,
@@ -283,7 +301,9 @@ function ShellContent({ config, client, sendAndProcessRef, processor }: ShellCon
       {requesting && (
         <div className="flex min-h-52 w-full flex-1 flex-col items-center justify-center gap-4">
           <div className="size-12 animate-spin rounded-full border-4 border-indigo-200 border-l-indigo-600 dark:border-slate-700 dark:border-l-indigo-400" />
-          <div className="text-slate-600 dark:text-slate-300">{loadingText}</div>
+          <div className="text-slate-600 dark:text-slate-300">
+            {loadingText}
+          </div>
         </div>
       )}
 

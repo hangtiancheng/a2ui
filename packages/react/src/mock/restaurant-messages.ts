@@ -4,7 +4,8 @@ const restaurantData = [
   {
     name: "Xi'an Famous Foods",
     detail: "Spicy and savory hand-pulled noodles.",
-    imageUrl: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400",
+    imageUrl:
+      "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400",
     rating: "★★★★☆",
     infoLink: "[More Info](https://www.xianfoods.com/)",
     address: "81 St Marks Pl, New York, NY 10003",
@@ -12,7 +13,8 @@ const restaurantData = [
   {
     name: "Han Dynasty",
     detail: "Authentic Sichuan cuisine.",
-    imageUrl: "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400",
+    imageUrl:
+      "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400",
     rating: "★★★★☆",
     infoLink: "[More Info](https://www.handynasty.net/)",
     address: "90 3rd Ave, New York, NY 10003",
@@ -49,7 +51,8 @@ export function createRestaurantListMessages(): A2uiMessage[] {
       version: "v0.9",
       createSurface: {
         surfaceId: "default",
-        catalogId: "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+        catalogId:
+          "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
         theme: { primaryColor: "#FF0000", font: "Roboto" },
       },
     },
@@ -182,7 +185,8 @@ export function createBookingFormMessages(
       version: "v0.9",
       createSurface: {
         surfaceId: "booking-form",
-        catalogId: "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+        catalogId:
+          "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
         theme: { primaryColor: "#FF0000", font: "Roboto" },
       },
     },
@@ -298,7 +302,8 @@ export function createConfirmationMessages(
       version: "v0.9",
       createSurface: {
         surfaceId: "confirmation",
-        catalogId: "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+        catalogId:
+          "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
         theme: { primaryColor: "#FF0000", font: "Roboto" },
       },
     },

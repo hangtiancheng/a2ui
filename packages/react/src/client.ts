@@ -20,16 +20,24 @@ export class A2UIClient {
     message: A2uiClientMessage | string,
     onChunk?: (messages: A2uiMessage[]) => void,
   ): Promise<A2uiMessage[]> {
-    const body = typeof message === "string" ? message : JSON.stringify(message);
+    const body =
+      typeof message === "string" ? message : JSON.stringify(message);
 
     const response = await fetch("/a2a", {
       method: "POST",
-      headers: this.#contextId ? { "X-A2A-Context-Id": this.#contextId } : undefined,
+      headers: this.#contextId
+        ? { "X-A2A-Context-Id": this.#contextId }
+        : undefined,
       body: body,
     });
 
-    if (!response.ok && !response.headers.get("Content-Type")?.includes("application/json")) {
-      throw new Error(`Server error: ${response.status} ${response.statusText}`);
+    if (
+      !response.ok &&
+      !response.headers.get("Content-Type")?.includes("application/json")
+    ) {
+      throw new Error(
+        `Server error: ${response.status} ${response.statusText}`,
+      );
     }
 
     const contentType = response.headers.get("Content-Type");
@@ -108,7 +116,11 @@ export class A2UIClient {
         if (part.kind === "data" && part.data) {
           const parsed = A2uiMessageSchema.safeParse(part.data);
           if (!parsed.success) {
-            console.error("Dropping invalid A2UI message:", parsed.error.issues, part.data);
+            console.error(
+              "Dropping invalid A2UI message:",
+              parsed.error.issues,
+              part.data,
+            );
             continue;
           }
           allMessages.push(parsed.data);

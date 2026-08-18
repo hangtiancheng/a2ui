@@ -8,7 +8,9 @@ const SERVER_URL = process.env["A2A_SERVER_URL"] || "http://localhost:10002";
 const isJson = (str: string) => {
   try {
     const parsed = JSON.parse(str);
-    return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+    return (
+      typeof parsed === "object" && parsed !== null && !Array.isArray(parsed)
+    );
   } catch {
     return false;
   }
@@ -40,11 +42,19 @@ export const plugin = (): Plugin => {
             }>;
 
             if (isJson(originalBody)) {
-              console.log("[a2a-middleware] Received JSON UI event:", originalBody);
+              console.log(
+                "[a2a-middleware] Received JSON UI event:",
+                originalBody,
+              );
               const clientEvent = JSON.parse(originalBody);
-              parts = [{ kind: "data", data: clientEvent, mimeType: A2UI_MIME_TYPE }];
+              parts = [
+                { kind: "data", data: clientEvent, mimeType: A2UI_MIME_TYPE },
+              ];
             } else {
-              console.log("[a2a-middleware] Received text query:", originalBody);
+              console.log(
+                "[a2a-middleware] Received text query:",
+                originalBody,
+              );
               parts = [{ kind: "text", text: originalBody }];
             }
 
@@ -62,7 +72,8 @@ export const plugin = (): Plugin => {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
-                  "X-A2A-Extensions": "https://a2ui.org/a2a-extension/a2ui/v0.9",
+                  "X-A2A-Extensions":
+                    "https://a2ui.org/a2a-extension/a2ui/v0.9",
                 },
                 body: JSON.stringify(messagePayload),
               });

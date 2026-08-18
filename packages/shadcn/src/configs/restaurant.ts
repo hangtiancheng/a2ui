@@ -1,4 +1,4 @@
-import type { AppConfig } from "./types"
+import type { AppConfig } from "./types";
 
 export const config: AppConfig = {
   key: "restaurant",
@@ -13,4 +13,4 @@ export const config: AppConfig = {
     "Almost there...",
   ],
   serverUrl: "http://localhost:10002",
-}
+};

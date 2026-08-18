@@ -1,27 +1,27 @@
-import type { A2uiMessage } from "@a2ui/web_core/v0_9"
+import type { A2uiMessage } from "@a2ui/web_core/v0_9";
 
-const SURFACE_ID = "gallery-surface"
+const SURFACE_ID = "gallery-surface";
 const CATALOG_ID =
-  "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json"
+  "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
 
 const heading = (id: string, text: string) => ({
   id,
   component: "Text",
   text,
   variant: "h3",
-})
+});
 const text = (id: string, t: string, variant?: string) => ({
   id,
   component: "Text",
   text: t,
   ...(variant ? { variant } : {}),
-})
+});
 const button = (id: string, child: string, variant?: string) => ({
   id,
   component: "Button",
   child,
   ...(variant ? { variant } : {}),
-})
+});
 
 // One surface referencing every shadcn extension component at least once.
 export function createGalleryMessages(): A2uiMessage[] {
@@ -142,7 +142,7 @@ export function createGalleryMessages(): A2uiMessage[] {
     },
     text(
       "g-scroll-text",
-      "Line one of scrollable content.\n\nLine two keeps going.\n\nLine three keeps going.\n\nLine four keeps going.\n\nLine five ends here."
+      "Line one of scrollable content.\n\nLine two keeps going.\n\nLine three keeps going.\n\nLine four keeps going.\n\nLine five ends here.",
     ),
     { id: "g-label", component: "Label", text: "A standalone label" },
 
@@ -563,7 +563,7 @@ export function createGalleryMessages(): A2uiMessage[] {
       ],
       series: [{ key: "share", label: "Share" }],
     },
-  ]
+  ];
 
   return [
     {
@@ -595,5 +595,5 @@ export function createGalleryMessages(): A2uiMessage[] {
       version: "v0.9",
       updateComponents: { surfaceId: SURFACE_ID, components },
     },
-  ] as A2uiMessage[]
+  ] as A2uiMessage[];
 }

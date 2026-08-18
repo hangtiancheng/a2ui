@@ -10,7 +10,11 @@ import {
   TriangleAlert,
   X,
 } from "lucide";
-import { type SnackbarMessage, type SnackbarUUID, SnackType } from "../types/types.js";
+import {
+  type SnackbarMessage,
+  type SnackbarUUID,
+  SnackType,
+} from "../types/types.js";
 import { SnackbarActionEvent } from "../events/events.js";
 
 const DEFAULT_TIMEOUT = 8000;
@@ -53,7 +57,9 @@ export class Snackbar extends LitElement {
   }
 
   show(message: SnackbarMessage, replaceAll = false) {
-    const existingMessage = this.#messages.findIndex((msg) => msg.id === message.id);
+    const existingMessage = this.#messages.findIndex(
+      (msg) => msg.id === message.id,
+    );
     if (existingMessage === -1) {
       if (replaceAll) this.#messages.length = 0;
       this.#messages.push(message);
@@ -96,14 +102,21 @@ export class Snackbar extends LitElement {
 
     const base =
       "fixed bottom-7 left-1/2 z-50 flex w-[60svw] max-w-2xl -translate-x-1/2 items-center rounded-lg px-6 py-3 text-base shadow-lg transition-opacity duration-300";
-    const visibility = this.active ? "opacity-100" : "pointer-events-none opacity-0";
-    const colors = this.error ? "bg-red-50 text-red-700" : "bg-slate-800 text-white";
+    const visibility = this.active
+      ? "opacity-100"
+      : "pointer-events-none opacity-0";
+    const colors = this.error
+      ? "bg-red-50 text-red-700"
+      : "bg-slate-800 text-white";
 
     return html`
       <div class="${base} ${visibility} ${colors}">
         ${
           iconNode
-            ? icon(iconNode, `mr-4 size-6 shrink-0 ${pending ? "animate-spin" : ""}`)
+            ? icon(
+                iconNode,
+                `mr-4 size-6 shrink-0 ${pending ? "animate-spin" : ""}`,
+              )
             : nothing
         }
         <div class="mr-11 flex-1">
@@ -129,7 +142,11 @@ export class Snackbar extends LitElement {
                     @click=${() => {
                       this.hide();
                       this.dispatchEvent(
-                        new SnackbarActionEvent(action.action, action.value, action.callback),
+                        new SnackbarActionEvent(
+                          action.action,
+                          action.value,
+                          action.callback,
+                        ),
                       );
                     }}
                   >

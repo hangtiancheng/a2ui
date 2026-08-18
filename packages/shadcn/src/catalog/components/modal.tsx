@@ -1,7 +1,7 @@
-import { createComponentImplementation } from "@a2ui/react/v0_9"
-import { ModalApi } from "@a2ui/web_core/v0_9/basic_catalog"
+import { createComponentImplementation } from "@a2ui/react/v0_9";
+import { ModalApi } from "@a2ui/web_core/v0_9/basic_catalog";
 
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 export const Modal = createComponentImplementation(
   ModalApi,
@@ -18,6 +18,6 @@ export const Modal = createComponentImplementation(
           {props.content ? buildChild(props.content) : null}
         </DialogContent>
       </Dialog>
-    )
-  }
-)
+    );
+  },
+);

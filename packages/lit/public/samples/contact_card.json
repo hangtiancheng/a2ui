@@ -19,7 +19,12 @@
         {
           "id": "main_column",
           "component": "Column",
-          "children": ["description_column", "div", "info_rows_column", "action_buttons_row"],
+          "children": [
+            "description_column",
+            "div",
+            "info_rows_column",
+            "action_buttons_row"
+          ],
           "align": "stretch"
         },
         {
@@ -34,7 +39,12 @@
         {
           "id": "description_column",
           "component": "Column",
-          "children": ["profile_image", "user_heading", "description_text_1", "description_text_2"],
+          "children": [
+            "profile_image",
+            "user_heading",
+            "description_text_1",
+            "description_text_2"
+          ],
           "align": "center"
         },
         {

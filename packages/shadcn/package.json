@@ -23,7 +23,6 @@
     "build": "vite build --mode lib",
     "build:app": "tsc -b && vite build",
     "lint": "eslint .",
-    "format": "prettier -w . --experimental-cli",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "shadcn": "shadcn add --all --yes"
@@ -64,8 +63,6 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17",
-    "prettier": "^3.8.3",
-    "prettier-plugin-tailwindcss": "^0.8.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "shadcn": "^4.18.0",

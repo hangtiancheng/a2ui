@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview",
-    "format": "oxfmt --write ."
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "preview": "vite preview"
   },
   "dependencies": {
     "@a2ui/lit": "^0.10.3",
@@ -21,7 +22,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
-    "oxfmt": "^0.63.0",
+    "oxlint": "^1.78.0",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
   }

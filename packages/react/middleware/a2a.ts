@@ -8,7 +8,9 @@ const SERVER_URL = process.env["A2A_SERVER_URL"] || "http://localhost:10002";
 const isJson = (str: string) => {
   try {
     const parsed = JSON.parse(str);
-    return typeof parsed === "object" && parsed !== null && !Array.isArray(parsed);
+    return (
+      typeof parsed === "object" && parsed !== null && !Array.isArray(parsed)
+    );
   } catch {
     return false;
   }
@@ -50,7 +52,10 @@ export const plugin = (): Plugin => {
             }>;
 
             if (isJson(originalBody)) {
-              console.log("[a2a-middleware] Received JSON UI event:", originalBody);
+              console.log(
+                "[a2a-middleware] Received JSON UI event:",
+                originalBody,
+              );
               const clientEvent = JSON.parse(originalBody);
               parts = [
                 {
@@ -60,7 +65,10 @@ export const plugin = (): Plugin => {
                 },
               ];
             } else {
-              console.log("[a2a-middleware] Received text query:", originalBody);
+              console.log(
+                "[a2a-middleware] Received text query:",
+                originalBody,
+              );
               parts = [
                 {
                   kind: "text",
@@ -71,7 +79,9 @@ export const plugin = (): Plugin => {
 
             const contextIdHeader = req.headers["x-a2a-context-id"];
             const contextId =
-              typeof contextIdHeader === "string" && contextIdHeader ? contextIdHeader : undefined;
+              typeof contextIdHeader === "string" && contextIdHeader
+                ? contextIdHeader
+                : undefined;
 
             const messagePayload = {
               message: {
@@ -88,7 +98,8 @@ export const plugin = (): Plugin => {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
-                  "X-A2A-Extensions": "https://a2ui.org/a2a-extension/a2ui/v0.9",
+                  "X-A2A-Extensions":
+                    "https://a2ui.org/a2a-extension/a2ui/v0.9",
                 },
                 body: JSON.stringify(messagePayload),
               });
@@ -141,7 +152,9 @@ export const plugin = (): Plugin => {
                 res.setHeader("Content-Type", "application/json");
                 res.end(JSON.stringify({ error: errorMessage }));
               } else {
-                res.write(`data: ${JSON.stringify([{ kind: "error", text: errorMessage }])}\n\n`);
+                res.write(
+                  `data: ${JSON.stringify([{ kind: "error", text: errorMessage }])}\n\n`,
+                );
                 res.end();
               }
             }

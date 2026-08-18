@@ -1,4 +1,4 @@
-import { createComponentImplementation } from "@a2ui/react/v0_9"
+import { createComponentImplementation } from "@a2ui/react/v0_9";
 
 import {
   AlertDialog as UIAlertDialog,
@@ -10,14 +10,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import {
   ContextMenu as UIContextMenu,
   ContextMenuContent,
   ContextMenuGroup,
   ContextMenuItem,
   ContextMenuTrigger,
-} from "@/components/ui/context-menu"
+} from "@/components/ui/context-menu";
 import {
   Drawer as UIDrawer,
   DrawerContent,
@@ -25,24 +25,24 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/ui/drawer";
 import {
   DropdownMenu as UIDropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   HoverCard as UIHoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@/components/ui/hover-card"
+} from "@/components/ui/hover-card";
 import {
   Popover as UIPopover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import {
   Sheet as UISheet,
   SheetContent,
@@ -50,30 +50,27 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 import {
   Tooltip as UITooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@/components/ui/tooltip"
-import {
-  MENU_ENTRY,
-  WEIGHT,
-} from "./common"
-import { z } from "zod/v3"
+} from "@/components/ui/tooltip";
+import { MENU_ENTRY, WEIGHT } from "./common";
+import { z } from "zod/v3";
 import {
   ActionSchema,
   ComponentIdSchema,
   DynamicStringSchema,
-} from "@a2ui/web_core/v0_9"
+} from "@a2ui/web_core/v0_9";
 type MenuEntryDef = {
-  label?: unknown
-  action?: unknown
-  variant?: unknown
-  disabled?: unknown
-}
+  label?: unknown;
+  action?: unknown;
+  variant?: unknown;
+  disabled?: unknown;
+};
 
-const TRIGGER = <span className="inline-block" />
+const TRIGGER = <span className="inline-block" />;
 
 export const AlertDialogApi = {
   name: "AlertDialog",
@@ -81,24 +78,24 @@ export const AlertDialogApi = {
     .object({
       ...WEIGHT,
       trigger: ComponentIdSchema.describe(
-        "The ID of the component that opens the dialog."
+        "The ID of the component that opens the dialog.",
       ),
       title: DynamicStringSchema.describe("The dialog title."),
       description: DynamicStringSchema.describe(
-        "The dialog description."
+        "The dialog description.",
       ).optional(),
       cancelLabel: DynamicStringSchema.describe(
-        "The cancel button label."
+        "The cancel button label.",
       ).optional(),
       actionLabel: DynamicStringSchema.describe(
-        "The confirm button label."
+        "The confirm button label.",
       ).optional(),
       action: ActionSchema.describe(
-        "The action dispatched on confirm."
+        "The action dispatched on confirm.",
       ).optional(),
     })
     .strict(),
-}
+};
 
 export const AlertDialog = createComponentImplementation(
   AlertDialogApi,
@@ -122,8 +119,8 @@ export const AlertDialog = createComponentImplementation(
         </AlertDialogFooter>
       </AlertDialogContent>
     </UIAlertDialog>
-  )
-)
+  ),
+);
 
 export const ContextMenuApi = {
   name: "ContextMenu",
@@ -131,12 +128,12 @@ export const ContextMenuApi = {
     .object({
       ...WEIGHT,
       child: ComponentIdSchema.describe(
-        "The ID of the component that acts as the right-click area."
+        "The ID of the component that acts as the right-click area.",
       ),
       items: z.array(MENU_ENTRY).min(1).describe("The menu entries."),
     })
     .strict(),
-}
+};
 
 export const ContextMenu = createComponentImplementation(
   ContextMenuApi,
@@ -166,8 +163,8 @@ export const ContextMenu = createComponentImplementation(
         </ContextMenuGroup>
       </ContextMenuContent>
     </UIContextMenu>
-  )
-)
+  ),
+);
 
 export const DrawerApi = {
   name: "Drawer",
@@ -175,18 +172,18 @@ export const DrawerApi = {
     .object({
       ...WEIGHT,
       trigger: ComponentIdSchema.describe(
-        "The ID of the component that opens the drawer."
+        "The ID of the component that opens the drawer.",
       ),
       title: DynamicStringSchema.describe("The drawer title."),
       description: DynamicStringSchema.describe(
-        "The drawer description."
+        "The drawer description.",
       ).optional(),
       child: ComponentIdSchema.describe(
-        "The ID of the drawer content component."
+        "The ID of the drawer content component.",
       ).optional(),
     })
     .strict(),
-}
+};
 
 export const Drawer = createComponentImplementation(
   DrawerApi,
@@ -207,8 +204,8 @@ export const Drawer = createComponentImplementation(
         )}
       </DrawerContent>
     </UIDrawer>
-  )
-)
+  ),
+);
 
 export const DropdownMenuApi = {
   name: "DropdownMenu",
@@ -216,12 +213,12 @@ export const DropdownMenuApi = {
     .object({
       ...WEIGHT,
       trigger: ComponentIdSchema.describe(
-        "The ID of the component that opens the menu."
+        "The ID of the component that opens the menu.",
       ),
       items: z.array(MENU_ENTRY).min(1).describe("The menu entries."),
     })
     .strict(),
-}
+};
 
 export const DropdownMenu = createComponentImplementation(
   DropdownMenuApi,
@@ -251,8 +248,8 @@ export const DropdownMenu = createComponentImplementation(
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </UIDropdownMenu>
-  )
-)
+  ),
+);
 
 export const HoverCardApi = {
   name: "HoverCard",
@@ -260,14 +257,14 @@ export const HoverCardApi = {
     .object({
       ...WEIGHT,
       trigger: ComponentIdSchema.describe(
-        "The ID of the component that reveals the card on hover."
+        "The ID of the component that reveals the card on hover.",
       ),
       child: ComponentIdSchema.describe(
-        "The ID of the card content component."
+        "The ID of the card content component.",
       ),
     })
     .strict(),
-}
+};
 
 export const HoverCard = createComponentImplementation(
   HoverCardApi,
@@ -280,8 +277,8 @@ export const HoverCard = createComponentImplementation(
         {props.child ? buildChild(props.child) : null}
       </HoverCardContent>
     </UIHoverCard>
-  )
-)
+  ),
+);
 
 export const PopoverApi = {
   name: "Popover",
@@ -289,14 +286,14 @@ export const PopoverApi = {
     .object({
       ...WEIGHT,
       trigger: ComponentIdSchema.describe(
-        "The ID of the component that opens the popover."
+        "The ID of the component that opens the popover.",
       ),
       child: ComponentIdSchema.describe(
-        "The ID of the popover content component."
+        "The ID of the popover content component.",
       ),
     })
     .strict(),
-}
+};
 
 export const Popover = createComponentImplementation(
   PopoverApi,
@@ -309,8 +306,8 @@ export const Popover = createComponentImplementation(
         {props.child ? buildChild(props.child) : null}
       </PopoverContent>
     </UIPopover>
-  )
-)
+  ),
+);
 
 export const SheetApi = {
   name: "Sheet",
@@ -318,14 +315,14 @@ export const SheetApi = {
     .object({
       ...WEIGHT,
       trigger: ComponentIdSchema.describe(
-        "The ID of the component that opens the sheet."
+        "The ID of the component that opens the sheet.",
       ),
       title: DynamicStringSchema.describe("The sheet title."),
       description: DynamicStringSchema.describe(
-        "The sheet description."
+        "The sheet description.",
       ).optional(),
       child: ComponentIdSchema.describe(
-        "The ID of the sheet content component."
+        "The ID of the sheet content component.",
       ).optional(),
       side: z
         .enum(["top", "right", "bottom", "left"])
@@ -333,7 +330,7 @@ export const SheetApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
 export const Sheet = createComponentImplementation(
   SheetApi,
@@ -354,8 +351,8 @@ export const Sheet = createComponentImplementation(
         )}
       </SheetContent>
     </UISheet>
-  )
-)
+  ),
+);
 
 export const TooltipApi = {
   name: "Tooltip",
@@ -363,12 +360,12 @@ export const TooltipApi = {
     .object({
       ...WEIGHT,
       trigger: ComponentIdSchema.describe(
-        "The ID of the component the tooltip is attached to."
+        "The ID of the component the tooltip is attached to.",
       ),
       text: DynamicStringSchema.describe("The tooltip text."),
     })
     .strict(),
-}
+};
 
 export const Tooltip = createComponentImplementation(
   TooltipApi,
@@ -379,5 +376,5 @@ export const Tooltip = createComponentImplementation(
       </TooltipTrigger>
       <TooltipContent>{props.text}</TooltipContent>
     </UITooltip>
-  )
-)
+  ),
+);

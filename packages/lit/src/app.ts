@@ -4,7 +4,14 @@ import { LitElement, html, nothing } from "lit";
 import { customElement, state, query } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map.js";
-import { createElement, type IconNode, Moon, SendHorizontal, Sun, X } from "lucide";
+import {
+  createElement,
+  type IconNode,
+  Moon,
+  SendHorizontal,
+  Sun,
+  X,
+} from "lucide";
 import { type SnackbarMessage, SnackType } from "./types/types.js";
 import { Snackbar } from "./ui/snackbar.js";
 
@@ -13,7 +20,11 @@ import { basicCatalog, Context } from "@a2ui/lit/v0_9";
 import { renderMarkdown } from "@a2ui/markdown-it";
 
 import { A2UIClient } from "./client.js";
-import { restaurantConfig, localConfig, type AppConfig } from "./configs/configs.js";
+import {
+  restaurantConfig,
+  localConfig,
+  type AppConfig,
+} from "./configs/configs.js";
 
 const configs: Record<string, AppConfig> = {
   restaurant: restaurantConfig,
@@ -63,7 +74,8 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
   private _toastTimeout: number | undefined;
 
   @state()
-  private _isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  private _isDarkMode = window.matchMedia("(prefers-color-scheme: dark)")
+    .matches;
 
   private _processor = new v0_9.MessageProcessor(
     [basicCatalog],
@@ -170,7 +182,9 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
       <div
         class="mb-6 flex w-full items-center justify-between rounded-2xl border border-indigo-200 bg-indigo-50 px-5 py-3 dark:border-slate-600 dark:bg-slate-800"
       >
-        <span class="flex items-center gap-2 text-sm text-indigo-900 dark:text-slate-100">
+        <span
+          class="flex items-center gap-2 text-sm text-indigo-900 dark:text-slate-100"
+        >
           Loaded local mockup: <strong>${this._localFileName}</strong>
         </span>
         <button
@@ -209,14 +223,22 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
     if (this.config.key === "local") {
       return html`
         <div class="mt-16 mb-8 flex flex-col items-center text-center">
-          <h1 class="mb-4 text-4xl font-bold tracking-tight text-indigo-900 dark:text-slate-100">
+          <h1
+            class="mb-4 text-4xl font-bold tracking-tight text-indigo-900 dark:text-slate-100"
+          >
             ${this.config.title}
           </h1>
-          <p class="mb-3 max-w-xl text-base leading-relaxed text-slate-700 dark:text-slate-200">
-            Upload an A2UI JSON mockup file to render and test your interactive layouts locally.
+          <p
+            class="mb-3 max-w-xl text-base leading-relaxed text-slate-700 dark:text-slate-200"
+          >
+            Upload an A2UI JSON mockup file to render and test your interactive
+            layouts locally.
           </p>
-          <p class="max-w-xl text-sm leading-normal text-slate-500 dark:text-slate-400">
-            Supports A2UI Protocol v0.9. Only supports the basic catalog for now.
+          <p
+            class="max-w-xl text-sm leading-normal text-slate-500 dark:text-slate-400"
+          >
+            Supports A2UI Protocol v0.9. Only supports the basic catalog for
+            now.
           </p>
         </div>
         <div
@@ -236,11 +258,17 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
             class="hidden"
             @change=${this.#onLocalFileChange}
           />
-          <div class="mt-6 w-full border-t border-slate-200 pt-5 dark:border-slate-700">
-            <h3 class="mb-3 text-sm font-medium text-slate-500 dark:text-slate-400">
+          <div
+            class="mt-6 w-full border-t border-slate-200 pt-5 dark:border-slate-700"
+          >
+            <h3
+              class="mb-3 text-sm font-medium text-slate-500 dark:text-slate-400"
+            >
               Or quick-load a built-in sample:
             </h3>
-            <div class="grid w-full grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-2">
+            <div
+              class="grid w-full grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-2"
+            >
               <button
                 type="button"
                 class="cursor-pointer rounded-xl border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-indigo-800 transition-colors hover:border-indigo-600 hover:bg-indigo-600 hover:text-white dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
@@ -279,11 +307,13 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
                 "--background-image-light": `url(${this.config.heroImage})`,
                 "--background-image-dark": `url(${this.config.heroImageDark ?? this.config.heroImage})`,
               })}
-              class="aspect-video w-full max-w-md bg-contain bg-center bg-no-repeat [background-image:var(--background-image-light)] dark:[background-image:var(--background-image-dark)]"
+              class="aspect-video w-full max-w-md [background-image:var(--background-image-light)] bg-contain bg-center bg-no-repeat dark:[background-image:var(--background-image-dark)]"
             ></div>`
           : nothing
       }
-      <h1 class="text-4xl font-bold tracking-tight text-indigo-900 dark:text-slate-100">
+      <h1
+        class="text-4xl font-bold tracking-tight text-indigo-900 dark:text-slate-100"
+      >
         ${this.config.title}
       </h1>
       <div class="flex w-full items-center gap-4">
@@ -313,7 +343,8 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
     if (loadingText && loadingText.length > 1) {
       this._loadingTextIndex = 0;
       this._loadingInterval = window.setInterval(() => {
-        this._loadingTextIndex = (this._loadingTextIndex + 1) % loadingText.length;
+        this._loadingTextIndex =
+          (this._loadingTextIndex + 1) % loadingText.length;
       }, 2000);
     }
   }
@@ -365,7 +396,8 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
       ${repeat(
         surfaces,
         ([surfaceId]) => surfaceId,
-        ([, surface]) => html`<a2ui-surface .surface=${surface}></a2ui-surface>`,
+        ([, surface]) =>
+          html`<a2ui-surface .surface=${surface}></a2ui-surface>`,
       )}
     </section>`;
   }
@@ -374,7 +406,9 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
     const messages = await this.#sendMessage(request);
     this._lastMessages = messages;
 
-    for (const surfaceId of Array.from(this._processor.model.surfacesMap.keys())) {
+    for (const surfaceId of Array.from(
+      this._processor.model.surfacesMap.keys(),
+    )) {
       this._processor.model.deleteSurface(surfaceId);
     }
 
@@ -382,7 +416,9 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
   }
 
   #triggerFileUpload() {
-    const fileInput = this.renderRoot.querySelector("#local-file-input") as HTMLInputElement;
+    const fileInput = this.renderRoot.querySelector(
+      "#local-file-input",
+    ) as HTMLInputElement;
     if (fileInput) fileInput.click();
   }
 
@@ -399,7 +435,9 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
         const parsed = JSON.parse(content);
         const messages = Array.isArray(parsed) ? parsed : [parsed];
         this._isLocalMode = true;
-        for (const surfaceId of Array.from(this._processor.model.surfacesMap.keys())) {
+        for (const surfaceId of Array.from(
+          this._processor.model.surfacesMap.keys(),
+        )) {
           this._processor.model.deleteSurface(surfaceId);
         }
         this._processor.processMessages(messages);
@@ -418,7 +456,9 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
   #clearLocalFile() {
     this._isLocalMode = false;
     this._localFileName = "";
-    for (const surfaceId of Array.from(this._processor.model.surfacesMap.keys())) {
+    for (const surfaceId of Array.from(
+      this._processor.model.surfacesMap.keys(),
+    )) {
       this._processor.model.deleteSurface(surfaceId);
     }
     this.showToast("Local mockup cleared.", "info");
@@ -428,11 +468,14 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
     try {
       this._localFileName = filename;
       const response = await fetch(`/samples/${filename}`);
-      if (!response.ok) throw new Error(`Failed to fetch sample: ${response.statusText}`);
+      if (!response.ok)
+        throw new Error(`Failed to fetch sample: ${response.statusText}`);
       const parsed = await response.json();
       const messages = Array.isArray(parsed) ? parsed : [parsed];
       this._isLocalMode = true;
-      for (const surfaceId of Array.from(this._processor.model.surfacesMap.keys())) {
+      for (const surfaceId of Array.from(
+        this._processor.model.surfacesMap.keys(),
+      )) {
         this._processor.model.deleteSurface(surfaceId);
       }
       this._processor.processMessages(messages);
@@ -453,7 +496,7 @@ export class A2UILayoutEditor extends SignalWatcher(LitElement) {
         : "border-white/10 bg-slate-900/90";
     return html`
       <div
-        class="fixed bottom-6 left-1/2 z-50 flex max-w-[90vw] -translate-x-1/2 items-center gap-4 rounded-2xl border px-7 py-3.5 text-white shadow-2xl backdrop-blur-xl ${colors}"
+        class="${colors} fixed bottom-6 left-1/2 z-50 flex max-w-[90vw] -translate-x-1/2 items-center gap-4 rounded-2xl border px-7 py-3.5 text-white shadow-2xl backdrop-blur-xl"
       >
         <span class="text-sm font-medium">${this._toastMessage}</span>
         <button

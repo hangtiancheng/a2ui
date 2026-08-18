@@ -6,11 +6,7 @@
   "scripts": {
     "git:commit": "git add -A && git commit -m 'Introduce new features'",
     "git:push": "pnpm git:commit && git push origin main",
-    "format:lit": "pnpm --filter @swifty.js/lit format",
-    "format:react": "pnpm --filter @swifty.js/react format",
-    "format:shadcn": "pnpm --filter @swifty.js/shadcn format",
-    "format:server": "pnpm --filter server format",
-    "format": "run-p format:*",
+    "format": "prettier -w --experimental-cli ./packages",
     "postinstall": "curl -fsSL https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json -o catalog.json",
     "prepare": "husky",
     "lit": "tsx ./start.ts lit",
@@ -27,6 +23,8 @@
     "@types/node": "^24.13.3",
     "husky": "^9.1.7",
     "npm-run-all2": "^9.0.3",
+    "prettier": "^3.9.6",
+    "prettier-plugin-tailwindcss": "^0.8.1",
     "tsx": "^4.23.12"
   }
 }

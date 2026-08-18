@@ -1,4 +1,4 @@
-import type { A2uiMessage } from "@a2ui/web_core/v0_9"
+import type { A2uiMessage } from "@a2ui/web_core/v0_9";
 
 const restaurantData = [
   {
@@ -43,7 +43,7 @@ const restaurantData = [
     infoLink: "[More Info](https://hwayuannyc.com/)",
     address: "40 E Broadway, New York, NY 10002",
   },
-]
+];
 
 export function createRestaurantListMessages(): A2uiMessage[] {
   return [
@@ -172,13 +172,13 @@ export function createRestaurantListMessages(): A2uiMessage[] {
         },
       },
     },
-  ]
+  ];
 }
 
 export function createBookingFormMessages(
   restaurantName: string,
   imageUrl: string,
-  address: string
+  address: string,
 ): A2uiMessage[] {
   return [
     {
@@ -287,7 +287,7 @@ export function createBookingFormMessages(
         },
       },
     },
-  ]
+  ];
 }
 
 export function createConfirmationMessages(
@@ -295,7 +295,7 @@ export function createConfirmationMessages(
   partySize: string,
   reservationTime: string,
   dietary: string,
-  imageUrl: string
+  imageUrl: string,
 ): A2uiMessage[] {
   return [
     {
@@ -379,5 +379,5 @@ export function createConfirmationMessages(
         },
       },
     },
-  ]
+  ];
 }

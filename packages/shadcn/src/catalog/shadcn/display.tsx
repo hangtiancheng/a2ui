@@ -1,17 +1,17 @@
-import { createComponentImplementation } from "@a2ui/react/v0_9"
+import { createComponentImplementation } from "@a2ui/react/v0_9";
 
-import { AspectRatio as UIAspectRatio } from "@/components/ui/aspect-ratio"
+import { AspectRatio as UIAspectRatio } from "@/components/ui/aspect-ratio";
 import {
   Alert as UIAlert,
   AlertDescription,
   AlertTitle,
-} from "@/components/ui/alert"
+} from "@/components/ui/alert";
 import {
   Avatar as UIAvatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
-import { Badge as UIBadge } from "@/components/ui/badge"
+} from "@/components/ui/avatar";
+import { Badge as UIBadge } from "@/components/ui/badge";
 import {
   Empty as UIEmpty,
   EmptyContent,
@@ -19,7 +19,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
+} from "@/components/ui/empty";
 import {
   Item as UIItem,
   ItemActions,
@@ -27,30 +27,27 @@ import {
   ItemDescription,
   ItemMedia,
   ItemTitle,
-} from "@/components/ui/item"
-import { Kbd as UIKbd, KbdGroup } from "@/components/ui/kbd"
-import { Label as UILabel } from "@/components/ui/label"
+} from "@/components/ui/item";
+import { Kbd as UIKbd, KbdGroup } from "@/components/ui/kbd";
+import { Label as UILabel } from "@/components/ui/label";
 import {
   Progress as UIProgress,
   ProgressLabel,
   ProgressValue,
-} from "@/components/ui/progress"
-import { ScrollArea as UIScrollArea } from "@/components/ui/scroll-area"
-import { Skeleton as UISkeleton } from "@/components/ui/skeleton"
-import { Spinner as UISpinner } from "@/components/ui/spinner"
-import { cn } from "@/lib/utils"
-import { CatalogIcon } from "../components/icon"
-import { weightStyle } from "../utils"
-import {
-  ICON_NAME,
-  WEIGHT,
-} from "./common"
-import { z } from "zod/v3"
+} from "@/components/ui/progress";
+import { ScrollArea as UIScrollArea } from "@/components/ui/scroll-area";
+import { Skeleton as UISkeleton } from "@/components/ui/skeleton";
+import { Spinner as UISpinner } from "@/components/ui/spinner";
+import { cn } from "@/lib/utils";
+import { CatalogIcon } from "../components/icon";
+import { weightStyle } from "../utils";
+import { ICON_NAME, WEIGHT } from "./common";
+import { z } from "zod/v3";
 import {
   ComponentIdSchema,
   DynamicNumberSchema,
   DynamicStringSchema,
-} from "@a2ui/web_core/v0_9"
+} from "@a2ui/web_core/v0_9";
 
 export const AlertApi = {
   name: "Alert",
@@ -59,13 +56,13 @@ export const AlertApi = {
       ...WEIGHT,
       title: DynamicStringSchema.describe("The alert title."),
       description: DynamicStringSchema.describe(
-        "The alert description."
+        "The alert description.",
       ).optional(),
       variant: z.enum(["default", "destructive"]).default("default").optional(),
       icon: ICON_NAME.optional(),
     })
     .strict(),
-}
+};
 
 export const Alert = createComponentImplementation(AlertApi, ({ props }) => (
   <UIAlert
@@ -78,7 +75,7 @@ export const Alert = createComponentImplementation(AlertApi, ({ props }) => (
       <AlertDescription>{props.description}</AlertDescription>
     )}
   </UIAlert>
-))
+));
 
 export const AspectRatioApi = {
   name: "AspectRatio",
@@ -93,7 +90,7 @@ export const AspectRatioApi = {
       child: ComponentIdSchema.describe("The ID of the child component."),
     })
     .strict(),
-}
+};
 
 export const AspectRatio = createComponentImplementation(
   AspectRatioApi,
@@ -103,8 +100,8 @@ export const AspectRatio = createComponentImplementation(
         {props.child ? buildChild(props.child) : null}
       </UIAspectRatio>
     </div>
-  )
-)
+  ),
+);
 
 export const AvatarApi = {
   name: "Avatar",
@@ -112,22 +109,22 @@ export const AvatarApi = {
     .object({
       ...WEIGHT,
       src: DynamicStringSchema.describe(
-        "The image URL of the avatar."
+        "The image URL of the avatar.",
       ).optional(),
       fallback: DynamicStringSchema.describe(
-        "Short fallback text (e.g. initials) shown when the image fails."
+        "Short fallback text (e.g. initials) shown when the image fails.",
       ),
       size: z.enum(["sm", "default", "lg"]).default("default").optional(),
     })
     .strict(),
-}
+};
 
 export const Avatar = createComponentImplementation(AvatarApi, ({ props }) => (
   <UIAvatar size={props.size ?? "default"} style={weightStyle(props.weight)}>
     {props.src && <AvatarImage src={props.src} />}
     <AvatarFallback>{props.fallback}</AvatarFallback>
   </UIAvatar>
-))
+));
 
 export const BadgeApi = {
   name: "Badge",
@@ -142,7 +139,7 @@ export const BadgeApi = {
       icon: ICON_NAME.optional(),
     })
     .strict(),
-}
+};
 
 export const Badge = createComponentImplementation(BadgeApi, ({ props }) => (
   <UIBadge
@@ -152,7 +149,7 @@ export const Badge = createComponentImplementation(BadgeApi, ({ props }) => (
     <CatalogIcon name={props.icon} />
     {props.text}
   </UIBadge>
-))
+));
 
 export const EmptyApi = {
   name: "Empty",
@@ -161,15 +158,15 @@ export const EmptyApi = {
       ...WEIGHT,
       title: DynamicStringSchema.describe("The empty state title."),
       description: DynamicStringSchema.describe(
-        "The empty state description."
+        "The empty state description.",
       ).optional(),
       icon: ICON_NAME.optional(),
       child: ComponentIdSchema.describe(
-        "Optional ID of a child component with follow-up actions."
+        "Optional ID of a child component with follow-up actions.",
       ).optional(),
     })
     .strict(),
-}
+};
 
 export const Empty = createComponentImplementation(
   EmptyApi,
@@ -188,8 +185,8 @@ export const Empty = createComponentImplementation(
       </EmptyHeader>
       {props.child && <EmptyContent>{buildChild(props.child)}</EmptyContent>}
     </UIEmpty>
-  )
-)
+  ),
+);
 
 export const ItemApi = {
   name: "Item",
@@ -198,11 +195,11 @@ export const ItemApi = {
       ...WEIGHT,
       title: DynamicStringSchema.describe("The item title."),
       description: DynamicStringSchema.describe(
-        "The item description."
+        "The item description.",
       ).optional(),
       icon: ICON_NAME.optional(),
       child: ComponentIdSchema.describe(
-        "Optional ID of a child component rendered as trailing actions."
+        "Optional ID of a child component rendered as trailing actions.",
       ).optional(),
       variant: z
         .enum(["default", "outline", "muted"])
@@ -210,7 +207,7 @@ export const ItemApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
 export const Item = createComponentImplementation(
   ItemApi,
@@ -232,8 +229,8 @@ export const Item = createComponentImplementation(
       </ItemContent>
       {props.child && <ItemActions>{buildChild(props.child)}</ItemActions>}
     </UIItem>
-  )
-)
+  ),
+);
 
 export const KbdApi = {
   name: "Kbd",
@@ -246,7 +243,7 @@ export const KbdApi = {
         .describe("The keyboard keys to display, e.g. ['Cmd', 'K']."),
     })
     .strict(),
-}
+};
 
 export const Kbd = createComponentImplementation(KbdApi, ({ props }) => (
   <KbdGroup style={weightStyle(props.weight)}>
@@ -254,7 +251,7 @@ export const Kbd = createComponentImplementation(KbdApi, ({ props }) => (
       <UIKbd key={i}>{key}</UIKbd>
     ))}
   </KbdGroup>
-))
+));
 
 export const LabelApi = {
   name: "Label",
@@ -264,11 +261,11 @@ export const LabelApi = {
       text: DynamicStringSchema.describe("The label text."),
     })
     .strict(),
-}
+};
 
 export const Label = createComponentImplementation(LabelApi, ({ props }) => (
   <UILabel style={weightStyle(props.weight)}>{props.text}</UILabel>
-))
+));
 
 export const ProgressApi = {
   name: "Progress",
@@ -276,10 +273,10 @@ export const ProgressApi = {
     .object({
       ...WEIGHT,
       value: DynamicNumberSchema.describe(
-        "The progress value between 0 and 100."
+        "The progress value between 0 and 100.",
       ),
       label: DynamicStringSchema.describe(
-        "Optional label shown above the bar."
+        "Optional label shown above the bar.",
       ).optional(),
       showValue: z
         .boolean()
@@ -287,7 +284,7 @@ export const ProgressApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
 export const Progress = createComponentImplementation(
   ProgressApi,
@@ -299,8 +296,8 @@ export const Progress = createComponentImplementation(
       {props.label && <ProgressLabel>{props.label}</ProgressLabel>}
       {props.showValue && <ProgressValue />}
     </UIProgress>
-  )
-)
+  ),
+);
 
 export const ScrollAreaApi = {
   name: "ScrollArea",
@@ -308,7 +305,7 @@ export const ScrollAreaApi = {
     .object({
       ...WEIGHT,
       child: ComponentIdSchema.describe(
-        "The ID of the scrollable child component."
+        "The ID of the scrollable child component.",
       ),
       maxHeight: z
         .number()
@@ -316,7 +313,7 @@ export const ScrollAreaApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
 export const ScrollArea = createComponentImplementation(
   ScrollAreaApi,
@@ -327,8 +324,8 @@ export const ScrollArea = createComponentImplementation(
     >
       {props.child ? buildChild(props.child) : null}
     </UIScrollArea>
-  )
-)
+  ),
+);
 
 export const SkeletonApi = {
   name: "Skeleton",
@@ -346,7 +343,7 @@ export const SkeletonApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
 export const Skeleton = createComponentImplementation(
   SkeletonApi,
@@ -354,7 +351,7 @@ export const Skeleton = createComponentImplementation(
     <UISkeleton
       className={cn(
         props.shape === "circle" && "rounded-full",
-        props.shape === "text" && "h-4"
+        props.shape === "text" && "h-4",
       )}
       style={{
         ...weightStyle(props.weight),
@@ -365,8 +362,8 @@ export const Skeleton = createComponentImplementation(
             : (props.height ?? (props.shape === "circle" ? props.width : 16)),
       }}
     />
-  )
-)
+  ),
+);
 
 export const SpinnerApi = {
   name: "Spinner",
@@ -376,7 +373,7 @@ export const SpinnerApi = {
       size: z.number().describe("The size in pixels.").optional(),
     })
     .strict(),
-}
+};
 
 export const Spinner = createComponentImplementation(
   SpinnerApi,
@@ -388,5 +385,5 @@ export const Spinner = createComponentImplementation(
         height: props.size,
       }}
     />
-  )
-)
+  ),
+);

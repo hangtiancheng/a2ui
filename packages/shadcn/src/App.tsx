@@ -4,101 +4,105 @@ import {
   useMemo,
   useState,
   type SyntheticEvent,
-} from "react"
+} from "react";
 
-import type { A2uiClientAction, A2uiMessage } from "@a2ui/web_core/v0_9"
-import { CircleAlert, Moon, SendHorizontal, Sun } from "lucide-react"
+import type { A2uiClientAction, A2uiMessage } from "@a2ui/web_core/v0_9";
+import { CircleAlert, Moon, SendHorizontal, Sun } from "lucide-react";
 
-import { useTheme } from "@/components/theme-provider"
-import { Alert, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useTheme } from "@/components/theme-provider";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group"
-import { Spinner } from "@/components/ui/spinner"
-import { A2uiView } from "./a2ui-view"
-import { A2UIClient } from "./client"
-import { type AppConfig, galleryConfig, restaurantConfig } from "./configs"
+} from "@/components/ui/input-group";
+import { Spinner } from "@/components/ui/spinner";
+import { A2uiView } from "./a2ui-view";
+import { A2UIClient } from "./client";
+import { type AppConfig, galleryConfig, restaurantConfig } from "./configs";
 import {
   createBookingFormMessages,
   createConfirmationMessages,
   createGalleryMessages,
   createRestaurantListMessages,
-} from "./mock"
+} from "./mock";
 
 const configs: Record<string, AppConfig> = {
   restaurant: restaurantConfig,
   gallery: galleryConfig,
-}
+};
 
-const urlParams = new URLSearchParams(window.location.search)
-const isMockMode = urlParams.get("mock") === "true"
+const urlParams = new URLSearchParams(window.location.search);
+const isMockMode = urlParams.get("mock") === "true";
 
 export function App() {
   const config = useMemo(() => {
-    const appKey = urlParams.get("app") || "restaurant"
-    return configs[appKey] || configs.restaurant
-  }, [])
+    const appKey = urlParams.get("app") || "restaurant";
+    return configs[appKey] || configs.restaurant;
+  }, []);
 
-  const client = useMemo(() => new A2UIClient(), [])
+  const client = useMemo(() => new A2UIClient(), []);
 
   useEffect(() => {
-    document.title = config.title
-  }, [config])
+    document.title = config.title;
+  }, [config]);
 
-  return <ShellContent config={config} client={client} />
+  return <ShellContent config={config} client={client} />;
 }
 
 interface ShellContentProps {
-  config: AppConfig
-  client: A2UIClient
+  config: AppConfig;
+  client: A2UIClient;
 }
 
 function ShellContent({ config, client }: ShellContentProps) {
-  const [requesting, setRequesting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [messages, setMessages] = useState<A2uiMessage[]>([])
-  const [loadingTextIndex, setLoadingTextIndex] = useState(0)
-  const [requestCount, setRequestCount] = useState(0)
-  const { theme, setTheme } = useTheme()
+  const [requesting, setRequesting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [messages, setMessages] = useState<A2uiMessage[]>([]);
+  const [loadingTextIndex, setLoadingTextIndex] = useState(0);
+  const [requestCount, setRequestCount] = useState(0);
+  const { theme, setTheme } = useTheme();
 
   const isDark =
     theme === "dark" ||
     (theme === "system" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches)
+      window.matchMedia("(prefers-color-scheme: dark)").matches);
 
   useEffect(() => {
-    if (!requesting) return
+    if (!requesting) return;
     if (!Array.isArray(config.loadingText) || config.loadingText.length <= 1)
-      return
+      return;
 
     const interval = setInterval(() => {
-      setLoadingTextIndex((prev) => (prev + 1) % config.loadingText!.length)
-    }, 2000)
+      setLoadingTextIndex((prev) => (prev + 1) % config.loadingText!.length);
+    }, 2000);
 
-    return () => clearInterval(interval)
-  }, [requesting, config.loadingText])
+    return () => clearInterval(interval);
+  }, [requesting, config.loadingText]);
 
   const getMockResponse = useCallback(
     (message: { action?: A2uiClientAction } | string): A2uiMessage[] => {
       if (config.key === "gallery") {
-        return createGalleryMessages()
+        return createGalleryMessages();
       }
 
-      if (typeof message === "object" && "action" in message && message.action) {
-        const action = message.action
-        const context = action.context || {}
+      if (
+        typeof message === "object" &&
+        "action" in message &&
+        message.action
+      ) {
+        const action = message.action;
+        const context = action.context || {};
 
         if (action.name === "book_restaurant") {
           return createBookingFormMessages(
             String(context.restaurantName || "Restaurant"),
             String(context.imageUrl || ""),
-            String(context.address || "")
-          )
+            String(context.address || ""),
+          );
         }
 
         if (action.name === "submit_booking") {
@@ -107,66 +111,66 @@ function ShellContent({ config, client }: ShellContentProps) {
             String(context.partySize || "2"),
             String(context.reservationTime || ""),
             String(context.dietary || ""),
-            String(context.imageUrl || "")
-          )
+            String(context.imageUrl || ""),
+          );
         }
       }
 
-      return createRestaurantListMessages()
+      return createRestaurantListMessages();
     },
-    [config.key]
-  )
+    [config.key],
+  );
 
   const sendAndProcess = useCallback(
     async (message: { version: "v0.9"; action: A2uiClientAction } | string) => {
       try {
-        setRequesting(true)
-        setError(null)
-        setLoadingTextIndex(0)
-        setMessages([])
-        setRequestCount((c) => c + 1)
+        setRequesting(true);
+        setError(null);
+        setLoadingTextIndex(0);
+        setMessages([]);
+        setRequestCount((c) => c + 1);
 
         if (isMockMode) {
-          await new Promise((resolve) => setTimeout(resolve, 800))
-          const response = getMockResponse(message)
-          setMessages(response)
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          const response = getMockResponse(message);
+          setMessages(response);
         } else {
           const response = await client.send(message, (chunkMessages) => {
-            setMessages((prev) => [...prev, ...chunkMessages])
-          })
-          setMessages(response)
+            setMessages((prev) => [...prev, ...chunkMessages]);
+          });
+          setMessages(response);
         }
       } catch (err) {
-        console.error("Error sending message:", err)
-        setError(err instanceof Error ? err.message : "An error occurred")
+        console.error("Error sending message:", err);
+        setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
-        setRequesting(false)
+        setRequesting(false);
       }
     },
-    [client, getMockResponse]
-  )
+    [client, getMockResponse],
+  );
 
   const handleSubmit = useCallback(
     (e: SyntheticEvent<HTMLFormElement>) => {
-      e.preventDefault()
-      const formData = new FormData(e.currentTarget)
-      const body = formData.get("body") as string
-      if (!body) return
-      sendAndProcess(body)
+      e.preventDefault();
+      const formData = new FormData(e.currentTarget);
+      const body = formData.get("body") as string;
+      if (!body) return;
+      sendAndProcess(body);
     },
-    [sendAndProcess]
-  )
+    [sendAndProcess],
+  );
 
   const loadingText = useMemo(() => {
-    if (!config.loadingText) return "Awaiting an answer..."
+    if (!config.loadingText) return "Awaiting an answer...";
     if (Array.isArray(config.loadingText)) {
-      return config.loadingText[loadingTextIndex]
+      return config.loadingText[loadingTextIndex];
     }
-    return config.loadingText
-  }, [config.loadingText, loadingTextIndex])
+    return config.loadingText;
+  }, [config.loadingText, loadingTextIndex]);
 
-  const hasSurfaces = messages.length > 0
-  const showForm = !requesting && messages.length === 0
+  const hasSurfaces = messages.length > 0;
+  const showForm = !requesting && messages.length === 0;
 
   return (
     <div className="relative mx-auto flex min-h-dvh w-full max-w-2xl flex-col items-center px-4 pb-8">
@@ -257,7 +261,7 @@ function ShellContent({ config, client }: ShellContentProps) {
         </section>
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

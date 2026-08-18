@@ -1,6 +1,6 @@
-import { Fragment } from "react"
+import { Fragment } from "react";
 
-import { createComponentImplementation } from "@a2ui/react/v0_9"
+import { createComponentImplementation } from "@a2ui/react/v0_9";
 
 import {
   Breadcrumb as UIBreadcrumb,
@@ -9,7 +9,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/ui/breadcrumb";
 import {
   Menubar as UIMenubar,
   MenubarContent,
@@ -17,7 +17,7 @@ import {
   MenubarItem,
   MenubarMenu,
   MenubarTrigger,
-} from "@/components/ui/menubar"
+} from "@/components/ui/menubar";
 import {
   NavigationMenu as UINavigationMenu,
   NavigationMenuContent,
@@ -25,7 +25,7 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
+} from "@/components/ui/navigation-menu";
 import {
   Pagination as UIPagination,
   PaginationContent,
@@ -34,26 +34,23 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
-import { weightStyle } from "../utils"
-import {
-  MENU_ENTRY,
-  WEIGHT,
-} from "./common"
-import { z } from "zod/v3"
+} from "@/components/ui/pagination";
+import { weightStyle } from "../utils";
+import { MENU_ENTRY, WEIGHT } from "./common";
+import { z } from "zod/v3";
 import {
   ActionSchema,
   ComponentIdSchema,
   DynamicNumberSchema,
   DynamicStringSchema,
-} from "@a2ui/web_core/v0_9"
+} from "@a2ui/web_core/v0_9";
 
 type MenuEntryDef = {
-  label?: unknown
-  action?: unknown
-  variant?: unknown
-  disabled?: unknown
-}
+  label?: unknown;
+  action?: unknown;
+  variant?: unknown;
+  disabled?: unknown;
+};
 
 export const BreadcrumbApi = {
   name: "Breadcrumb",
@@ -65,26 +62,26 @@ export const BreadcrumbApi = {
           z.object({
             label: DynamicStringSchema.describe("The crumb label."),
             action: ActionSchema.optional(),
-          })
+          }),
         )
         .min(1)
         .describe("The breadcrumb trail; the last item is the current page."),
     })
     .strict(),
-}
+};
 
 export const Breadcrumb = createComponentImplementation(
   BreadcrumbApi,
   ({ props }) => {
     const items = (
       Array.isArray(props.items) ? props.items : []
-    ) as MenuEntryDef[]
+    ) as MenuEntryDef[];
 
     return (
       <UIBreadcrumb style={weightStyle(props.weight)}>
         <BreadcrumbList>
           {items.map((item, i) => {
-            const isLast = i === items.length - 1
+            const isLast = i === items.length - 1;
             return (
               <Fragment key={i}>
                 <BreadcrumbItem>
@@ -105,13 +102,13 @@ export const Breadcrumb = createComponentImplementation(
                 </BreadcrumbItem>
                 {!isLast && <BreadcrumbSeparator />}
               </Fragment>
-            )
+            );
           })}
         </BreadcrumbList>
       </UIBreadcrumb>
-    )
-  }
-)
+    );
+  },
+);
 
 export const MenubarApi = {
   name: "Menubar",
@@ -126,20 +123,20 @@ export const MenubarApi = {
               .array(MENU_ENTRY)
               .min(1)
               .describe("The entries of this menu."),
-          })
+          }),
         )
         .min(1)
         .describe("The top-level menus."),
     })
     .strict(),
-}
+};
 
-type MenuDef = { label?: unknown; items?: unknown }
+type MenuDef = { label?: unknown; items?: unknown };
 
 export const Menubar = createComponentImplementation(
   MenubarApi,
   ({ props }) => {
-    const menus = (Array.isArray(props.menus) ? props.menus : []) as MenuDef[]
+    const menus = (Array.isArray(props.menus) ? props.menus : []) as MenuDef[];
 
     return (
       <UIMenubar style={weightStyle(props.weight)}>
@@ -169,9 +166,9 @@ export const Menubar = createComponentImplementation(
           </MenubarMenu>
         ))}
       </UIMenubar>
-    )
-  }
-)
+    );
+  },
+);
 
 export const NavigationMenuApi = {
   name: "NavigationMenu",
@@ -184,24 +181,24 @@ export const NavigationMenuApi = {
             label: DynamicStringSchema.describe("The item label."),
             action: ActionSchema.optional(),
             child: ComponentIdSchema.describe(
-              "Optional ID of a component shown as a dropdown panel for this item."
+              "Optional ID of a component shown as a dropdown panel for this item.",
             ).optional(),
-          })
+          }),
         )
         .min(1)
         .describe("The navigation items."),
     })
     .strict(),
-}
+};
 
-type NavItemDef = { label?: unknown; action?: unknown; child?: unknown }
+type NavItemDef = { label?: unknown; action?: unknown; child?: unknown };
 
 export const NavigationMenu = createComponentImplementation(
   NavigationMenuApi,
   ({ props, buildChild }) => {
     const items = (
       Array.isArray(props.items) ? props.items : []
-    ) as NavItemDef[]
+    ) as NavItemDef[];
 
     return (
       <UINavigationMenu style={weightStyle(props.weight)}>
@@ -233,9 +230,9 @@ export const NavigationMenu = createComponentImplementation(
           ))}
         </NavigationMenuList>
       </UINavigationMenu>
-    )
-  }
-)
+    );
+  },
+);
 
 export const PaginationApi = {
   name: "Pagination",
@@ -243,37 +240,37 @@ export const PaginationApi = {
     .object({
       ...WEIGHT,
       page: DynamicNumberSchema.describe(
-        "The current page (1-based); bind to the data model for two-way sync."
+        "The current page (1-based); bind to the data model for two-way sync.",
       ),
       totalPages: z.number().min(1).describe("The total number of pages."),
     })
     .strict(),
-}
+};
 
 function pageWindow(page: number, total: number): (number | "ellipsis")[] {
-  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1)
-  const pages = new Set<number>([1, total, page - 1, page, page + 1])
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const pages = new Set<number>([1, total, page - 1, page, page + 1]);
   const sorted = [...pages]
     .filter((p) => p >= 1 && p <= total)
-    .sort((a, b) => a - b)
-  const result: (number | "ellipsis")[] = []
+    .sort((a, b) => a - b);
+  const result: (number | "ellipsis")[] = [];
   for (let i = 0; i < sorted.length; i++) {
-    if (i > 0 && sorted[i] - sorted[i - 1] > 1) result.push("ellipsis")
-    result.push(sorted[i])
+    if (i > 0 && sorted[i] - sorted[i - 1] > 1) result.push("ellipsis");
+    result.push(sorted[i]);
   }
-  return result
+  return result;
 }
 
 export const Pagination = createComponentImplementation(
   PaginationApi,
   ({ props }) => {
-    const total = typeof props.totalPages === "number" ? props.totalPages : 1
+    const total = typeof props.totalPages === "number" ? props.totalPages : 1;
     const page = Math.min(
       Math.max(typeof props.page === "number" ? props.page : 1, 1),
-      total
-    )
+      total,
+    );
     const go = (next: number) =>
-      props.setPage(Math.min(Math.max(next, 1), total))
+      props.setPage(Math.min(Math.max(next, 1), total));
 
     return (
       <UIPagination style={weightStyle(props.weight)}>
@@ -307,6 +304,6 @@ export const Pagination = createComponentImplementation(
           </PaginationItem>
         </PaginationContent>
       </UIPagination>
-    )
-  }
-)
+    );
+  },
+);

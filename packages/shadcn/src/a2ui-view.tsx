@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-"use client"
+"use client";
 import {
   Component,
   type ReactNode,
@@ -7,74 +7,74 @@ import {
   useMemo,
   useRef,
   useState,
-} from "react"
-import { renderMarkdown } from "@a2ui/markdown-it"
+} from "react";
+import { renderMarkdown } from "@a2ui/markdown-it";
 import {
   A2uiSurface,
   MarkdownContext,
   type ReactComponentImplementation,
-} from "@a2ui/react/v0_9"
+} from "@a2ui/react/v0_9";
 import {
   type A2uiClientAction,
   type A2uiMessage,
   A2uiMessageSchema,
   MessageProcessor,
   type SurfaceModel,
-} from "@a2ui/web_core/v0_9"
+} from "@a2ui/web_core/v0_9";
 
-import { shadcnCatalog } from "./catalog"
+import { shadcnCatalog } from "./catalog";
 
-export const UI_ACTION_PREFIX = "[UI_ACTION]"
+export const UI_ACTION_PREFIX = "[UI_ACTION]";
 
 export function buildQueryFromAction(action: A2uiClientAction): string {
-  return `${UI_ACTION_PREFIX} ${action.name}\ncontext: ${JSON.stringify(action.context ?? {})}`
+  return `${UI_ACTION_PREFIX} ${action.name}\ncontext: ${JSON.stringify(action.context ?? {})}`;
 }
 
 export interface A2uiViewProps {
-  messages: unknown[]
-  onAction?: (query: string) => void
-  onRawAction?: (action: A2uiClientAction) => void
+  messages: unknown[];
+  onAction?: (query: string) => void;
+  onRawAction?: (action: A2uiClientAction) => void;
 }
 
 class SurfaceErrorBoundary extends Component<
   { children: ReactNode },
   { failed: boolean }
 > {
-  state = { failed: false }
+  state = { failed: false };
 
   static getDerivedStateFromError() {
-    return { failed: true }
+    return { failed: true };
   }
 
   componentDidCatch(error: unknown) {
-    console.error("[a2ui] surface render error:", error)
+    console.error("[a2ui] surface render error:", error);
   }
 
   render() {
-    return this.state.failed ? null : this.props.children
+    return this.state.failed ? null : this.props.children;
   }
 }
 
 export function A2uiView({ messages, onAction, onRawAction }: A2uiViewProps) {
-  const onActionRef = useRef(onAction)
-  const onRawActionRef = useRef(onRawAction)
+  const onActionRef = useRef(onAction);
+  const onRawActionRef = useRef(onRawAction);
   useEffect(() => {
-    onActionRef.current = onAction
-    onRawActionRef.current = onRawAction
-  }, [onAction, onRawAction])
+    onActionRef.current = onAction;
+    onRawActionRef.current = onRawAction;
+  }, [onAction, onRawAction]);
 
   const validMessages = useMemo(() => {
-    const valid: A2uiMessage[] = []
+    const valid: A2uiMessage[] = [];
     for (const message of messages) {
-      const parsed = A2uiMessageSchema.safeParse(message)
+      const parsed = A2uiMessageSchema.safeParse(message);
       if (parsed.success) {
-        valid.push(parsed.data)
+        valid.push(parsed.data);
       } else {
-        console.error("[a2ui] dropping invalid message:", parsed.error.issues)
+        console.error("[a2ui] dropping invalid message:", parsed.error.issues);
       }
     }
-    return valid
-  }, [messages])
+    return valid;
+  }, [messages]);
 
   const processor = useMemo(
     () =>
@@ -83,47 +83,47 @@ export function A2uiView({ messages, onAction, onRawAction }: A2uiViewProps) {
         // eslint-disable-next-line react-hooks/refs
         (action) => {
           if (onRawActionRef.current) {
-            onRawActionRef.current(action)
+            onRawActionRef.current(action);
           } else {
-            onActionRef.current?.(buildQueryFromAction(action))
+            onActionRef.current?.(buildQueryFromAction(action));
           }
         },
       ),
     [],
-  )
+  );
 
   const [surfaces, setSurfaces] = useState<
     SurfaceModel<ReactComponentImplementation>[]
-  >(() => Array.from(processor.model.surfacesMap.values()))
+  >(() => Array.from(processor.model.surfacesMap.values()));
 
-  const processedCount = useRef(0)
+  const processedCount = useRef(0);
 
   useEffect(() => {
     const created = processor.onSurfaceCreated((surface) => {
       setSurfaces((prev) =>
         prev.some((s) => s.id === surface.id) ? prev : [...prev, surface],
-      )
-    })
+      );
+    });
     const deleted = processor.onSurfaceDeleted((id) => {
-      setSurfaces((prev) => prev.filter((s) => s.id !== id))
-    })
+      setSurfaces((prev) => prev.filter((s) => s.id !== id));
+    });
     if (validMessages.length > processedCount.current) {
-      const pending = validMessages.slice(processedCount.current)
-      processedCount.current = validMessages.length
+      const pending = validMessages.slice(processedCount.current);
+      processedCount.current = validMessages.length;
       try {
-        processor.processMessages(pending)
+        processor.processMessages(pending);
       } catch (error) {
-        console.error("[a2ui] failed to process messages:", error)
+        console.error("[a2ui] failed to process messages:", error);
       }
     }
     return () => {
-      created.unsubscribe()
-      deleted.unsubscribe()
-    }
-  }, [processor, validMessages])
+      created.unsubscribe();
+      deleted.unsubscribe();
+    };
+  }, [processor, validMessages]);
 
   if (surfaces.length === 0) {
-    return null
+    return null;
   }
   return (
     <MarkdownContext.Provider value={renderMarkdown}>
@@ -135,5 +135,5 @@ export function A2uiView({ messages, onAction, onRawAction }: A2uiViewProps) {
         </div>
       </SurfaceErrorBoundary>
     </MarkdownContext.Provider>
-  )
+  );
 }

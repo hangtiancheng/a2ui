@@ -1,64 +1,64 @@
-import { useId, useState } from "react"
+import { useId, useState } from "react";
 
-import { createComponentImplementation } from "@a2ui/react/v0_9"
-import { DateTimeInputApi } from "@a2ui/web_core/v0_9/basic_catalog"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
+import { createComponentImplementation } from "@a2ui/react/v0_9";
+import { DateTimeInputApi } from "@a2ui/web_core/v0_9/basic_catalog";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Field, FieldLabel } from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 
 function splitValue(value: string | null | undefined): {
-  date: string
-  time: string
+  date: string;
+  time: string;
 } {
-  if (!value) return { date: "", time: "" }
+  if (!value) return { date: "", time: "" };
 
-  const hasT = value.includes("T")
-  const split = value.split("T")
-  const rawDate = (hasT ? split[0] : value) ?? ""
-  const rawTime = (hasT ? split[1] : value) ?? ""
+  const hasT = value.includes("T");
+  const split = value.split("T");
+  const rawDate = (hasT ? split[0] : value) ?? "";
+  const rawTime = (hasT ? split[1] : value) ?? "";
 
   return {
     date: /^\d{4}-\d{2}-\d{2}/.test(rawDate) ? rawDate.substring(0, 10) : "",
     time: /^\d{2}:\d{2}/.test(rawTime) ? rawTime.substring(0, 5) : "",
-  }
+  };
 }
 
 function toIsoDate(date: Date): string {
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
 // Official shadcn date-picker time pattern: suppress the native picker
 // indicator so only the styled input remains.
 const TIME_INPUT_CLASSES =
-  "appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+  "appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none";
 
 export const DateTimeInput = createComponentImplementation(
   DateTimeInputApi,
   ({ props }) => {
-    const id = useId()
-    const [open, setOpen] = useState(false)
+    const id = useId();
+    const [open, setOpen] = useState(false);
 
-    const enableDate = !!props.enableDate
-    const enableTime = !!props.enableTime
-    if (!(enableDate || enableTime)) return null
+    const enableDate = !!props.enableDate;
+    const enableTime = !!props.enableTime;
+    if (!(enableDate || enableTime)) return null;
 
-    const { date, time } = splitValue(props.value)
-    const selected = date ? new Date(`${date}T00:00:00`) : undefined
+    const { date, time } = splitValue(props.value);
+    const selected = date ? new Date(`${date}T00:00:00`) : undefined;
 
-    const min = typeof props.min === "string" ? props.min : undefined
-    const max = typeof props.max === "string" ? props.max : undefined
-    const minParts = splitValue(min)
-    const maxParts = splitValue(max)
+    const min = typeof props.min === "string" ? props.min : undefined;
+    const max = typeof props.max === "string" ? props.max : undefined;
+    const minParts = splitValue(min);
+    const maxParts = splitValue(max);
     const disabledDays = [
       ...(minParts.date
         ? [{ before: new Date(`${minParts.date}T00:00:00`) }]
@@ -66,23 +66,23 @@ export const DateTimeInput = createComponentImplementation(
       ...(maxParts.date
         ? [{ after: new Date(`${maxParts.date}T00:00:00`) }]
         : []),
-    ]
+    ];
 
     // A time bound only applies on the bound's own day (or in time-only mode).
     const timeBound = (bound: { date: string; time: string }) =>
       bound.time && (!enableDate || (date && date === bound.date))
         ? bound.time
-        : undefined
+        : undefined;
 
     const commit = (nextDate: string, nextTime: string) => {
       if (enableDate && enableTime) {
         props.setValue(
-          nextDate || nextTime ? `${nextDate}T${nextTime || "00:00"}` : ""
-        )
-        return
+          nextDate || nextTime ? `${nextDate}T${nextTime || "00:00"}` : "",
+        );
+        return;
       }
-      props.setValue(enableDate ? nextDate : nextTime)
-    }
+      props.setValue(enableDate ? nextDate : nextTime);
+    };
 
     return (
       <Field>
@@ -100,7 +100,7 @@ export const DateTimeInput = createComponentImplementation(
                     variant="outline"
                     className={cn(
                       "flex-1 justify-start font-normal",
-                      !date && "text-muted-foreground"
+                      !date && "text-muted-foreground",
                     )}
                   />
                 }
@@ -120,8 +120,8 @@ export const DateTimeInput = createComponentImplementation(
                   disabled={disabledDays.length ? disabledDays : undefined}
                   onSelect={(next) => {
                     if (next instanceof Date && !Number.isNaN(next.getTime())) {
-                      commit(toIsoDate(next), time)
-                      setOpen(false)
+                      commit(toIsoDate(next), time);
+                      setOpen(false);
                     }
                   }}
                 />
@@ -141,6 +141,6 @@ export const DateTimeInput = createComponentImplementation(
           )}
         </div>
       </Field>
-    )
-  }
-)
+    );
+  },
+);

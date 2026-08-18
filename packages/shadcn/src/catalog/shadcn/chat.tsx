@@ -1,5 +1,5 @@
-import { createComponentImplementation } from "@a2ui/react/v0_9"
-import { FileIcon } from "lucide-react"
+import { createComponentImplementation } from "@a2ui/react/v0_9";
+import { FileIcon } from "lucide-react";
 
 import {
   Attachment as UIAttachment,
@@ -7,14 +7,14 @@ import {
   AttachmentDescription,
   AttachmentMedia,
   AttachmentTitle,
-} from "@/components/ui/attachment"
-import { Bubble as UIBubble, BubbleContent } from "@/components/ui/bubble"
+} from "@/components/ui/attachment";
+import { Bubble as UIBubble, BubbleContent } from "@/components/ui/bubble";
 import {
   Marker as UIMarker,
   MarkerContent,
   MarkerIcon,
-} from "@/components/ui/marker"
-import { Message as UIMessage, MessageContent } from "@/components/ui/message"
+} from "@/components/ui/marker";
+import { Message as UIMessage, MessageContent } from "@/components/ui/message";
 import {
   MessageScroller as UIMessageScroller,
   MessageScrollerButton,
@@ -22,7 +22,7 @@ import {
   MessageScrollerItem,
   MessageScrollerProvider,
   MessageScrollerViewport,
-} from "@/components/ui/message-scroller"
+} from "@/components/ui/message-scroller";
 import {
   Questionnaire as UIQuestionnaire,
   QuestionnaireActions,
@@ -33,19 +33,16 @@ import {
   QuestionnaireNext,
   QuestionnairePrevious,
   QuestionnaireTitle,
-} from "@/components/ui/questionnaire"
-import { CatalogIcon } from "../components/icon"
-import { weightStyle } from "../utils"
-import {
-  ICON_NAME,
-  WEIGHT,
-} from "./common"
-import { z } from "zod/v3"
+} from "@/components/ui/questionnaire";
+import { CatalogIcon } from "../components/icon";
+import { weightStyle } from "../utils";
+import { ICON_NAME, WEIGHT } from "./common";
+import { z } from "zod/v3";
 import {
   ChildListSchema,
   ComponentIdSchema,
   DynamicStringSchema,
-} from "@a2ui/web_core/v0_9"
+} from "@a2ui/web_core/v0_9";
 
 export const AttachmentApi = {
   name: "Attachment",
@@ -54,15 +51,15 @@ export const AttachmentApi = {
       ...WEIGHT,
       title: DynamicStringSchema.describe("The attachment file name or title."),
       description: DynamicStringSchema.describe(
-        "Secondary text such as size or type."
+        "Secondary text such as size or type.",
       ).optional(),
       imageUrl: DynamicStringSchema.describe(
-        "Optional thumbnail image URL."
+        "Optional thumbnail image URL.",
       ).optional(),
       icon: ICON_NAME.optional(),
     })
     .strict(),
-}
+};
 
 export const Attachment = createComponentImplementation(
   AttachmentApi,
@@ -84,8 +81,8 @@ export const Attachment = createComponentImplementation(
         )}
       </AttachmentContent>
     </UIAttachment>
-  )
-)
+  ),
+);
 
 export const BubbleApi = {
   name: "Bubble",
@@ -93,7 +90,7 @@ export const BubbleApi = {
     .object({
       ...WEIGHT,
       child: ComponentIdSchema.describe(
-        "The ID of the bubble content component."
+        "The ID of the bubble content component.",
       ),
       align: z
         .enum(["start", "end"])
@@ -102,7 +99,7 @@ export const BubbleApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
 export const Bubble = createComponentImplementation(
   BubbleApi,
@@ -115,8 +112,8 @@ export const Bubble = createComponentImplementation(
         {props.child ? buildChild(props.child) : null}
       </BubbleContent>
     </UIBubble>
-  )
-)
+  ),
+);
 
 export const MarkerApi = {
   name: "Marker",
@@ -124,7 +121,7 @@ export const MarkerApi = {
     .object({
       ...WEIGHT,
       text: DynamicStringSchema.describe(
-        "The marker text, e.g. a date or system note."
+        "The marker text, e.g. a date or system note.",
       ),
       icon: ICON_NAME.optional(),
       variant: z
@@ -133,7 +130,7 @@ export const MarkerApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
 export const Marker = createComponentImplementation(MarkerApi, ({ props }) => (
   <UIMarker
@@ -147,7 +144,7 @@ export const Marker = createComponentImplementation(MarkerApi, ({ props }) => (
     )}
     <MarkerContent>{props.text}</MarkerContent>
   </UIMarker>
-))
+));
 
 export const MessageApi = {
   name: "Message",
@@ -155,7 +152,7 @@ export const MessageApi = {
     .object({
       ...WEIGHT,
       child: ComponentIdSchema.describe(
-        "The ID of the message content component."
+        "The ID of the message content component.",
       ),
       align: z
         .enum(["start", "end"])
@@ -164,7 +161,7 @@ export const MessageApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
 export const Message = createComponentImplementation(
   MessageApi,
@@ -177,8 +174,8 @@ export const Message = createComponentImplementation(
         {props.child ? buildChild(props.child) : null}
       </MessageContent>
     </UIMessage>
-  )
-)
+  ),
+);
 
 export const MessageScrollerApi = {
   name: "MessageScroller",
@@ -186,7 +183,7 @@ export const MessageScrollerApi = {
     .object({
       ...WEIGHT,
       children: ChildListSchema.describe(
-        "The IDs of the message components, oldest first."
+        "The IDs of the message components, oldest first.",
       ),
       height: z
         .number()
@@ -195,16 +192,16 @@ export const MessageScrollerApi = {
         .optional(),
     })
     .strict(),
-}
+};
 
-type ChildRef = string | { id: string; basePath: string }
+type ChildRef = string | { id: string; basePath: string };
 
 export const MessageScroller = createComponentImplementation(
   MessageScrollerApi,
   ({ props, buildChild }) => {
     const children = (
       Array.isArray(props.children) ? props.children : []
-    ) as ChildRef[]
+    ) as ChildRef[];
 
     return (
       <div
@@ -228,9 +225,9 @@ export const MessageScroller = createComponentImplementation(
           </UIMessageScroller>
         </MessageScrollerProvider>
       </div>
-    )
-  }
-)
+    );
+  },
+);
 
 export const QuestionnaireApi = {
   name: "Questionnaire",
@@ -243,7 +240,7 @@ export const QuestionnaireApi = {
             name: z.string().describe("A unique name for the question."),
             title: DynamicStringSchema.describe("The question text."),
             description: DynamicStringSchema.describe(
-              "Optional helper text."
+              "Optional helper text.",
             ).optional(),
             multiple: z
               .boolean()
@@ -253,33 +250,33 @@ export const QuestionnaireApi = {
               .array(z.object({ label: z.string(), value: z.string() }))
               .min(1),
             value: DynamicStringSchema.describe(
-              "The selected value(s) as a comma-separated string; bind to the data model for two-way sync."
+              "The selected value(s) as a comma-separated string; bind to the data model for two-way sync.",
             ).optional(),
-          })
+          }),
         )
         .min(1)
         .describe("The questions."),
     })
     .strict(),
-}
+};
 
 type QuestionDef = {
-  name?: unknown
-  title?: unknown
-  description?: unknown
-  multiple?: unknown
-  choices?: unknown
-  value?: unknown
-  setValue?: (value: string) => void
-}
-type ChoiceDef = { label?: unknown; value?: unknown }
+  name?: unknown;
+  title?: unknown;
+  description?: unknown;
+  multiple?: unknown;
+  choices?: unknown;
+  value?: unknown;
+  setValue?: (value: string) => void;
+};
+type ChoiceDef = { label?: unknown; value?: unknown };
 
 export const Questionnaire = createComponentImplementation(
   QuestionnaireApi,
   ({ props }) => {
     const items = (
       Array.isArray(props.items) ? props.items : []
-    ) as QuestionDef[]
+    ) as QuestionDef[];
 
     return (
       <UIQuestionnaire
@@ -292,10 +289,10 @@ export const Questionnaire = createComponentImplementation(
         }))}
       >
         {items.map((item, i) => {
-          const name = String(item.name ?? `question-${i}`)
+          const name = String(item.name ?? `question-${i}`);
           const selected = String(item.value ?? "")
             .split(",")
-            .filter(Boolean)
+            .filter(Boolean);
           const toggle = (value: string, checked: boolean) => {
             const next = item.multiple
               ? checked
@@ -303,9 +300,9 @@ export const Questionnaire = createComponentImplementation(
                 : selected.filter((v) => v !== value)
               : checked
                 ? [value]
-                : []
-            item.setValue?.(next.join(","))
-          }
+                : [];
+            item.setValue?.(next.join(","));
+          };
 
           return (
             <QuestionnaireItem key={i} name={name} multiple={!!item.multiple}>
@@ -319,7 +316,7 @@ export const Questionnaire = createComponentImplementation(
               ) : null}
               <QuestionnaireChoices>
                 {((item.choices ?? []) as ChoiceDef[]).map((choice, j) => {
-                  const value = String(choice.value ?? "")
+                  const value = String(choice.value ?? "");
                   return (
                     <QuestionnaireChoice
                       key={j}
@@ -329,17 +326,17 @@ export const Questionnaire = createComponentImplementation(
                     >
                       {String(choice.label ?? value)}
                     </QuestionnaireChoice>
-                  )
+                  );
                 })}
               </QuestionnaireChoices>
             </QuestionnaireItem>
-          )
+          );
         })}
         <QuestionnaireActions>
           <QuestionnairePrevious />
           <QuestionnaireNext />
         </QuestionnaireActions>
       </UIQuestionnaire>
-    )
-  }
-)
+    );
+  },
+);

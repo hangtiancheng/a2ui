@@ -1,18 +1,15 @@
-import { resolve } from "node:path"
-import tailwindcss from "@tailwindcss/vite"
-import react from "@vitejs/plugin-react"
-import {
-  defineConfig,
-  type UserConfig,
-} from "vite"
-import dts from "vite-plugin-dts"
+import { resolve } from "node:path";
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig, type UserConfig } from "vite";
+import dts from "vite-plugin-dts";
 
-import pkg from "./package.json" with { type: "json" }
-import { plugin as a2aPlugin } from "./middleware/a2a.js"
+import pkg from "./package.json" with { type: "json" };
+import { plugin as a2aPlugin } from "./middleware/a2a.js";
 
 // === Shared constants ===
 
-const PKG_DIR = import.meta.dirname
+const PKG_DIR = import.meta.dirname;
 
 const EXTERNAL_IDS = [
   ...Object.keys(pkg.dependencies ?? {}),
@@ -20,21 +17,21 @@ const EXTERNAL_IDS = [
   "react",
   "react-dom",
   "react/jsx-runtime",
-]
+];
 
 function isExternal(id: string): boolean {
-  if (id.startsWith("node:")) return true
-  return EXTERNAL_IDS.some((e) => id === e || id.startsWith(e + "/"))
+  if (id.startsWith("node:")) return true;
+  return EXTERNAL_IDS.some((e) => id === e || id.startsWith(e + "/"));
 }
 
 // === Mode router ===
 
 export default defineConfig(({ mode }) => {
   if (mode === "lib") {
-    return libConfig()
+    return libConfig();
   }
-  return appConfig()
-})
+  return appConfig();
+});
 
 // === Library build (--mode lib) ===
 
@@ -82,7 +79,7 @@ function libConfig(): UserConfig {
         include: ["src"],
       }),
     ],
-  }
+  };
 }
 
 // === App / demo mode (default) ===
@@ -99,5 +96,5 @@ function appConfig(): UserConfig {
       port: 5005,
       strictPort: true,
     },
-  }
+  };
 }
