@@ -46,8 +46,4 @@ app.listen(PORT, HOST, () => {
   console.log(
     `[server] Agent card: http://${HOST}:${PORT}/.well-known/agent-card.json`,
   );
-  console.log(`[server] Model: ${process.env.OPENAI_MODEL || "gpt-4o"}`);
-  console.log(
-    `[server] Base URL: ${process.env.OPENAI_BASE_URL || "https://api.openai.com/v1"}`,
-  );
 });
