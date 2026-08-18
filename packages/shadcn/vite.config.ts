@@ -92,6 +92,9 @@ function appConfig(): UserConfig {
         "@": resolve(PKG_DIR, "src"),
       },
     },
+    build: {
+      outDir: resolve(PKG_DIR, "dist-app"),
+    },
     server: {
       port: 5005,
       strictPort: true,
