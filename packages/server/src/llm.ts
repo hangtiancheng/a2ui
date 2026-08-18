@@ -53,8 +53,9 @@ function renderExample(name: string, messages: unknown[]): string {
 }
 
 const CATALOG_ID =
-  process.env.CATALOG_ID ||
-  "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
+  process.env.MODE === "shadcn"
+    ? "https://raw.githubusercontent.com/hangtiancheng/a2ui/main/packages/shadcn/src/catalog/index.ts"
+    : "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
 
 const A2UI_SYSTEM_PROMPT = `You are a helpful restaurant finding assistant. Your final output MUST be an A2UI UI definition.
 

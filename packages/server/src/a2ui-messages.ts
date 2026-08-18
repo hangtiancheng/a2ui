@@ -8,9 +8,9 @@ interface RestaurantItem {
 }
 
 const CATALOG_ID =
-  process.env.CATALOG_ID ||
-  "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
-
+  process.env.MODE === "shadcn"
+    ? "https://raw.githubusercontent.com/hangtiancheng/a2ui/main/packages/shadcn/src/catalog/index.ts"
+    : "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
 export function buildRestaurantListA2ui(
   title: string,
   items: RestaurantItem[],
