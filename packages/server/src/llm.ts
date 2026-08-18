@@ -53,7 +53,7 @@ function renderExample(name: string, messages: unknown[]): string {
 }
 
 const CATALOG_ID =
-  process.env.MODE === "shadcn"
+  process.env.A2UI_MODE === "shadcn"
     ? "https://raw.githubusercontent.com/hangtiancheng/a2ui/main/packages/shadcn/src/catalog/index.ts"
     : "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
 

@@ -13,13 +13,13 @@ type ClientChoice = "react" | "lit" | "shadcn";
 interface ClientConfig {
   dir: string;
   port: number;
-  label: string;
+  mode: string;
 }
 
 const CLIENT_CONFIGS: Record<ClientChoice, ClientConfig> = {
-  react: { dir: "react", port: 5003, label: "react" },
-  lit: { dir: "lit", port: 5004, label: "lit" },
-  shadcn: { dir: "shadcn", port: 5005, label: "shadcn" },
+  react: { dir: "react", port: 5003, mode: "react" },
+  lit: { dir: "lit", port: 5004, mode: "lit" },
+  shadcn: { dir: "shadcn", port: 5005, mode: "shadcn" },
 };
 
 const SERVER_PORT = 10002;
@@ -64,14 +64,14 @@ function main(): void {
   const server: ChildProcess = startProcess(
     "server",
     resolve(packagesDir, "server"),
-    "pnpm",
+    `A2UI_MODE=${clientConfig.mode} pnpm`,
     ["exec", "tsx", "src/index.ts"],
   );
 
   // Wait for server to be ready, then start client
   setTimeout(() => {
     console.log(
-      `[2/2] Starting ${clientConfig.label} client (port ${clientConfig.port})...`,
+      `[2/2] Starting ${clientConfig.mode} client (port ${clientConfig.port})...`,
     );
     const client: ChildProcess = startProcess(
       "client",

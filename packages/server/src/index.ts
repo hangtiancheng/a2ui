@@ -39,8 +39,9 @@ app.post("/a2a", async (req, res) => {
 app.get("/static/:name", serveImage);
 
 app.listen(PORT, HOST, () => {
+  console.log(`[server] A2UI mode: ${process.env.A2UI_MODE || "react"}`);
   console.log(
-    `[server] A2UI Restaurant Agent running at http://${HOST}:${PORT}`,
+    `[server] A2UI restaurant agent running at http://${HOST}:${PORT}`,
   );
   console.log(
     `[server] Agent card: http://${HOST}:${PORT}/.well-known/agent-card.json`,
