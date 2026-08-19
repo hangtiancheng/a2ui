@@ -1,15 +1,14 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { shadcnCatalog } from "@swifty.js/a2ui-shadcn";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..", "..", "..");
 
-// The shadcn client registers its manually maintained catalog under this id
-// instead of the official basic catalog id.
-const SHADCN_CATALOG_ID =
-  "https://raw.githubusercontent.com/hangtiancheng/a2ui/main/packages/shadcn/src/catalog/index.ts";
+// The shadcn client implements the basic catalog plus its own extension
+// components under its own catalog id. This file is generated from those
+// component schemas by `pnpm --filter @swifty.js/a2ui-shadcn build:catalog`.
+const SHADCN_CATALOG_FILE = "packages/shadcn/catalog.json";
 
 type JsonObject = Record<string, unknown>;
 
@@ -77,7 +76,9 @@ function pruneDefsByReachability(
 }
 
 const catalogSchema = removeStrictValidation(
-  process.env.A2UI_MODE === "shadcn" ? shadcnCatalog : loadSpec("catalog.json"),
+  loadSpec(
+    process.env.A2UI_MODE === "shadcn" ? SHADCN_CATALOG_FILE : "catalog.json",
+  ),
 ) as JsonObject;
 const serverToClientSchema = removeStrictValidation(
   loadSpec("server_to_client.json"),
@@ -86,10 +87,7 @@ const commonTypesSchema = removeStrictValidation(
   loadSpec("common_types.json"),
 ) as JsonObject;
 
-export const CATALOG_ID =
-  process.env.A2UI_MODE === "shadcn"
-    ? SHADCN_CATALOG_ID
-    : "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
+export const CATALOG_ID = catalogSchema.catalogId as string;
 
 function pruneUnusedCommonTypes(): void {
   const externalRefs = new Set<string>();
@@ -112,16 +110,21 @@ pruneUnusedCommonTypes();
  * built from.
  */
 export function renderCatalogAsLlmInstructions(): string {
-  return `---BEGIN A2UI JSON SCHEMA---
+  const sections = [
+    "---BEGIN A2UI JSON SCHEMA---",
+    `### Server To Client Schema:\n${JSON.stringify(serverToClientSchema)}`,
+  ];
 
-### Server To Client Schema:
-${JSON.stringify(serverToClientSchema)}
+  if (Object.keys(commonTypesSchema.$defs as JsonObject).length > 0) {
+    sections.push(
+      `### Common Types Schema:\n${JSON.stringify(commonTypesSchema)}`,
+    );
+  }
 
-### Common Types Schema:
-${JSON.stringify(commonTypesSchema)}
+  sections.push(
+    `### Catalog Schema:\n${JSON.stringify(catalogSchema)}`,
+    "---END A2UI JSON SCHEMA---",
+  );
 
-### Catalog Schema:
-
-${JSON.stringify(catalogSchema)}
----END A2UI JSON SCHEMA---`;
+  return sections.join("\n\n");
 }

@@ -8,7 +8,14 @@ import { defineConfig, globalIgnores } from "eslint/config";
 export default defineConfig([
   globalIgnores(["dist", "src/catalog/components", "src/components/ui"]),
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["**/*.{ts}"],
+    extends: [js.configs.recommended, tseslint.configs.recommended],
+    languageOptions: {
+      globals: globals.browser,
+    },
+  },
+  {
+    files: ["**/*.{tsx}"],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,

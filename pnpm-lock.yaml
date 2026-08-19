@@ -133,9 +133,6 @@ importers:
       '@a2ui/web_core':
         specifier: ^0.10.6
         version: 0.10.6
-      '@swifty.js/a2ui-shadcn':
-        specifier: workspace:*
-        version: link:../shadcn
       cors:
         specifier: ^2.8.6
         version: 2.8.6
@@ -276,6 +273,9 @@ importers:
       vite-plugin-dts:
         specifier: ^5.0.3
         version: 5.0.3(esbuild@0.28.2)(rolldown@1.2.4)(typescript@6.0.3)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.23.12))
+      zod-to-json-schema:
+        specifier: ^3.25.2
+        version: 3.25.2(zod@3.25.76)
 
 packages:
 
