@@ -65,6 +65,9 @@ export const SHADCN_PROMPT_CATALOG: A2uiCatalogSchemas = {
   catalogSchema: SHADCN_CATALOG_SCHEMA,
 };
 
+/** The catalog id of the embedded shadcn catalog. */
+export const SHADCN_CATALOG_ID = SHADCN_CATALOG_SCHEMA["catalogId"] as string;
+
 export type A2uiInferenceFormat =
   "direct-json" | "elemental" | "atom" | "express";
 

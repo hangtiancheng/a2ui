@@ -1,8 +1,8 @@
 import type { A2uiMessage } from "@a2ui/web_core/v0_9";
+import { SHADCN_CATALOG_ID } from "@swifty.js/a2ui-shadcn";
 
 const SURFACE_ID = "gallery-surface";
-const CATALOG_ID =
-  "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json";
+const CATALOG_ID = SHADCN_CATALOG_ID;
 
 const heading = (id: string, text: string) => ({
   id,
@@ -472,12 +472,7 @@ export function createGalleryMessages(): A2uiMessage[] {
       icon: "event",
     },
     { id: "g-msg-1", component: "Message", child: "g-bub-1" },
-    {
-      id: "g-bub-1",
-      component: "Bubble",
-      variant: "muted",
-      child: "g-bub-1-t",
-    },
+    { id: "g-bub-1", component: "Bubble", child: "g-bub-1-t" },
     text("g-bub-1-t", "Hi! Looking for dinner ideas?"),
     { id: "g-msg-2", component: "Message", align: "end", child: "g-bub-2" },
     { id: "g-bub-2", component: "Bubble", align: "end", child: "g-bub-2-t" },
@@ -498,11 +493,7 @@ export function createGalleryMessages(): A2uiMessage[] {
           description: "Pick one.",
           choices: [
             { label: "Mild", value: "mild" },
-            {
-              label: "Medium",
-              value: "medium",
-              description: "The safe crowd-pleaser.",
-            },
+            { label: "Medium", value: "medium" },
             { label: "Fire", value: "fire" },
           ],
           value: { path: "/gallery/spice" },
@@ -511,22 +502,13 @@ export function createGalleryMessages(): A2uiMessage[] {
           name: "extras",
           title: "Any extras?",
           multiple: true,
-          optional: true,
           choices: [
             { label: "Outdoor seating", value: "outdoor" },
             { label: "Vegetarian menu", value: "veg" },
           ],
           value: { path: "/gallery/extras" },
         },
-        {
-          name: "notes",
-          title: "Anything else we should know?",
-          optional: true,
-          input: true,
-          value: { path: "/gallery/notes" },
-        },
       ],
-      submitAction: { event: { name: "questionnaire_submitted" } },
     },
 
     heading("sec-chart-h", "Charts"),
@@ -604,9 +586,8 @@ export function createGalleryMessages(): A2uiMessage[] {
           budget: "",
           otp: "",
           date: "2026-08-20",
-          spice: ["medium"],
-          extras: [],
-          notes: "",
+          spice: "medium",
+          extras: "",
         },
       },
     },
@@ -614,5 +595,5 @@ export function createGalleryMessages(): A2uiMessage[] {
       version: "v0.9",
       updateComponents: { surfaceId: SURFACE_ID, components },
     },
-  ] as A2uiMessage[];
+  ];
 }

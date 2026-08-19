@@ -1,11 +1,10 @@
+import type { CSSProperties } from "react";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-import type { CSSProperties } from "react";
 
 export const JUSTIFY_CLASSES: Record<string, string> = {
   start: "justify-start",

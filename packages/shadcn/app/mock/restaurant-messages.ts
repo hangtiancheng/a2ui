@@ -1,11 +1,12 @@
 import type { A2uiMessage } from "@a2ui/web_core/v0_9";
+import { SHADCN_CATALOG_ID } from "@swifty.js/a2ui-shadcn";
 
 const restaurantData = [
   {
     name: "Xi'an Famous Foods",
     detail: "Spicy and savory hand-pulled noodles.",
     imageUrl:
-      "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=400",
+      "https://raw.githubusercontent.com/hangtiancheng/h/main/public/favicon.svg",
     rating: "★★★★☆",
     infoLink: "[More Info](https://www.xianfoods.com/)",
     address: "81 St Marks Pl, New York, NY 10003",
@@ -14,7 +15,7 @@ const restaurantData = [
     name: "Han Dynasty",
     detail: "Authentic Sichuan cuisine.",
     imageUrl:
-      "https://images.unsplash.com/photo-1525755662778-989d0524087e?w=400",
+      "https://raw.githubusercontent.com/hangtiancheng/h/main/public/favicon.svg",
     rating: "★★★★☆",
     infoLink: "[More Info](https://www.handynasty.net/)",
     address: "90 3rd Ave, New York, NY 10003",
@@ -22,7 +23,8 @@ const restaurantData = [
   {
     name: "RedFarm",
     detail: "Modern Chinese with a farm-to-table approach.",
-    imageUrl: "https://images.unsplash.com/photo-1563245372-f21724e3856d?w=400",
+    imageUrl:
+      "https://raw.githubusercontent.com/hangtiancheng/h/main/public/favicon.svg",
     rating: "★★★★☆",
     infoLink: "[More Info](https://www.redfarmnyc.com/)",
     address: "529 Hudson St, New York, NY 10014",
@@ -30,7 +32,8 @@ const restaurantData = [
   {
     name: "Mott 32",
     detail: "Upscale Cantonese dining.",
-    imageUrl: "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400",
+    imageUrl:
+      "https://raw.githubusercontent.com/hangtiancheng/h/main/public/favicon.svg",
     rating: "★★★★★",
     infoLink: "[More Info](https://mott32.com/newyork/)",
     address: "111 W 57th St, New York, NY 10019",
@@ -38,7 +41,8 @@ const restaurantData = [
   {
     name: "Hwa Yuan Sichuan",
     detail: "Famous for its cold noodles with sesame sauce.",
-    imageUrl: "https://images.unsplash.com/photo-1555126634-323283e090fa?w=400",
+    imageUrl:
+      "https://raw.githubusercontent.com/hangtiancheng/h/main/public/favicon.svg",
     rating: "★★★★☆",
     infoLink: "[More Info](https://hwayuannyc.com/)",
     address: "40 E Broadway, New York, NY 10002",
@@ -51,8 +55,7 @@ export function createRestaurantListMessages(): A2uiMessage[] {
       version: "v0.9",
       createSurface: {
         surfaceId: "default",
-        catalogId:
-          "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+        catalogId: SHADCN_CATALOG_ID,
         theme: { primaryColor: "#FF0000", font: "Roboto" },
       },
     },
