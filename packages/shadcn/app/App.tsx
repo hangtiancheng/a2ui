@@ -20,8 +20,8 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
-import { A2uiView } from "./a2ui-view";
-import { A2UIClient } from "./client";
+import { A2uiView } from "@/a2ui-view";
+import { A2UIClient } from "@/client";
 import { type AppConfig, galleryConfig, restaurantConfig } from "./configs";
 import {
   createBookingFormMessages,

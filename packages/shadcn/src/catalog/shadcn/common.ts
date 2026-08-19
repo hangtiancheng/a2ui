@@ -6,7 +6,7 @@ import {
   DynamicStringSchema,
 } from "@a2ui/web_core/v0_9";
 
-import { ICON_MAP } from "../components/icon";
+import { ICON_MAP } from "@/catalog/components/icon";
 
 // Shared props mirroring the basic catalog's CommonProps: every extension
 // schema spreads this so agents can use the same common fields everywhere.

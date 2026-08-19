@@ -37,8 +37,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { ChildList } from "../components/child-list";
-import { weightStyle } from "../utils";
+import { ChildList } from "@/catalog/components/child-list";
+import { weightStyle } from "@/lib/utils";
 import { COMMON } from "./common";
 import { z } from "zod/v3";
 import {

@@ -48,7 +48,7 @@ import {
 } from "@/components/ui/select";
 import { Switch as UISwitch } from "@/components/ui/switch";
 import { Toggle as UIToggle } from "@/components/ui/toggle";
-import { weightStyle } from "../utils";
+import { weightStyle } from "@/lib/utils";
 import { COMMON } from "./common";
 import {
   ActionSchema,

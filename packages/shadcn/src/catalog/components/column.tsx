@@ -1,9 +1,8 @@
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { ColumnApi } from "@a2ui/web_core/v0_9/basic_catalog";
 
-import { cn } from "@/lib/utils";
 import { ChildList } from "./child-list";
-import { alignClass, justifyClass, weightStyle } from "../utils";
+import { cn, alignClass, justifyClass, weightStyle } from "@/lib/utils";
 
 export const Column = createComponentImplementation(
   ColumnApi,

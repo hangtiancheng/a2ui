@@ -35,8 +35,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { cn } from "@/lib/utils";
-import { weightStyle } from "../utils";
+import { cn, weightStyle } from "@/lib/utils";
 import { MENU_ENTRY, COMMON } from "./common";
 import { z } from "zod/v3";
 import {

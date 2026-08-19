@@ -2,7 +2,7 @@ import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { CardApi } from "@a2ui/web_core/v0_9/basic_catalog";
 
 import { Card as UICard, CardContent } from "@/components/ui/card";
-import { weightStyle } from "../utils";
+import { weightStyle } from "@/lib/utils";
 
 export const Card = createComponentImplementation(
   CardApi,

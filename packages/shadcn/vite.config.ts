@@ -48,6 +48,7 @@ function libConfig(): UserConfig {
         entry: {
           index: resolve(PKG_DIR, "src/index.ts"),
           catalog: resolve(PKG_DIR, "src/catalog/index.ts"),
+          prompt: resolve(PKG_DIR, "src/prompt/index.ts"),
         },
       },
       rollupOptions: {

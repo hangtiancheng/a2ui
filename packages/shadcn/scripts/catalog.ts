@@ -6,9 +6,9 @@
  *
  * Run: pnpm --filter @swifty.js/a2ui-shadcn build:catalog
  */
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import {
   AccessibilityAttributesSchema,
@@ -28,7 +28,7 @@ import {
 import type { ZodTypeAny } from "zod/v3";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { SHADCN_CATALOG_ID, shadcnCatalog } from "../src/catalog";
+import { SHADCN_CATALOG_ID, shadcnCatalog } from "@/catalog";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..", "..", "..");
@@ -91,8 +91,8 @@ const sharedTypeBySignature = new Map(
     .map(([name, converted]) => [signature(converted), name]),
 );
 
-function useSharedRefs(node: unknown): unknown {
-  if (Array.isArray(node)) return node.map(useSharedRefs);
+function sharedRefs(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(sharedRefs);
   if (node === null || typeof node !== "object") return node;
 
   const object = node as JsonObject;
@@ -106,13 +106,13 @@ function useSharedRefs(node: unknown): unknown {
   }
 
   return Object.fromEntries(
-    Object.entries(object).map(([key, value]) => [key, useSharedRefs(value)]),
+    Object.entries(object).map(([key, value]) => [key, sharedRefs(value)]),
   );
 }
 
 /** Builds a catalog entry in the same `allOf` shape the official catalog uses. */
 function buildComponentEntry(name: string, schema: ZodTypeAny): JsonObject {
-  const converted = useSharedRefs(toJsonSchema(schema)) as JsonObject;
+  const converted = sharedRefs(toJsonSchema(schema)) as JsonObject;
   const properties = (converted.properties ?? {}) as JsonObject;
   const required = (converted.required ?? []) as string[];
 
@@ -175,6 +175,17 @@ const catalog: JsonObject = {
 };
 
 fs.writeFileSync(OUTPUT_PATH, `${JSON.stringify(catalog, null, 2)}\n`);
+
+// Keep the prompt module's copy of the catalog schema in sync.
+const PROMPT_SCHEMA_PATH = path.join(
+  __dirname,
+  "..",
+  "src",
+  "prompt",
+  "schemas",
+  "catalog.json",
+);
+fs.copyFileSync(OUTPUT_PATH, PROMPT_SCHEMA_PATH);
 
 console.log(
   `[build-catalog] ${path.relative(REPO_ROOT, OUTPUT_PATH)}:` +

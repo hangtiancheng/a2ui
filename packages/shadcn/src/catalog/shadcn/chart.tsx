@@ -22,7 +22,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { weightStyle } from "../utils";
+import { weightStyle } from "@/lib/utils";
 import { COMMON } from "./common";
 import { DynamicValueSchema } from "@a2ui/web_core/v0_9";
 

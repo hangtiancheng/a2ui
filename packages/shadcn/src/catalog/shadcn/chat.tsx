@@ -38,8 +38,8 @@ import {
   QuestionnaireSubmit,
   QuestionnaireTitle,
 } from "@/components/ui/questionnaire";
-import { CatalogIcon } from "../components/icon";
-import { weightStyle } from "../utils";
+import { CatalogIcon } from "@/catalog/components/icon";
+import { weightStyle } from "@/lib/utils";
 import { ICON_NAME, COMMON } from "./common";
 import { z } from "zod/v3";
 import {

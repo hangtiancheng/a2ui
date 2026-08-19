@@ -12,6 +12,11 @@
       "types": "./dist/catalog/index.d.ts",
       "import": "./dist/catalog.js",
       "require": "./dist/catalog.cjs"
+    },
+    "./prompt": {
+      "types": "./dist/prompt/index.d.ts",
+      "import": "./dist/prompt.js",
+      "require": "./dist/prompt.cjs"
     }
   },
   "files": [
@@ -22,7 +27,7 @@
     "dev": "vite",
     "build": "vite build --mode lib",
     "build:app": "tsc -b && vite build",
-    "catalog": "tsx --tsconfig tsconfig.app.json scripts/catalog.ts",
+    "catalog": "tsx scripts/catalog.ts  --tsconfig tsconfig.node.json",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
@@ -61,6 +66,7 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6",
     "eslint": "^10",
+    "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17",

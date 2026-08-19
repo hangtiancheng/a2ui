@@ -1,9 +1,8 @@
 import { createComponentImplementation } from "@a2ui/react/v0_9";
 import { ListApi } from "@a2ui/web_core/v0_9/basic_catalog";
 
-import { cn } from "@/lib/utils";
+import { cn, alignClass } from "@/lib/utils";
 import { ChildList } from "./child-list";
-import { alignClass } from "../utils";
 
 export const List = createComponentImplementation(
   ListApi,
