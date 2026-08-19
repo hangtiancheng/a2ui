@@ -117,7 +117,7 @@ function subKeyLines(properties: JsonObject): string[] {
  * Generates system prompt contracts guiding models to produce A2UI Express.
  */
 export class ExpressPromptGenerator implements PromptGenerator {
-  private catalog: A2uiCatalogSchemas;
+  private readonly catalog: A2uiCatalogSchemas;
   private helper: CatalogSchemaHelper;
 
   constructor(catalog: A2uiCatalogSchemas) {
@@ -300,14 +300,17 @@ export class ExpressPromptGenerator implements PromptGenerator {
   }
 
   generate(options: SystemPromptOptions): string {
+    // Mirror the Python implementation: pruning starts from the original
+    // catalog on every call and is never written back.
+    let catalog = this.catalog;
     if (options.allowedComponents?.length || options.allowedMessages?.length) {
-      this.catalog = withPruning(
-        this.catalog,
+      catalog = withPruning(
+        catalog,
         options.allowedComponents,
         options.allowedMessages,
       );
-      this.helper = new CatalogSchemaHelper(this.catalog.catalogSchema);
     }
+    this.helper = new CatalogSchemaHelper(catalog.catalogSchema);
 
     const parts = [options.roleDescription];
 

@@ -133,6 +133,9 @@ importers:
       '@a2ui/web_core':
         specifier: ^0.10.6
         version: 0.10.6
+      '@swifty.js/a2ui-shadcn':
+        specifier: workspace:*
+        version: link:../shadcn
       cors:
         specifier: ^2.8.6
         version: 2.8.6

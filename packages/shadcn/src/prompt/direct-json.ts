@@ -14,29 +14,42 @@ import {
 import { withPruning } from "./pruning";
 import type {
   A2uiCatalogSchemas,
+  JsonValue,
   PromptGenerator,
   SystemPromptOptions,
 } from "./types";
 import { isJsonObject } from "./types";
+
+/**
+ * Matches Python `json.dumps(obj, separators=(",", ":"))` with the default
+ * `ensure_ascii=True`, which escapes every code unit >= 0x7f as \uXXXX
+ * (astral characters become surrogate-pair escapes, as in Python).
+ */
+function jsonDumpsCompact(value: JsonValue): string {
+  return JSON.stringify(value).replace(
+    /[\u007f-\uffff]/g,
+    (ch) => `\\u${ch.charCodeAt(0).toString(16).padStart(4, "0")}`,
+  );
+}
 
 /** Renders the catalog and schemas as LLM instructions (compact JSON blocks). */
 export function renderAsLlmInstructions(catalog: A2uiCatalogSchemas): string {
   const allSchemas: string[] = [A2UI_SCHEMA_BLOCK_START];
 
   const serverClientStr = catalog.s2cSchema
-    ? JSON.stringify(catalog.s2cSchema)
+    ? jsonDumpsCompact(catalog.s2cSchema)
     : "{}";
   allSchemas.push(`### Server To Client Schema:\n${serverClientStr}`);
 
   const commonDefs = catalog.commonTypesSchema?.["$defs"];
   if (isJsonObject(commonDefs) && Object.keys(commonDefs).length > 0) {
     allSchemas.push(
-      `### Common Types Schema:\n${JSON.stringify(catalog.commonTypesSchema)}`,
+      `### Common Types Schema:\n${jsonDumpsCompact(catalog.commonTypesSchema)}`,
     );
   }
 
   allSchemas.push(
-    `### Catalog Schema:\n${JSON.stringify(catalog.catalogSchema)}`,
+    `### Catalog Schema:\n${jsonDumpsCompact(catalog.catalogSchema)}`,
   );
 
   allSchemas.push(A2UI_SCHEMA_BLOCK_END);

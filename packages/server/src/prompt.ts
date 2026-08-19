@@ -1,25 +1,13 @@
+import { DirectJsonPromptGenerator } from "@swifty.js/a2ui-shadcn/prompt";
+
 import {
   buildBookingFormA2ui,
   buildConfirmationA2ui,
   buildRestaurantListA2ui,
 } from "./a2ui-messages.js";
-import { CATALOG_ID, renderCatalogAsLlmInstructions } from "./catalog.js";
+import { CATALOG_ID, PROMPT_CATALOG } from "./catalog.js";
 
-export const A2UI_OPEN_TAG = "<a2ui-json>";
-export const A2UI_CLOSE_TAG = "</a2ui-json>";
-
-// Port of `a2ui.schema.constants.DEFAULT_WORKFLOW_RULES`.
-const DEFAULT_WORKFLOW_RULES = `
-The generated response MUST follow these rules:
-- The response can contain one or more A2UI JSON blocks.
-- Each A2UI JSON block MUST be wrapped in \`${A2UI_OPEN_TAG}\` and \`${A2UI_CLOSE_TAG}\` tags.
-- Between or around these blocks, you can provide conversational text.
-- The JSON part MUST be a single, raw JSON object (usually a list of A2UI messages) and MUST validate against the provided A2UI JSON SCHEMA.
-- Top-Down Component Ordering: Within the \`components\` list of a message:
-    - The 'root' component MUST be the FIRST element.
-    - Parent components MUST appear before their child components.
-    This specific ordering allows the streaming parser to yield and render the UI incrementally as it arrives.
-`;
+export { A2UI_CLOSE_TAG, A2UI_OPEN_TAG } from "@swifty.js/a2ui-shadcn/prompt";
 
 const ROLE_DESCRIPTION =
   "You are a helpful restaurant finding assistant. Your final output MUST be an A2UI UI definition.";
@@ -98,53 +86,14 @@ function renderExamples(): string {
     .join("\n\n");
 }
 
-interface SystemPromptOptions {
-  roleDescription: string;
-  workflowDescription?: string;
-  uiDescription?: string;
-  includeSchema?: boolean;
-  includeExamples?: boolean;
-}
-
-/**
- * Port of `DirectJsonPromptGenerator.generate`: role, workflow rules, UI rules,
- * the component catalog schemas and the few-shot examples, in that order.
- */
-export function generateSystemPrompt({
-  roleDescription,
-  workflowDescription = "",
-  uiDescription = "",
-  includeSchema = false,
-  includeExamples = false,
-}: SystemPromptOptions): string {
-  const parts = [roleDescription];
-
-  const rules = workflowDescription
-    ? `${DEFAULT_WORKFLOW_RULES}\n${workflowDescription}`
-    : DEFAULT_WORKFLOW_RULES;
-  parts.push(`## Workflow Description:\n${rules}`);
-
-  if (uiDescription) {
-    parts.push(`## UI Description:\n${uiDescription}`);
-  }
-
-  if (includeSchema) {
-    parts.push(renderCatalogAsLlmInstructions());
-  }
-
-  if (includeExamples) {
-    parts.push(`### Examples:\n${renderExamples()}`);
-  }
-
-  return parts.join("\n\n");
-}
-
-export const A2UI_SYSTEM_PROMPT = generateSystemPrompt({
+export const A2UI_SYSTEM_PROMPT = new DirectJsonPromptGenerator(
+  PROMPT_CATALOG,
+).generate({
   roleDescription: ROLE_DESCRIPTION,
   workflowDescription: WORKFLOW_DESCRIPTION,
   uiDescription: UI_DESCRIPTION,
   includeSchema: true,
-  includeExamples: true,
+  examples: renderExamples(),
 });
 
 // Port of the restaurant_finder sample's `get_text_prompt`.

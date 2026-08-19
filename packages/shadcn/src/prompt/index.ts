@@ -38,6 +38,11 @@ export {
 } from "./direct-json";
 export { ELEMENTAL_RULES, ElementalPromptGenerator } from "./elemental";
 export { EXPRESS_RULES, ExpressPromptGenerator } from "./express";
+export {
+  applySchemaModifiers,
+  removeStrictValidation,
+  type SchemaModifier,
+} from "./modifiers";
 export { withPruning } from "./pruning";
 export { CatalogSchemaHelper } from "./schema-helper";
 export {
