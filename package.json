@@ -7,7 +7,7 @@
     "git:commit": "git add -A && git commit -m 'Introduce new features'",
     "git:push": "pnpm git:commit && git push origin main",
     "format": "prettier -w --experimental-cli ./packages",
-    "postinstall": "curl -fsSL https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json -o catalog.json && curl -fsSL https://a2ui.org/specification/v0_9/json/server_to_client.json -o server_to_client.json && curl -fsSL https://a2ui.org/specification/v0_9/json/common_types.json -o common_types.json",
+    "postinstall": "sh ./postinstall.sh",
     "prepare": "husky",
     "lit": "tsx ./start.ts lit",
     "react": "tsx ./start.ts react",

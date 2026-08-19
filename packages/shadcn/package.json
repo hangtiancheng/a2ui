@@ -22,7 +22,7 @@
     "dev": "vite",
     "build": "vite build --mode lib",
     "build:app": "tsc -b && vite build",
-    "build:catalog": "tsx --tsconfig tsconfig.app.json scripts/build-catalog.ts",
+    "catalog": "tsx --tsconfig tsconfig.app.json scripts/catalog.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
