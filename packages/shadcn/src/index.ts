@@ -2,6 +2,6 @@ export { SHADCN_CATALOG_ID, shadcnCatalog } from "./catalog";
 export {
   A2uiView,
   buildQueryFromAction,
-  UI_ACTION_PREFIX,
+  A2UI_ACTION,
   type A2uiViewProps,
 } from "./a2ui-view";

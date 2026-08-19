@@ -1,3 +1,5 @@
+import { SHADCN_CATALOG_ID } from "@swifty.js/a2ui-shadcn";
+
 export function createAgentCard(baseUrl: string) {
   return {
     name: "Restaurant Agent",
@@ -13,7 +15,9 @@ export function createAgentCard(baseUrl: string) {
           uri: "https://a2ui.org/a2a-extension/a2ui/v0.9",
           params: {
             catalogs: [
-              "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+              process.env.A2UI_MODE === "shadcn"
+                ? SHADCN_CATALOG_ID
+                : "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
             ],
           },
         },

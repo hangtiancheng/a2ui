@@ -24,35 +24,16 @@ import {
 
 import { shadcnCatalog } from "./catalog";
 
-export const UI_ACTION_PREFIX = "[UI_ACTION]";
+export const A2UI_ACTION = "[a2ui_action]";
 
 export function buildQueryFromAction(action: A2uiClientAction): string {
-  return `${UI_ACTION_PREFIX} ${action.name}\ncontext: ${JSON.stringify(action.context ?? {})}`;
+  return `${A2UI_ACTION} ${action.name}\ncontext: ${JSON.stringify(action.context ?? {})}`;
 }
 
 export interface A2uiViewProps {
   messages: unknown[];
   onAction?: (query: string) => void;
   onRawAction?: (action: A2uiClientAction) => void;
-}
-
-class SurfaceErrorBoundary extends Component<
-  { children: ReactNode },
-  { failed: boolean }
-> {
-  state = { failed: false };
-
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-
-  componentDidCatch(error: unknown) {
-    console.error("[a2ui] surface render error:", error);
-  }
-
-  render() {
-    return this.state.failed ? null : this.props.children;
-  }
 }
 
 export function A2uiView({ messages, onAction, onRawAction }: A2uiViewProps) {
@@ -127,13 +108,11 @@ export function A2uiView({ messages, onAction, onRawAction }: A2uiViewProps) {
   }
   return (
     <MarkdownContext.Provider value={renderMarkdown}>
-      <SurfaceErrorBoundary>
-        <div className="mt-3 flex flex-col gap-3">
-          {surfaces.map((surface) => (
-            <A2uiSurface key={surface.id} surface={surface} />
-          ))}
-        </div>
-      </SurfaceErrorBoundary>
+      <div className="mt-3 flex flex-col gap-3">
+        {surfaces.map((surface) => (
+          <A2uiSurface key={surface.id} surface={surface} />
+        ))}
+      </div>
     </MarkdownContext.Provider>
   );
 }

@@ -188,8 +188,7 @@ export function createBookingFormMessages(
       version: "v0.9",
       createSurface: {
         surfaceId: "booking-form",
-        catalogId:
-          "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+        catalogId: SHADCN_CATALOG_ID,
         theme: { primaryColor: "#FF0000", font: "Roboto" },
       },
     },
@@ -305,8 +304,7 @@ export function createConfirmationMessages(
       version: "v0.9",
       createSurface: {
         surfaceId: "confirmation",
-        catalogId:
-          "https://a2ui.org/specification/v0_9/catalogs/basic/catalog.json",
+        catalogId: SHADCN_CATALOG_ID,
         theme: { primaryColor: "#FF0000", font: "Roboto" },
       },
     },
