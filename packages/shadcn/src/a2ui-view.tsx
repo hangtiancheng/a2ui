@@ -1,13 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 "use client";
-import {
-  Component,
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { renderMarkdown } from "@a2ui/markdown-it";
 import {
   A2uiSurface,
