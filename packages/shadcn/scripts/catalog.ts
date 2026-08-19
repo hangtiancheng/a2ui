@@ -28,7 +28,7 @@ import {
 import type { ZodTypeAny } from "zod/v3";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-import { SHADCN_CATALOG_ID, shadcnCatalog } from "../src/catalog/index";
+import { SHADCN_CATALOG_ID, shadcnCatalog } from "../src/catalog";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.join(__dirname, "..", "..", "..");
